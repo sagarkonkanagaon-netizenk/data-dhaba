@@ -66,6 +66,33 @@ export const PRO_PROJECTS = [
 
 export const PRO_CHEATSHEETS = ['SQL window functions', 'SQL joins and traps', 'PySpark DataFrame API', 'Spark performance tuning', 'Reading the Spark UI', 'Delta Lake commands', 'Databricks and Unity Catalog', 'Azure Data Factory patterns', 'Airflow DAG patterns', 'dbt commands and Jinja', 'Kafka for data engineers', 'Structured Streaming', 'Data modelling: star, snowflake, vault', 'SCD types 1 to 6', 'Snowflake essentials', 'BigQuery essentials', 'AWS Glue and Athena', 'Python for data engineers', 'pandas to PySpark', 'Git for data teams', 'Linux and bash for pipelines', 'Docker for data engineers', 'Docker Compose for data stacks', 'Kubernetes for data engineers', 'Terraform for data platforms', 'Data quality checks', 'File formats: Parquet, Avro, ORC', 'Partitioning and Z-ordering', 'System design numbers to know', 'Interview day checklist']
 
+// The career ladder: 20 projects, one per data engineering role from intern to head of data engineering.
+// `ready` = built and verified end to end (acceptance checks pass at normal and 10x volume). Solutions stay
+// private until Pro opens; the page only lists them.
+export const PRO_LADDER = [
+  { n: 1, role: 'Data Engineering Intern', title: 'Retail CSV to PostgreSQL', ready: true },
+  { n: 2, role: 'Trainee Data Engineer', title: 'Weather history from a public API', ready: true },
+  { n: 3, role: 'Graduate Data Engineer', title: 'Order reconciliation', ready: true },
+  { n: 4, role: 'Associate Data Engineer', title: 'Retail sales lake on AWS', ready: true },
+  { n: 5, role: 'Junior Data Engineer', title: 'HR analytics on Azure', ready: true },
+  { n: 6, role: 'Data Engineer I', title: 'Marketing attribution on GCP', ready: true },
+  { n: 7, role: 'Data Engineer', title: 'Subscription analytics ELT', ready: true },
+  { n: 8, role: 'Data Engineer II', title: 'Logistics shipment event platform (CDC)', ready: true },
+  { n: 9, role: 'Data Pipeline Engineer', title: 'Insurance claims batch', ready: true },
+  { n: 10, role: 'ETL / ELT Engineer', title: 'Procurement integration on Azure', ready: true },
+  { n: 11, role: 'Analytics Engineer', title: 'Product usage semantic layer', ready: true },
+  { n: 12, role: 'Data Warehouse Engineer', title: 'Finance enterprise warehouse' },
+  { n: 13, role: 'Big Data Engineer', title: 'IoT telemetry at scale' },
+  { n: 14, role: 'Streaming Data Engineer', title: 'Real-time fraud detection' },
+  { n: 15, role: 'Senior Data Engineer', title: 'Healthcare interoperability lakehouse' },
+  { n: 16, role: 'Lead Data Engineer', title: 'Omnichannel retail platform' },
+  { n: 17, role: 'Staff Data Engineer', title: 'Multi-tenant ingestion framework' },
+  { n: 18, role: 'Principal Data Engineer', title: 'Cross-cloud governed platform' },
+  { n: 19, role: 'Data Architect', title: 'Enterprise banking data architecture' },
+  { n: 20, role: 'Head of Data Engineering', title: 'Enterprise data modernisation program' },
+]
+export const PRO_LADDER_READY = PRO_LADDER.filter((p) => p.ready).length
+
 export const PRO_PROJECT_COUNT = PRO_PROJECTS.reduce((a, g) => a + g.items.length, 0)
 
 export const PRO_FAQ = [
