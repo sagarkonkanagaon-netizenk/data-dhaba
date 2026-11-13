@@ -25,8 +25,23 @@ async function gunzipJson(bytes) {
 }
 
 const LANG = { py: 'python', sql: 'sql', sh: 'bash', json: 'json', yml: 'yaml', yaml: 'yaml', scala: 'scala' }
-const ORDER = ['README.md', 'COMPLETION.md', 'course/', 'docs/', 'architecture/']
-const rank = (p) => { const i = ORDER.findIndex((o) => p === o || p.startsWith(o)); return i < 0 ? ORDER.length : i }
+const GROUPS = [
+  ['Start here', (p) => ['README.md', 'COMPLETION.md', 'course/BRIEF.md', 'starter/README.md'].includes(p)],
+  ['Course for learners', (p) => p.startsWith('course/')],
+  ['Python code', (p) => /^(src|tools|dags|data|mock|pipeline|app|jobs|databricks|beam|streaming|connect)\//.test(p) && p.endsWith('.py')],
+  ['SQL and dbt models', (p) => /\.(sql|lkml)$/.test(p) || /^(models|macros|seeds|dbt_tests|snapshots|analyses)\//.test(p) || /dbt_project|profiles/.test(p)],
+  ['Tests', (p) => p.startsWith('tests/') || /(^|\/)test_[^/]*\.py$/.test(p)],
+  ['Infra, CI and config', (p) => /^(infra|terraform|\.github|config|adf|contracts|docker|k8s|helm)\//.test(p) || /(Makefile|Dockerfile|docker-compose|\.tf$|\.ya?ml$|\.toml$|\.ini$|\.env|requirements|\.gitignore)/.test(p)],
+  ['Docs and design', (p) => /^(docs|architecture)\//.test(p) || p.endsWith('.md')],
+  ['Other files', () => true],
+]
+function group(files) {
+  const out = GROUPS.map(([name]) => ({ name, files: [] }))
+  for (const f of files) out[GROUPS.findIndex(([, test]) => test(f.path))].files.push(f)
+  const first = ['README.md', 'course/BRIEF.md', 'COMPLETION.md', 'starter/README.md']
+  out[0].files.sort((a, b) => first.indexOf(a.path) - first.indexOf(b.path))
+  return out.filter((g) => g.files.length)
+}
 
 function FileView({ file }) {
   if (!file) return null
@@ -59,13 +74,15 @@ export default function ProOwner() {
     setProject({ n: p.n, loading: true })
     const bytes = new Uint8Array(await (await fetch(BASE + p.file, { cache: 'no-store' })).arrayBuffer())
     const data = await gunzipJson(await open(state.key, bytes))
-    data.files.sort((a, b) => rank(a.path) - rank(b.path) || a.path.localeCompare(b.path))
+    data.files.sort((a, b) => a.path.localeCompare(b.path))
+    data.groups = group(data.files)
     setProject({ n: p.n, ...data })
     setPath('README.md')
     setTimeout(() => document.querySelector('.owner-reader')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50)
   }
 
   const file = useMemo(() => project?.files?.find((f) => f.path === path), [project, path])
+  const pick = (p) => { setPath(p); setTimeout(() => document.querySelector('.owner-file')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 30) }
 
   if (state.step !== 'open') {
     return (
@@ -101,12 +118,15 @@ export default function ProOwner() {
       {project?.files && (
         <div className="owner-reader">
           <nav className="card card-pad owner-tree" aria-label="Files">
-            <select className="owner-select" value={path} onChange={(e) => setPath(e.target.value)} aria-label="Choose a file">
-              {project.files.map((f) => <option key={f.path} value={f.path}>{f.path}</option>)}
-            </select>
-            <ul>{project.files.map((f) => (
-              <li key={f.path}><button className={f.path === path ? 'on' : ''} onClick={() => setPath(f.path)}>{f.path}</button></li>
-            ))}</ul>
+            <div className="small muted" style={{ marginBottom: 6 }}>{project.files.length} files · tap a folder to open it</div>
+            {project.groups.map((g, i) => (
+              <details key={g.name} open={i === 0 || g.files.some((f) => f.path === path)}>
+                <summary><b>{g.name}</b> <span className="chip">{g.files.length}</span></summary>
+                <ul>{g.files.map((f) => (
+                  <li key={f.path}><button className={f.path === path ? 'on' : ''} onClick={() => pick(f.path)}>{f.path}</button></li>
+                ))}</ul>
+              </details>
+            ))}
           </nav>
           <article className="card card-pad owner-file">
             <div className="small muted" style={{ marginBottom: 8 }}>{project.name} / {path}</div>
