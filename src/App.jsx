@@ -49,6 +49,7 @@ const Terms = page(() => import('./pages/Misc.jsx'), 'Terms')
 const Refund = page(() => import('./pages/Misc.jsx'), 'Refund')
 const Contact = page(() => import('./pages/Contact.jsx'))
 const ProProject = page(() => import('./pages/ProProject.jsx'))
+const ProOwner = page(() => import('./pages/ProOwner.jsx'))
 const SheetIndex = page(() => import('./pages/ProSheets.jsx'), 'SheetIndex')
 const Sheet = page(() => import('./pages/ProSheets.jsx'), 'Sheet')
 const ProgressPage = page(() => import('./pages/Progress.jsx'))
@@ -98,6 +99,7 @@ export default function App() {
             <Route path="account" element={<Account />} />
             <Route path="pro" element={<Pro />} />
             <Route path="pro/projects/food-delivery-lakehouse" element={<ProProject />} />
+            <Route path="pro/owner" element={<ProOwner />} />
             <Route path="pro/cheatsheets" element={<SheetIndex />} />
             <Route path="pro/cheatsheets/:slug" element={<Sheet />} />
             <Route path="about" element={<About />} />
