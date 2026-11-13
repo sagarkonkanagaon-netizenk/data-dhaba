@@ -3,7 +3,7 @@ import { Link, Navigate } from 'react-router-dom'
 import Waitlist from '../components/Waitlist.jsx'
 import { SHEETS } from '../pro/cheatsheets.js'
 const SHEET_COUNT = SHEETS.length
-import { PRO_PRICE, PRO_PLANS, PRO_PILLARS, PRO_PROJECTS, PRO_CHEATSHEETS, PRO_PROJECT_COUNT, PRO_FAQ } from '../data/pro.js'
+import { PRO_PRICE, PRO_PLANS, PRO_PILLARS, PRO_PROJECTS, PRO_CHEATSHEETS, PRO_PROJECT_COUNT, PRO_FAQ, PRO_LADDER, PRO_LADDER_READY } from '../data/pro.js'
 import guide from '../content/guide.json'
 import { BRAND, CERTS, FREE_PLATFORMS, MANTRAS, FINAL_WORD } from '../data/extras.js'
 import { useProgress, toggleIn } from '../lib/progress.js'
@@ -177,6 +177,14 @@ export function Pro() {
               <ol className="pro-list" start={PRO_PROJECTS.slice(0, i).reduce((a, x) => a + x.items.length, 1)}>{g.items.map((it, j) => <li key={it}>{i === 0 && j === 0 ? <><Link to="/pro/projects/food-delivery-lakehouse">{it}</Link> <span className="chip chip-ok">Preview</span></> : it}</li>)}</ol>
             </details>
           ))}
+        </div>
+
+        <h2 className="ds-h">The career ladder <span className="small muted">{PRO_LADDER_READY} of {PRO_LADDER.length} built</span></h2>
+        <p className="muted" style={{ marginTop: -4 }}>One project per role, from intern to head of data engineering. Each is built and checked end to end, with a brief, starter code, hints and a marking rubric. Solutions open with Pro.</p>
+        <div className="card card-pad">
+          <ol className="pro-list pro-ladder">{PRO_LADDER.map((p) => (
+            <li key={p.n}><b>{p.title}</b> <span className="small muted">· {p.role}</span> {p.ready ? <span className="chip chip-ok">Ready</span> : <span className="chip">In build</span>}</li>
+          ))}</ol>
         </div>
 
         <h2 className="ds-h">Cheat sheets <span className="small muted">60+ planned, including</span></h2>
