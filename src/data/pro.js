@@ -83,7 +83,7 @@ export const PRO_LADDER = [
   { n: 11, role: 'Analytics Engineer', title: 'Product usage semantic layer', ready: true },
   { n: 12, role: 'Data Warehouse Engineer', title: 'Finance enterprise warehouse', ready: true },
   { n: 13, role: 'Big Data Engineer', title: 'IoT telemetry at scale', ready: true },
-  { n: 14, role: 'Streaming Data Engineer', title: 'Real-time fraud detection' },
+  { n: 14, role: 'Streaming Data Engineer', title: 'Real-time fraud detection', ready: true },
   { n: 15, role: 'Senior Data Engineer', title: 'Healthcare interoperability lakehouse' },
   { n: 16, role: 'Lead Data Engineer', title: 'Omnichannel retail platform' },
   { n: 17, role: 'Staff Data Engineer', title: 'Multi-tenant ingestion framework' },
