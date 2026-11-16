@@ -1,0 +1,272 @@
+// Tech Stack Atlas: every tool a data engineer meets, placed by the job it does (layer)
+// and where it runs (column). Tools with `page` get a full page that follows the same
+// eight blocks every time, so a learner always knows where to look.
+
+export const COLUMNS = [
+  { id: 'azure', name: 'Azure', note: 'Microsoft cloud' },
+  { id: 'aws', name: 'AWS', note: 'Amazon cloud' },
+  { id: 'gcp', name: 'GCP', note: 'Google cloud' },
+  { id: 'platform', name: 'Data platforms', note: 'Run on any cloud' },
+  { id: 'oss', name: 'Open source', note: 'Run anywhere' },
+]
+
+export const LAYERS = [
+  { id: 'ingest', n: 1, name: 'Ingest', job: 'Copy data in from apps, databases, files and APIs.' },
+  { id: 'storage', n: 2, name: 'Store', job: 'Keep raw and cleaned files cheaply, forever if needed.' },
+  { id: 'process', n: 3, name: 'Process', job: 'Clean, join and reshape data, from megabytes to petabytes.' },
+  { id: 'warehouse', n: 4, name: 'Serve (warehouse)', job: 'Fast SQL for analysts, dashboards and apps.' },
+  { id: 'stream', n: 5, name: 'Stream', job: 'Move and process events within seconds, not hours.' },
+  { id: 'orchestrate', n: 6, name: 'Orchestrate', job: 'Run every step in order, on time, with retries.' },
+  { id: 'transform', n: 7, name: 'Model (SQL transform)', job: 'Turn raw tables into tested, documented models.' },
+  { id: 'quality', n: 8, name: 'Quality', job: 'Catch bad data before anyone sees it.' },
+  { id: 'govern', n: 9, name: 'Govern', job: 'Know what data exists, who can see it and where it came from.' },
+  { id: 'bi', n: 10, name: 'Visualise (BI)', job: 'Dashboards and reports people use to decide.' },
+  { id: 'devops', n: 11, name: 'Ship (DevOps and infra)', job: 'Version, test, deploy and create infrastructure as code.' },
+]
+
+// demand: 3 = in most Indian DE job posts, 2 = common, 1 = good to know
+const T = (id, name, layer, col, demand, one) => ({ id, name, layer, col, demand, one })
+
+export const TOOLS = [
+  // Ingest
+  T('adf', 'Azure Data Factory', 'ingest', 'azure', 3, 'Low-code copy and pipeline service with 90+ connectors.'),
+  T('fabric-pipelines', 'Fabric Data Factory', 'ingest', 'azure', 2, 'The Data Factory experience inside Microsoft Fabric.'),
+  T('glue', 'AWS Glue', 'ingest', 'aws', 3, 'Serverless Spark ETL with a built-in data catalog.'),
+  T('dms', 'AWS DMS', 'ingest', 'aws', 2, 'Database migration and change data capture into AWS.'),
+  T('datastream', 'Datastream', 'ingest', 'gcp', 1, 'Serverless change data capture from databases into BigQuery.'),
+  T('autoloader', 'Databricks Auto Loader', 'ingest', 'platform', 2, 'Picks up only new files from cloud storage, exactly once.'),
+  T('fivetran', 'Fivetran', 'ingest', 'platform', 2, 'Managed connectors that sync SaaS apps and databases.'),
+  T('airbyte', 'Airbyte', 'ingest', 'oss', 1, 'Open-source connector platform for ELT.'),
+  T('debezium', 'Debezium', 'ingest', 'oss', 2, 'Reads database change logs and publishes every insert, update and delete.'),
+
+  // Storage
+  T('adls', 'ADLS Gen2', 'storage', 'azure', 3, 'Azure Blob storage with real folders, built for analytics.'),
+  T('onelake', 'OneLake', 'storage', 'azure', 2, 'One logical lake for all of Microsoft Fabric.'),
+  T('s3', 'Amazon S3', 'storage', 'aws', 3, 'Object storage; the default data lake on AWS.'),
+  T('gcs', 'Cloud Storage', 'storage', 'gcp', 2, 'Object storage; the data lake on Google Cloud.'),
+  T('delta-lake', 'Delta Lake', 'storage', 'oss', 3, 'Table format that adds ACID transactions and time travel to Parquet.'),
+  T('iceberg', 'Apache Iceberg', 'storage', 'oss', 2, 'Open table format with hidden partitioning, read by many engines.'),
+  T('hudi', 'Apache Hudi', 'storage', 'oss', 1, 'Table format tuned for upserts and incremental reads.'),
+  T('parquet', 'Parquet', 'storage', 'oss', 3, 'Columnar file format; the base of almost every lake.'),
+
+  // Process
+  T('synapse-spark', 'Synapse Spark pools', 'process', 'azure', 2, 'Managed Spark inside Azure Synapse.'),
+  T('emr', 'Amazon EMR', 'process', 'aws', 2, 'Managed Spark, Hive, Presto and Flink clusters.'),
+  T('dataproc', 'Dataproc', 'process', 'gcp', 1, 'Managed Spark and Hadoop clusters on Google Cloud.'),
+  T('dataflow', 'Dataflow', 'process', 'gcp', 2, 'Serverless Apache Beam for batch and streaming.'),
+  T('databricks', 'Databricks', 'process', 'platform', 3, 'Lakehouse platform: Spark, Delta, SQL, jobs and governance in one place.'),
+  T('spark', 'Apache Spark', 'process', 'oss', 3, 'Distributed engine that processes data across many machines.'),
+  T('pandas', 'pandas and Polars', 'process', 'oss', 2, 'DataFrames on one machine; the right size for most small jobs.'),
+  T('duckdb', 'DuckDB', 'process', 'oss', 2, 'In-process SQL engine; runs this site\'s SQL labs.'),
+
+  // Warehouse
+  T('synapse-sql', 'Synapse SQL', 'warehouse', 'azure', 2, 'Dedicated and serverless SQL pools in Azure Synapse.'),
+  T('fabric-wh', 'Fabric Warehouse', 'warehouse', 'azure', 2, 'SQL warehouse on OneLake in Microsoft Fabric.'),
+  T('redshift', 'Amazon Redshift', 'warehouse', 'aws', 2, 'Columnar MPP warehouse on AWS.'),
+  T('athena', 'Amazon Athena', 'warehouse', 'aws', 2, 'Serverless SQL straight over files in S3.'),
+  T('bigquery', 'BigQuery', 'warehouse', 'gcp', 3, 'Serverless warehouse; pay per data scanned or per slot.'),
+  T('snowflake', 'Snowflake', 'warehouse', 'platform', 3, 'Cloud warehouse with storage and compute billed separately.'),
+  T('dbsql', 'Databricks SQL', 'warehouse', 'platform', 2, 'SQL warehouses on Delta tables in Databricks.'),
+  T('postgres', 'PostgreSQL', 'warehouse', 'oss', 3, 'The default relational database; often the source system.'),
+  T('trino', 'Trino', 'warehouse', 'oss', 1, 'Distributed SQL that queries many sources in place.'),
+  T('clickhouse', 'ClickHouse', 'warehouse', 'oss', 1, 'Very fast columnar database for real-time analytics.'),
+
+  // Stream
+  T('eventhubs', 'Event Hubs', 'stream', 'azure', 3, 'Managed event ingestion with a Kafka-compatible endpoint.'),
+  T('asa', 'Stream Analytics', 'stream', 'azure', 1, 'SQL over streams, fully managed.'),
+  T('kinesis', 'Kinesis', 'stream', 'aws', 2, 'Managed streams and Firehose delivery on AWS.'),
+  T('msk', 'Amazon MSK', 'stream', 'aws', 2, 'Managed Apache Kafka on AWS.'),
+  T('pubsub', 'Pub/Sub', 'stream', 'gcp', 2, 'Global messaging service on Google Cloud.'),
+  T('sss', 'Structured Streaming', 'stream', 'platform', 3, 'Spark\'s streaming engine; same DataFrame code as batch.'),
+  T('kafka', 'Apache Kafka', 'stream', 'oss', 3, 'Durable, replayable event log at the centre of most real-time stacks.'),
+  T('flink', 'Apache Flink', 'stream', 'oss', 2, 'Low-latency stateful stream processing.'),
+
+  // Orchestrate
+  T('adf-orch', 'ADF pipelines and triggers', 'orchestrate', 'azure', 3, 'Schedule and chain activities inside Data Factory.'),
+  T('mwaa', 'Amazon MWAA', 'orchestrate', 'aws', 2, 'Managed Airflow on AWS.'),
+  T('stepfn', 'Step Functions', 'orchestrate', 'aws', 1, 'Serverless state machines that chain AWS services.'),
+  T('composer', 'Cloud Composer', 'orchestrate', 'gcp', 2, 'Managed Airflow on Google Cloud.'),
+  T('dbx-jobs', 'Lakeflow Jobs', 'orchestrate', 'platform', 2, 'Databricks jobs with task graphs, retries and alerts.'),
+  T('airflow', 'Apache Airflow', 'orchestrate', 'oss', 3, 'Pipelines as Python code: schedule, retry, backfill, alert.'),
+  T('dagster', 'Dagster', 'orchestrate', 'oss', 1, 'Orchestrator built around data assets instead of tasks.'),
+
+  // Transform
+  T('dbt', 'dbt', 'transform', 'oss', 3, 'SQL models with tests, docs and lineage, run in your warehouse.'),
+  T('dlt-pipes', 'Lakeflow Declarative Pipelines', 'transform', 'platform', 2, 'Declare tables and quality rules; Databricks runs them.'),
+  T('dataform', 'Dataform', 'transform', 'gcp', 1, 'SQL workflows for BigQuery, built into Google Cloud.'),
+  T('sqlmesh', 'SQLMesh', 'transform', 'oss', 1, 'SQL transformation framework with virtual environments.'),
+
+  // Quality
+  T('purview-dq', 'Purview Data Quality', 'quality', 'azure', 1, 'Rules and scores on data assets in Microsoft Purview.'),
+  T('glue-dq', 'Glue Data Quality', 'quality', 'aws', 1, 'Rule-based checks on Glue tables, built on Deequ.'),
+  T('dataplex-dq', 'Dataplex data quality', 'quality', 'gcp', 1, 'Automatic data quality scans on BigQuery.'),
+  T('expectations', 'Pipeline expectations', 'quality', 'platform', 2, 'Quality rules on Databricks declarative pipelines.'),
+  T('gx', 'Great Expectations', 'quality', 'oss', 2, 'Python library for data tests and data docs.'),
+  T('soda', 'Soda', 'quality', 'oss', 1, 'Data checks written in YAML.'),
+
+  // Govern
+  T('purview', 'Microsoft Purview', 'govern', 'azure', 2, 'Catalog, lineage and classification across Azure.'),
+  T('lakeformation', 'Lake Formation and Glue Catalog', 'govern', 'aws', 2, 'Table catalog and fine-grained access on AWS.'),
+  T('dataplex', 'Dataplex', 'govern', 'gcp', 1, 'Catalog and governance across Google Cloud.'),
+  T('unity', 'Unity Catalog', 'govern', 'platform', 3, 'One permission and lineage model for all Databricks data.'),
+  T('openlineage', 'OpenLineage', 'govern', 'oss', 1, 'Open standard for collecting lineage from any tool.'),
+  T('datahub', 'DataHub', 'govern', 'oss', 1, 'Open-source metadata catalog.'),
+
+  // BI
+  T('powerbi', 'Power BI', 'bi', 'azure', 3, 'Microsoft\'s BI tool, widely used in Indian companies.'),
+  T('quicksight', 'QuickSight', 'bi', 'aws', 1, 'Serverless BI on AWS.'),
+  T('looker', 'Looker', 'bi', 'gcp', 2, 'BI with a semantic model (LookML) on Google Cloud.'),
+  T('tableau', 'Tableau', 'bi', 'platform', 2, 'Visual analytics tool used across industries.'),
+  T('superset', 'Apache Superset', 'bi', 'oss', 1, 'Open-source dashboards and SQL lab.'),
+  T('metabase', 'Metabase', 'bi', 'oss', 1, 'Simple open-source BI for teams.'),
+
+  // DevOps
+  T('azdo', 'Azure DevOps', 'devops', 'azure', 2, 'Repos, pipelines and boards; common in Azure shops.'),
+  T('bicep', 'Bicep and ARM', 'devops', 'azure', 1, 'Azure-native infrastructure as code.'),
+  T('cfn', 'CloudFormation and CDK', 'devops', 'aws', 1, 'AWS-native infrastructure as code.'),
+  T('cloudbuild', 'Cloud Build', 'devops', 'gcp', 1, 'CI/CD on Google Cloud.'),
+  T('dabs', 'Databricks Asset Bundles', 'devops', 'platform', 2, 'Deploy Databricks jobs and pipelines from Git.'),
+  T('git', 'Git and GitHub Actions', 'devops', 'oss', 3, 'Version control and CI for every pipeline.'),
+  T('terraform', 'Terraform', 'devops', 'oss', 2, 'Infrastructure as code for any cloud.'),
+  T('docker', 'Docker and Kubernetes', 'devops', 'oss', 2, 'Package code in containers and run them at scale.'),
+]
+
+// Full pages. Every page has the same eight blocks.
+export const PAGES = {
+  adf: {
+    what: 'Azure Data Factory (ADF) is a managed service for moving data and running pipelines. You build a pipeline from activities (Copy, Data Flow, Notebook, Stored Procedure, Web) on a canvas, connect them to sources through linked services, and run them on a schedule or on an event.',
+    why: 'Before ADF, teams wrote and hosted their own copy scripts and schedulers. ADF gives 90+ connectors, managed compute for copying, retries, monitoring and a self-hosted runtime that reaches databases inside a company network.',
+    where: ['Nightly copy of SQL Server, Oracle or SAP tables into ADLS (bronze layer)', 'Pulling files from SFTP and SharePoint into the lake', 'Chaining a Databricks notebook after a copy, then refreshing Power BI'],
+    de: ['Builds metadata-driven pipelines: one pipeline loops over a control table of 200 sources instead of 200 pipelines', 'Sets up incremental loads with a watermark column', 'Parameterises linked services per environment and deploys through Azure DevOps or GitHub', 'Monitors runs and sets alerts on failure'],
+    da: ['Rarely builds ADF pipelines, but needs to know when the data last loaded and which run failed', 'Asks the DE for a new source to be added to the control table'],
+    avoid: ['Heavy transformations: use Databricks or Synapse Spark and let ADF only orchestrate', 'Sub-minute streaming: use Event Hubs with Structured Streaming', 'Complex branching logic across many teams: Airflow handles that better as code'],
+    equiv: 'AWS Glue (jobs + workflows), GCP Cloud Data Fusion or Composer, Fabric Data Factory, Airflow (as code).',
+    tryit: [['Databricks: ingestion', '/learn/databricks/9-ingestion'], ['SQL: loading data and pipeline patterns', '/learn/sql/13-loading-data-dml-and-pipeline-patterns']],
+    iq: ['How do you load 200 tables without building 200 pipelines?', 'How does an incremental load with a watermark work, and what happens on a failed run?', 'Self-hosted vs Azure integration runtime: when do you need each?'],
+  },
+  adls: {
+    what: 'Azure Data Lake Storage Gen2 is Azure Blob Storage with a hierarchical namespace turned on. That gives real folders, fast renames and folder-level permissions (ACLs), which analytics engines need.',
+    why: 'Plain object storage treats a folder as a name prefix, so renaming a folder of a million files means copying a million files. Spark and Delta commit by renaming, so a real file system makes them fast and safe.',
+    where: ['The bronze, silver and gold layers of an Azure lakehouse', 'Landing zone for files from partners and ADF copies', 'Storage under Databricks and Synapse tables'],
+    de: ['Designs the folder layout: container per layer, folders per source and date', 'Chooses formats (Parquet or Delta) and partitioning', 'Sets access with managed identities and ACLs, never account keys in code', 'Sets lifecycle rules to move old files to cool or archive tiers'],
+    da: ['Reads curated gold data through Databricks SQL, Synapse serverless or Power BI, not raw files', 'Should know which layer is trusted (gold) and which is raw (bronze)'],
+    avoid: ['Transactional app data: use a database', 'Thousands of tiny files: compact them, or queries slow down badly'],
+    equiv: 'Amazon S3, Google Cloud Storage, OneLake in Fabric.',
+    tryit: [['Databricks: storage and data access', '/learn/databricks/5-storage-and-data-access'], ['Databricks: medallion architecture', '/learn/databricks/8-medallion-architecture']],
+    iq: ['Why does the hierarchical namespace matter for Spark?', 'How would you lay out folders for 30 sources across bronze, silver and gold?', 'What is the small-files problem and how do you fix it?'],
+  },
+  databricks: {
+    what: 'Databricks is a lakehouse platform built by the creators of Spark. It gives managed Spark clusters, notebooks, Delta Lake tables, SQL warehouses, jobs, declarative pipelines and Unity Catalog for governance, on Azure, AWS or GCP.',
+    why: 'Running Spark yourself means tuning clusters, versions and storage. Databricks manages that and adds Delta Lake, so one copy of data in cheap storage can serve both engineering and SQL analytics.',
+    where: ['One of the most requested platforms in Indian DE job posts, often paired with ADF and ADLS', 'Medallion pipelines: bronze to silver to gold', 'Streaming, ML feature tables and BI on the same data'],
+    de: ['Writes PySpark and SQL notebooks, then turns them into scheduled jobs', 'Builds incremental loads with Auto Loader and MERGE', 'Tunes performance: partitioning, file sizes, Photon, cluster sizing', 'Sets permissions and lineage in Unity Catalog and deploys with asset bundles'],
+    da: ['Queries gold tables in Databricks SQL and builds quick dashboards', 'Connects Power BI or Tableau to a SQL warehouse'],
+    avoid: ['A few small CSV files a day: a database or DuckDB is cheaper and simpler', 'Teams with no Spark or Python skills and only SQL needs: a warehouse may fit better'],
+    equiv: 'Synapse Spark or Fabric on Azure, EMR or Glue on AWS, Dataproc on GCP; for SQL analytics, Snowflake or BigQuery.',
+    tryit: [['The Databricks handbook', '/learn/databricks/1-what-databricks-is'], ['Spark Visualizer', '/spark-visual']],
+    iq: ['Job cluster vs all-purpose cluster: which do you schedule on and why?', 'What does Unity Catalog give you that the old Hive metastore did not?', 'Walk me through a medallion pipeline you would build here.'],
+  },
+  'delta-lake': {
+    what: 'Delta Lake is an open table format. A Delta table is Parquet files plus a transaction log (_delta_log) that records every change. That log gives ACID transactions, schema enforcement, MERGE, time travel and safe concurrent writes on plain cloud storage.',
+    why: 'A folder of Parquet files breaks when a job dies halfway, two jobs write at once, or you need to update one row. Delta fixes all three without a database server.',
+    where: ['Default table format in Databricks', 'Silver and gold layers in lakehouses', 'Upserts from CDC feeds with MERGE'],
+    de: ['Uses MERGE for upserts and SCD Type 2', 'Runs OPTIMIZE and VACUUM to control file sizes and storage', 'Uses time travel to debug and roll back a bad load', 'Turns on change data feed to pass only changed rows downstream'],
+    da: ['Queries Delta tables like normal SQL tables', 'Can query a table "as of yesterday" to compare numbers'],
+    avoid: ['When most engines in your company read Iceberg (Snowflake, Trino, Athena shops): choose Iceberg', 'Single small files read once: plain Parquet or CSV is fine'],
+    equiv: 'Apache Iceberg and Apache Hudi; in a warehouse, native tables.',
+    tryit: [['Databricks: Delta Lake', '/learn/databricks/7-delta-lake'], ['SQL: loading data and pipeline patterns', '/learn/sql/13-loading-data-dml-and-pipeline-patterns']],
+    iq: ['What is in the _delta_log folder and how does it make writes atomic?', 'How would you implement SCD Type 2 with MERGE?', 'What does VACUUM delete, and why can it break time travel?'],
+  },
+  spark: {
+    what: 'Apache Spark is a distributed processing engine. A driver plans the work, splits data into partitions and sends tasks to executors on many machines. You write DataFrame code or SQL in Python, Scala or Java, and Spark optimises it into stages.',
+    why: 'One machine cannot read or join terabytes in reasonable time. Spark spreads the work and keeps data in memory between steps, which made it much faster than older Hadoop MapReduce jobs.',
+    where: ['Batch ETL on Databricks, EMR, Glue, Dataproc and Synapse', 'Joins and aggregations on billions of rows', 'Streaming with Structured Streaming'],
+    de: ['Writes PySpark transformations and tests them', 'Reads the Spark UI to find skew, spills and slow stages', 'Chooses partitioning, broadcast joins and cluster size', 'Knows when not to use Spark at all'],
+    da: ['Uses Spark SQL in notebooks for large ad hoc analysis', 'Benefits from DE-built tables without knowing Spark internals'],
+    avoid: ['Data under a few GB: pandas, Polars or DuckDB are faster and cheaper', 'Millisecond-latency streaming: Flink fits better'],
+    equiv: 'Apache Beam on Dataflow, Flink, warehouse SQL engines (Snowflake, BigQuery) for SQL-only work.',
+    tryit: [['The PySpark handbook', '/learn/pyspark/2-what-spark-is-and-why-it-exists'], ['Spark Visualizer', '/spark-visual'], ['Python and PySpark lab', '/practice/python']],
+    iq: ['What causes a shuffle and why is it expensive?', 'A stage has one task running 20 minutes while others take 20 seconds. What do you do?', 'When is a broadcast join the right choice?'],
+  },
+  s3: {
+    what: 'Amazon S3 is object storage: you put files (objects) into buckets under keys. It is durable, cheap and effectively unlimited, and almost every AWS data tool reads from it.',
+    why: 'Companies needed one cheap place to keep all raw and processed data, separate from compute, so many engines can share it.',
+    where: ['The data lake on AWS (raw, curated, serving zones)', 'Source for Athena, Glue, EMR, Redshift Spectrum, Snowflake and Databricks', 'Landing zone for Kinesis Firehose and partner files'],
+    de: ['Designs prefixes and partitions such as s3://lake/silver/orders/dt=2026-11-01/', 'Uses IAM roles and bucket policies, encryption and versioning', 'Sets lifecycle rules to Glacier for old data', 'Triggers jobs on new-object events'],
+    da: ['Queries S3 data with Athena', 'Exports query results to S3 for sharing'],
+    avoid: ['Row-level updates: use a table format (Iceberg, Delta) on top, or a database', 'Low-latency key lookups for apps: use DynamoDB or a cache'],
+    equiv: 'ADLS Gen2 on Azure, Google Cloud Storage, MinIO on premises.',
+    tryit: [['Databricks: storage and data access', '/learn/databricks/5-storage-and-data-access']],
+    iq: ['How would you partition event data in S3 for Athena?', 'How do you control cost on a growing S3 lake?', 'Why put Iceberg or Delta on top of S3?'],
+  },
+  glue: {
+    what: 'AWS Glue is a serverless data integration service. It has a Data Catalog (table definitions for S3 data), crawlers that discover schemas, Spark or Python ETL jobs, workflows to chain them, and Glue Data Quality rules.',
+    why: 'Teams wanted Spark ETL without running clusters, and one shared catalog so Athena, EMR and Redshift Spectrum all see the same tables.',
+    where: ['Batch ETL from S3 raw to curated zones', 'Catalog behind Athena and Lake Formation permissions', 'Incremental loads with job bookmarks'],
+    de: ['Writes PySpark Glue jobs and sets worker type and count', 'Uses job bookmarks for incremental processing', 'Registers tables in the Data Catalog and controls access via Lake Formation', 'Chains jobs with Glue workflows, Step Functions or Airflow'],
+    da: ['Finds tables in the Glue Catalog and queries them with Athena'],
+    avoid: ['Very long-running or tightly tuned Spark: EMR or Databricks give more control', 'Tiny jobs that run every minute: Lambda is cheaper'],
+    equiv: 'Azure Data Factory with Databricks, GCP Dataflow or Dataproc, Databricks jobs.',
+    tryit: [['The PySpark handbook', '/learn/pyspark/7-reading-data']],
+    iq: ['What does a Glue crawler do and when should you avoid it?', 'How do job bookmarks work?', 'Glue vs EMR: how do you choose?'],
+  },
+  snowflake: {
+    what: 'Snowflake is a cloud data warehouse that runs on AWS, Azure or GCP. Data sits in Snowflake-managed storage; compute runs in virtual warehouses you size and start or stop on demand, so many teams query the same data without slowing each other.',
+    why: 'Older warehouses tied storage and compute together, so one heavy job slowed everyone and scaling meant buying hardware. Snowflake bills them separately and scales in seconds.',
+    where: ['Central warehouse for finance, product and marketing analytics', 'ELT with dbt models running inside Snowflake', 'Sharing data with partners without copying it'],
+    de: ['Loads data with COPY INTO, Snowpipe or connectors', 'Builds models with dbt, streams and tasks', 'Sizes warehouses and sets auto-suspend to control cost', 'Uses roles, masking policies and Time Travel'],
+    da: ['Writes SQL on curated models every day', 'Connects Power BI, Tableau or Looker'],
+    avoid: ['Heavy Python or ML processing on raw files: Spark platforms fit better', 'Tiny workloads where a single Postgres is enough'],
+    equiv: 'BigQuery, Redshift, Synapse or Fabric Warehouse, Databricks SQL.',
+    tryit: [['SQL for Data Engineering', '/learn/sql/1-where-sql-fits-in-data-engineering'], ['SQL Lab', '/practice/sql']],
+    iq: ['How does Snowflake separate storage and compute, and why does it matter?', 'How would you stop a runaway warehouse bill?', 'What are micro-partitions and clustering keys?'],
+  },
+  bigquery: {
+    what: 'BigQuery is Google Cloud\'s serverless data warehouse. There are no clusters to manage: you load or stream data into tables and pay for the data each query scans, or reserve slots for a flat price.',
+    why: 'Teams wanted to query terabytes in seconds without sizing servers at all.',
+    where: ['Analytics warehouse for GCP-first companies and many start-ups', 'Marketing data: Google Analytics 4 exports straight into it', 'Feature tables for ML'],
+    de: ['Designs partitioned and clustered tables to cut scanned bytes', 'Loads with batch loads, streaming writes or Datastream', 'Schedules transformations with Dataform, dbt or Composer', 'Watches cost per query and sets quotas'],
+    da: ['Writes SQL in the console and saves views', 'Builds Looker Studio dashboards on top'],
+    avoid: ['Frequent single-row updates: it is built for analytics, not transactions', 'SELECT * on wide tables without filters: it scans and bills every column'],
+    equiv: 'Snowflake, Redshift, Synapse or Fabric Warehouse, Databricks SQL.',
+    tryit: [['SQL: query performance', '/learn/sql/17-query-performance'], ['SQL Lab', '/practice/sql']],
+    iq: ['How do partitioning and clustering lower BigQuery cost?', 'On-demand vs capacity pricing: when does each win?', 'How would you load late-arriving data safely?'],
+  },
+  airflow: {
+    what: 'Apache Airflow is an orchestrator: you write a pipeline as a Python file (a DAG) of tasks with dependencies, and Airflow runs them on schedule, retries failures, backfills old dates and alerts you.',
+    why: 'Cron jobs cannot express "run B only after A succeeds, retry 3 times, and rerun last Tuesday". Airflow made pipelines code, so they live in Git and get reviewed.',
+    where: ['Orchestrating Spark, dbt, warehouse SQL and API pulls across clouds', 'Managed as MWAA on AWS and Cloud Composer on GCP', 'Backfilling months of data after a logic change'],
+    de: ['Writes DAGs with operators and sensors', 'Makes tasks idempotent so reruns never duplicate data', 'Uses connections and variables, never secrets in code', 'Monitors SLAs and failed runs'],
+    da: ['Checks whether today\'s data has landed before trusting a dashboard', 'Asks for a new DAG or a rerun of a date'],
+    avoid: ['Heavy data processing inside Airflow workers: run it on Spark or the warehouse, and let Airflow only trigger it', 'Sub-minute streaming'],
+    equiv: 'ADF pipelines, Databricks Lakeflow Jobs, Step Functions, Dagster, Prefect.',
+    tryit: [['Python: logging and configuration', '/learn/python/13-logging-and-configuration'], ['Incident drills', '/drills']],
+    iq: ['What does idempotent mean for a task, and how do you make one?', 'How does a backfill work and what can go wrong?', 'Sensor vs trigger rule: give an example of each.'],
+  },
+  dbt: {
+    what: 'dbt (data build tool) lets you write each table as a SELECT statement (a model). dbt works out the order, builds the tables in your warehouse, runs tests (unique, not null, relationships), and generates docs and lineage.',
+    why: 'Analytics SQL used to live in scattered scripts and stored procedures with no tests or reviews. dbt brought software practice to SQL: Git, tests, environments and CI.',
+    where: ['The transformation layer on Snowflake, BigQuery, Databricks, Redshift and Postgres', 'Staging, intermediate and mart models for analytics', 'Semantic layers and metrics'],
+    de: ['Structures projects (staging, intermediate, marts) and writes incremental models', 'Adds tests and source freshness checks', 'Runs slim CI that builds only changed models', 'Orchestrates dbt runs from Airflow or Databricks jobs'],
+    da: ['Analytics engineers and analysts often write dbt models themselves', 'Uses dbt docs to understand where a column comes from'],
+    avoid: ['Heavy non-SQL processing (parsing files, ML): use Python or Spark', 'Real-time streaming transformations'],
+    equiv: 'Dataform on GCP, SQLMesh, Lakeflow Declarative Pipelines, stored procedures (the old way).',
+    tryit: [['SQL: data modeling for analytics', '/learn/sql/14-data-modeling-for-analytics'], ['SQL: data quality with SQL', '/learn/sql/18-data-quality-with-sql']],
+    iq: ['How does an incremental model work and what is is_incremental()?', 'Which tests would you put on a fact table?', 'How do you run dbt in CI without rebuilding everything?'],
+  },
+  kafka: {
+    what: 'Apache Kafka is a distributed, durable event log. Producers write events to topics, topics are split into partitions spread across brokers, and consumers read at their own pace from an offset. Events stay for a set time, so you can replay them.',
+    why: 'Point-to-point connections between dozens of systems became a mess. Kafka gives one central log every system can write to and read from, in real time and at very high volume.',
+    where: ['Clickstream, payments, IoT and app events', 'CDC from databases via Debezium', 'Feeding Spark, Flink and warehouses in near real time'],
+    de: ['Designs topics, partitions keys and retention', 'Builds consumers with Structured Streaming or Flink', 'Handles schema evolution with a schema registry', 'Monitors consumer lag and plans for exactly-once or idempotent sinks'],
+    da: ['Sees Kafka only indirectly, through real-time dashboards built on its data', 'Needs to know a live number can differ from tomorrow\'s batch number until late events land'],
+    avoid: ['Data that arrives once a day: batch files are simpler', 'A simple job queue with few messages: a managed queue is less work'],
+    equiv: 'Event Hubs (Kafka-compatible) on Azure, Kinesis or MSK on AWS, Pub/Sub on GCP.',
+    tryit: [['Streaming: Kafka-style logs in brief', '/learn/streaming/15-streaming-transport-kafka-style-logs-in-brief'], ['Streaming: delivery guarantees', '/learn/streaming/8-delivery-guarantees-and-exactly-once']],
+    iq: ['How does the partition key affect ordering?', 'What is consumer lag and what do you do when it grows?', 'At-least-once vs exactly-once: how do you avoid duplicates downstream?'],
+  },
+}
+
+export const LAYER_BY_ID = Object.fromEntries(LAYERS.map((l) => [l.id, l]))
+export const COL_BY_ID = Object.fromEntries(COLUMNS.map((c) => [c.id, c]))
+export const TOOL_BY_ID = Object.fromEntries(TOOLS.map((t) => [t.id, t]))
