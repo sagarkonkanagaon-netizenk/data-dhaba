@@ -5,7 +5,7 @@ import { PATTERNS } from '../data/sqlPatterns.js'
 import { useProgress } from '../lib/progress.js'
 import './sqlpatterns.css'
 
-// 25 patterns cover the 78 problems. Learn the shape once, then spot it in any question.
+// 25 patterns cover every SQL Lab problem. Learn the shape once, then spot it in any question.
 const QS = Object.fromEntries(data.questions.map((q) => [q.n, q]))
 
 export default function SqlPatterns() {

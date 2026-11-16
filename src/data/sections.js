@@ -17,7 +17,7 @@ export const SECTIONS = [
     lead: 'Real SQL and Python running in your browser, plus broken pipelines to fix.',
     items: [
       { to: '/practice', icon: '🛠️', label: 'Overview', desc: 'Pick what to practise' },
-      { to: '/practice/sql', icon: '🗄️', label: 'SQL Lab', desc: '78 questions, checked instantly' },
+      { to: '/practice/sql', icon: '🗄️', label: 'SQL Lab', desc: '109 questions, checked instantly' },
       { to: '/playground', icon: '🧪', label: 'SQL Playground', desc: 'Any query on 2.6M rows' },
       { to: '/practice/tables', icon: '📋', label: 'Practice tables', desc: 'Every table and column, explained' },
       { to: '/practice/python', icon: '🐍', label: 'Python Lab', desc: 'Coding problems with auto-checks' },
