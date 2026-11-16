@@ -1,0 +1,13 @@
+.rd { margin: 10px 0; border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: var(--bg); }
+.rd-tag { font-size: .75rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--primary); }
+.rd-cause { margin: 8px 0 12px; color: var(--text); line-height: 1.55; }
+.rd-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.rd-set { border-radius: 12px; padding: 10px; min-width: 0; }
+.rd-set.miss { background: var(--danger-soft); }
+.rd-set.extra { background: rgba(217, 130, 43, .12); }
+.rd-h { display: flex; justify-content: space-between; gap: 8px; font-size: .88rem; margin-bottom: 6px; }
+.rd-h span { color: var(--muted); }
+.rd-scroll { overflow-x: auto; }
+.rd-scroll .rtable { background: var(--bg); border-radius: 8px; }
+.rd-hi { color: var(--primary); text-decoration: underline; }
+.rd-more { margin-top: 4px; }
