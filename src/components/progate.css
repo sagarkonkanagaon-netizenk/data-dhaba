@@ -1,0 +1,9 @@
+.pl { position: relative; margin: 18px 0; }
+.pl-preview { max-height: 170px; overflow: hidden; filter: blur(4px); opacity: .55; pointer-events: none; user-select: none; -webkit-mask-image: linear-gradient(#000 20%, transparent); mask-image: linear-gradient(#000 20%, transparent); }
+.pl-preview + .pl-card { margin-top: -110px; }
+.pl-card { position: relative; border-radius: 20px; padding: 24px 26px; background: var(--bg); border: 1px solid var(--primary-soft); box-shadow: 0 20px 50px -24px rgba(200, 21, 90, .45); }
+.pl-card h3 { margin: 10px 0 10px; font-size: 1.3rem; }
+.pl-badge { display: inline-block; font-size: .75rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--primary-ink); background: linear-gradient(135deg, var(--primary), #0f8f86); padding: 4px 10px; border-radius: 999px; }
+.pl-list { margin: 0 0 18px; padding: 0; list-style: none; display: grid; gap: 6px; color: var(--text-2); }
+.pl-list li::before { content: '✓'; color: var(--ok); font-weight: 800; margin-right: 8px; }
+.pl-cta { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }

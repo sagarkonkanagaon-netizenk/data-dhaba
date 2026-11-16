@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { COLUMNS, LAYERS, TOOLS, PAGES, LAYER_BY_ID, COL_BY_ID, TOOL_BY_ID } from '../data/atlas.js'
 import './atlas.css'
+import ProGate from '../components/ProGate.jsx'
+import { isLocked } from '../lib/tier.js'
 
 // The Tech Stack Atlas: one map of every tool by the job it does and where it runs,
 // and a page per tool that always follows the same eight blocks.
@@ -134,7 +136,12 @@ export function AtlasTool() {
           </div>
         </header>
 
-        {pg ? (
+        {pg && isLocked('atlas', t.id) ? (
+          <div className="at-blocks">
+            <Block n="1" title="What it is"><p>{pg.what}</p></Block>
+            <ProGate what="every Atlas tool page" preview={<Block n="2" title="Why it exists"><p>{pg.why}</p></Block>} />
+          </div>
+        ) : pg ? (
           <div className="at-blocks">
             <Block n="1" title="What it is"><p>{pg.what}</p></Block>
             <Block n="2" title="Why it exists"><p>{pg.why}</p></Block>

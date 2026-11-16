@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
+import ProGate from '../components/ProGate.jsx'
+import { isLocked } from '../lib/tier.js'
 import { Link, useParams } from 'react-router-dom'
 import { DRILLS } from '../data/drills.js'
 import CodeEditor from '../components/CodeEditor.jsx'
@@ -75,6 +77,7 @@ function DrillView({ id }) {
         </div>
         <div className="pager" style={{ marginBottom: 16 }}><b>🔔 PagerDuty</b> · {d.pager}</div>
         <Markdown md={d.story} />
+        {isLocked('drill', d.id) ? <ProGate what="every incident drill" /> : <>
         <div className="card card-pad" style={{ margin: '18px 0' }}>
           <b>Your task</b>
           <p style={{ margin: '6px 0 0' }}>{d.task}</p>
@@ -103,6 +106,7 @@ function DrillView({ id }) {
           <summary>Solution and prevention</summary>
           <div className="inner"><Markdown md={'```sql\n' + d.ref + '\n```'} /><div className="note"><b>Prevention: </b>{d.lesson}</div></div>
         </details>
+        </>}
         <div className="chapter-foot">
           <Link to="/drills"><small>←</small>All drills</Link>
           {next ? <Link className="next" to={`/drills/${next.id}`}><small>Next incident →</small>{next.title}</Link> : <Link className="next" to="/interview"><small>Next →</small>Interview prep</Link>}
