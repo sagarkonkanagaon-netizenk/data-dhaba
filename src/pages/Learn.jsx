@@ -42,6 +42,12 @@ export default function Library() {
             <p>Watch joins and window functions work, row by row, before you write them.</p>
             <span className="hub-go">Open →</span>
           </Link>
+          <Link to="/spark-visual" className="card hub-card card-link">
+            <span className="basic-k">New</span>
+            <h3>Spark Visualizer</h3>
+            <p>Predict, then watch partitions, shuffles, skew and broadcast joins move row by row.</p>
+            <span className="hub-go">Open →</span>
+          </Link>
           <Link to="/notes" className="card hub-card card-link">
             <span className="basic-k">Keep it</span>
             <h3>Notes and PDFs</h3>
