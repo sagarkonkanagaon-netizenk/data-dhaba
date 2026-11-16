@@ -42,6 +42,12 @@ export default function Library() {
             <p>Watch joins and window functions work, row by row, before you write them.</p>
             <span className="hub-go">Open →</span>
           </Link>
+          <Link to="/atlas" className="card hub-card card-link">
+            <span className="basic-k">New · Every tool</span>
+            <h3>Tech Stack Atlas</h3>
+            <p>Every DE tool on Azure, AWS, GCP and open source, mapped by the job it does.</p>
+            <span className="hub-go">Open →</span>
+          </Link>
           <Link to="/spark-visual" className="card hub-card card-link">
             <span className="basic-k">New</span>
             <h3>Spark Visualizer</h3>
