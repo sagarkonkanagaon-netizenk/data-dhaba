@@ -4,6 +4,7 @@ import Mission, { Onboarding, getProfile, startWeek } from '../components/Missio
 import DailyBanner from '../components/DailyBanner.jsx'
 import Console from '../components/Console.jsx'
 import HeroMark from '../components/HeroMark.jsx'
+import HeroDemo from '../components/HeroDemo.jsx'
 import { AUTH_ENABLED } from '../lib/auth.js'
 import books from '../content/books-index.json'
 import { WEEKS, PHASES } from '../data/path.js'
@@ -100,6 +101,26 @@ export default function Home() {
 
       {onboard && <Onboarding onClose={() => setOnboard(false)} />}
       {returning && <Mission onChange={() => setOnboard(true)} />}
+
+      <section className="section showcase" aria-labelledby="showcase-h">
+        <div className="container showcase-grid">
+          <div className="showcase-copy">
+            <div className="eyebrow">See it in action</div>
+            <h2 id="showcase-h">Not videos. <em>The real job, on your screen.</em></h2>
+            <p>Other courses show you someone else typing. Here you write the query, break the pipeline and fix it yourself, and you know in under a second if you got it right.</p>
+            <ul className="showcase-list">
+              <li><b>Checked instantly.</b> Every SQL answer is compared with the expected result by a real database in your browser.</li>
+              <li><b>See inside Spark.</b> Guess first, then watch partitions, shuffles and skew move.</li>
+              <li><b>Get paged.</b> Incident drills drop you into a broken pipeline, like your first on-call week.</li>
+            </ul>
+            <div className="showcase-cta">
+              <Link to="/practice/sql/10" className="btn btn-primary">Solve this SQL problem</Link>
+              <span className="showcase-more"><Link to="/spark-visual">Spark Visualizer →</Link><Link to="/drills/schema-drift">Incident drill →</Link></span>
+            </div>
+          </div>
+          <HeroDemo />
+        </div>
+      </section>
 
       <section className="section">
         <div className="container">
