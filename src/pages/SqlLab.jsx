@@ -8,6 +8,7 @@ import Markdown from '../components/Markdown.jsx'
 import Playground from './Playground.jsx'
 import { runIsolated, compareResults } from '../lib/duck.js'
 import { useProgress, setIn, getProgress } from '../lib/progress.js'
+import { DIALECTS, transpileSql } from '../lib/py.js'
 import { diffResults } from '../lib/diff.js'
 import RowDiff from '../components/RowDiff.jsx'
 import { PATTERN_OF } from '../data/sqlPatterns.js'
@@ -85,6 +86,8 @@ function Question({ q }) {
   const [verdict, setVerdict] = useState(null)
   const [want, setWant] = useState(null)
   const [diff, setDiff] = useState(null)
+  const [dialect, setDialect] = useState(() => { try { return localStorage.getItem('dd:sql-dialect') || 'duckdb' } catch (e) { return 'duckdb' } })
+  const [trans, setTrans] = useState(null)
   const [preview, setPreview] = useState(null)
   const p = useProgress()
   const idx = QS.findIndex((x) => x.n === q.n)
@@ -99,16 +102,32 @@ function Question({ q }) {
     try { return await fn() } finally { firstRun.current = false; setEngine(null) }
   }
 
+  useEffect(() => { try { localStorage.setItem('dd:sql-dialect', dialect) } catch (e) { /* ignore */ } setTrans(null) }, [dialect])
+
+  // Dialect mode: learners write Snowflake, BigQuery, T-SQL... and we translate to DuckDB before running.
+  async function source() {
+    if (dialect === 'duckdb') { setTrans(null); return { sql: code } }
+    setEngine('translate')
+    const t = await transpileSql(code, dialect)
+    setEngine(null)
+    if (t.error) { setTrans({ error: t.error }); return { error: t.error } }
+    setTrans({ sql: t.sql }); return { sql: t.sql }
+  }
+
   async function run() {
     setBusy('run'); setVerdict(null); setWant(null); setDiff(null)
-    const r = await withEngine(() => runIsolated({ setup: q.setup, sql: code, check: q.check }))
+    const src = await source()
+    if (src.error) { setBusy(null); setRes(null); return }
+    const r = await withEngine(() => runIsolated({ setup: q.setup, sql: src.sql, check: q.check }))
     setRes(r); setBusy(null)
     if (!getProgress().sql[q.n]) setIn('sql', q.n, 'tried')
   }
 
   async function check() {
     setBusy('check'); setWant(null); setDiff(null)
-    const [r, w] = await withEngine(() => Promise.all([runIsolated({ setup: q.setup, sql: code, check: q.check }), expected(q)]))
+    const src = await source()
+    if (src.error) { setBusy(null); setRes(null); setVerdict({ ok: false, why: `This is not valid ${DIALECTS.find((d) => d[0] === dialect)[1]} SQL yet. Fix the error above and check again.` }); return }
+    const [r, w] = await withEngine(() => Promise.all([runIsolated({ setup: q.setup, sql: src.sql, check: q.check }), expected(q)]))
     setRes(r); setBusy(null)
     if (r.error) { setVerdict({ ok: false, why: 'Your SQL has an error. Fix it and check again.' }); return }
     if (w.error) { setVerdict({ ok: false, why: 'Could not compute the expected answer: ' + w.error }); return }
@@ -169,10 +188,14 @@ function Question({ q }) {
           <div className="toolbar">
             <button className="btn btn-ghost" onClick={run} disabled={!!busy}>{busy === 'run' ? 'Running…' : '▶ Run'}</button>
             {!isConcept && <button className="btn btn-primary" onClick={check} disabled={!!busy}>{busy === 'check' ? 'Checking…' : 'Check answer'}</button>}
-            <span className="small muted hide-sm">Ctrl/Cmd + Enter to run</span>
+            <label className="small muted dialect-pick">Write as <select value={dialect} onChange={(e) => setDialect(e.target.value)} aria-label="SQL dialect">{DIALECTS.map(([id, label]) => <option key={id} value={id}>{label}</option>)}</select></label>
             <button className="btn btn-ghost btn-sm" style={{ marginLeft: 'auto' }} onClick={() => { setCode(q.starter || `-- ${q.title}\n\n`); setRes(null); setVerdict(null) }}>Reset</button>
           </div>
           <EngineStatus state={engine} />
+          {engine === 'translate' && <span className="loading"><span className="spinner" /> Loading the SQL translator. First time only, then it is instant.</span>}
+          {trans && (trans.error
+            ? <div className="err" style={{ marginTop: 8 }}>Could not read this as {DIALECTS.find((d) => d[0] === dialect)[1]} SQL: {trans.error}</div>
+            : <details className="reveal dialect-out" style={{ marginTop: 8 }}><summary>Translated from {DIALECTS.find((d) => d[0] === dialect)[1]} to DuckDB</summary><div className="inner"><pre><code>{trans.sql}</code></pre></div></details>)}
         </>
       )}
       {verdict && (

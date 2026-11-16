@@ -36,3 +36,19 @@ export function stopPython() {
   for (const [id, p] of pending) p({ id, error: 'Stopped.' })
   pending.clear()
 }
+
+// Translate SQL written in another dialect (Snowflake, BigQuery, T-SQL...) into DuckDB SQL.
+export const DIALECTS = [
+  ['duckdb', 'DuckDB (default)'], ['snowflake', 'Snowflake'], ['bigquery', 'BigQuery'], ['tsql', 'T-SQL (SQL Server, Synapse)'],
+  ['spark', 'Spark SQL (Databricks)'], ['postgres', 'PostgreSQL'], ['mysql', 'MySQL'], ['redshift', 'Redshift'], ['oracle', 'Oracle'],
+]
+export function transpileSql(sql, dialect) {
+  if (!worker) spawn()
+  const id = ++seq
+  const base = new URL(BASE, window.location.href).href
+  const wheel = new URL(import.meta.env.BASE_URL + 'vendor/sqlglot-30.32.0-py3-none-any.whl', window.location.href).href
+  return new Promise((resolve) => {
+    pending.set(id, resolve)
+    worker.postMessage({ id, base, transpile: { sql, dialect, wheel } })
+  })
+}
