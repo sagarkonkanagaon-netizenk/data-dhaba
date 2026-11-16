@@ -1,0 +1,6 @@
+/* Stuck? ladder */
+.stuck { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; margin: 12px 0 0; }
+.stuck-step { display: flex; gap: 10px; align-items: flex-start; width: 100%; padding: 10px 12px; border-radius: 12px; background: var(--bg-2); border-left: 3px solid var(--primary); }
+.stuck-step p { margin: 0; }
+.stuck-k { flex: none; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--primary); padding-top: 3px; min-width: 64px; }
+@media (max-width: 560px) { .stuck-step { flex-direction: column; gap: 2px; } }
