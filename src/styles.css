@@ -1137,3 +1137,13 @@ main .page-head h1 em, main .daily-head h1 em, main .play-head h1 em { color: va
   .owner-reader { grid-template-columns: 1fr; }
   .owner-tree { position: static; max-height: none; }
 }
+
+/* Onboarding plan */
+.plan-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+.plan-facts > div { background: var(--bg-2); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.plan-facts span { font-size: .75rem; color: var(--text-2); text-transform: uppercase; letter-spacing: .04em; }
+.plan-facts b { font-size: .95rem; }
+.plan-facts small { color: var(--text-2); font-size: .78rem; }
+.plan-win { border: 1px dashed var(--primary); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }
+.plan-card { margin-bottom: 16px; }
+@media (max-width: 560px) { .plan-facts { gap: 6px; } .plan-facts > div { padding: 8px; } .plan-facts b { font-size: .82rem; } .plan-facts small { font-size: .72rem; } .plan-facts span { font-size: .66rem; } }

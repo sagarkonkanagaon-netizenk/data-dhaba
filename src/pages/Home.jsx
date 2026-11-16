@@ -99,7 +99,7 @@ export default function Home() {
       </section>
 
       {onboard && <Onboarding onClose={() => setOnboard(false)} />}
-      {returning && <Mission />}
+      {returning && <Mission onChange={() => setOnboard(true)} />}
 
       <section className="section">
         <div className="container">
