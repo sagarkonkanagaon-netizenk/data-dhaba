@@ -5,6 +5,7 @@ import CodeEditor from '../components/CodeEditor.jsx'
 import Markdown from '../components/Markdown.jsx'
 import { runPython, stopPython, isPyReady } from '../lib/py.js'
 import { useProgress, setIn, getProgress } from '../lib/progress.js'
+import Stuck from '../components/Stuck.jsx'
 
 const QS = data.questions.filter((q) => q.section === 'Python')
 
@@ -106,6 +107,7 @@ function PyQuestion({ q }) {
           {out.error && <div className="err">{out.error}</div>}
         </div>
       )}
+      <Stuck lab="py" n={q.n} />
       <details className="reveal" style={{ marginTop: 16 }}>
         <summary>Reveal the answer and explanation</summary>
         <div className="inner">

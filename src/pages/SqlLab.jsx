@@ -8,6 +8,7 @@ import Markdown from '../components/Markdown.jsx'
 import Playground from './Playground.jsx'
 import { runIsolated, compareResults } from '../lib/duck.js'
 import { useProgress, setIn, getProgress } from '../lib/progress.js'
+import Stuck from '../components/Stuck.jsx'
 
 const QS = data.questions
 const SECTIONS = [...new Set(QS.map((q) => q.section))]
@@ -187,6 +188,7 @@ function Question({ q }) {
           <div className="inner"><div className="result"><ResultTable result={want} /></div></div>
         </details>
       )}
+      <Stuck lab="sql" n={q.n} />
       <details className="reveal" style={{ marginTop: 16 }} open={isConcept && p.sql[q.n] === 'solved'}>
         <summary>Reveal the answer and explanation</summary>
         <div className="inner">
