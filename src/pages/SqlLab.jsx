@@ -8,6 +8,8 @@ import Markdown from '../components/Markdown.jsx'
 import Playground from './Playground.jsx'
 import { runIsolated, compareResults } from '../lib/duck.js'
 import { useProgress, setIn, getProgress } from '../lib/progress.js'
+import { diffResults } from '../lib/diff.js'
+import RowDiff from '../components/RowDiff.jsx'
 import Stuck from '../components/Stuck.jsx'
 
 const QS = data.questions
@@ -80,6 +82,7 @@ function Question({ q }) {
   const [res, setRes] = useState(null)
   const [verdict, setVerdict] = useState(null)
   const [want, setWant] = useState(null)
+  const [diff, setDiff] = useState(null)
   const [preview, setPreview] = useState(null)
   const p = useProgress()
   const idx = QS.findIndex((x) => x.n === q.n)
@@ -95,14 +98,14 @@ function Question({ q }) {
   }
 
   async function run() {
-    setBusy('run'); setVerdict(null); setWant(null)
+    setBusy('run'); setVerdict(null); setWant(null); setDiff(null)
     const r = await withEngine(() => runIsolated({ setup: q.setup, sql: code, check: q.check }))
     setRes(r); setBusy(null)
     if (!getProgress().sql[q.n]) setIn('sql', q.n, 'tried')
   }
 
   async function check() {
-    setBusy('check'); setWant(null)
+    setBusy('check'); setWant(null); setDiff(null)
     const [r, w] = await withEngine(() => Promise.all([runIsolated({ setup: q.setup, sql: code, check: q.check }), expected(q)]))
     setRes(r); setBusy(null)
     if (r.error) { setVerdict({ ok: false, why: 'Your SQL has an error. Fix it and check again.' }); return }
@@ -110,7 +113,7 @@ function Question({ q }) {
     const v = compareResults(r.result, w.result)
     setVerdict(v)
     if (v.ok) setIn('sql', q.n, 'solved')
-    else { setWant(w.result); if (getProgress().sql[q.n] !== 'solved') setIn('sql', q.n, 'tried') }
+    else { setWant(w.result); setDiff(diffResults(r.result, w.result)); if (getProgress().sql[q.n] !== 'solved') setIn('sql', q.n, 'tried') }
   }
 
   async function showTable(t) {
@@ -176,6 +179,7 @@ function Question({ q }) {
           <div>{verdict.ok ? 'Correct! Your result matches.' : 'Not yet.'}<small>{verdict.ok ? (verdict.note || 'Read the explanation below to see what interviewers listen for.') : verdict.why}</small></div>
         </div>
       )}
+      {verdict && !verdict.ok && diff && <RowDiff diff={diff} />}
       {res && (
         <div className="result" style={{ marginTop: 8 }}>
           <div className="result-head"><span>Your result {res.result ? `· ${res.result.rows.length} row${res.result.rows.length === 1 ? '' : 's'}` : ''}</span><span>{Math.round(res.ms)} ms</span></div>
