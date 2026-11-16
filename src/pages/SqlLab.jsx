@@ -8,6 +8,7 @@ import Markdown from '../components/Markdown.jsx'
 import Playground from './Playground.jsx'
 import { runIsolated, compareResults } from '../lib/duck.js'
 import { useProgress, setIn, getProgress } from '../lib/progress.js'
+import { PATTERN_OF } from '../data/sqlPatterns.js'
 import Stuck from '../components/Stuck.jsx'
 
 const QS = data.questions
@@ -49,6 +50,7 @@ export default function SqlLab() {
         <aside className={'qlist card' + (listOpen ? ' open' : '')} style={{ padding: 8 }}>
           <div className="spread" style={{ padding: '6px 8px' }}><b>SQL lab</b><span className="chip chip-primary">{solved}/{QS.length}</span></div>
           <div style={{ padding: '0 8px 6px' }}><Link to="/playground" className="small">▶ SQL playground: run any query →</Link></div>
+          <div style={{ padding: '0 8px 6px' }}><Link to="/practice/patterns" className="small">◆ 25 SQL patterns: learn the shapes →</Link></div>
           <button className="qlist-toggle" aria-expanded={listOpen} onClick={() => setListOpen(!listOpen)}>
             <span>Question {q.n} of {QS.length}</span><b>{listOpen ? 'Hide list ▴' : 'All questions ▾'}</b>
           </button>
@@ -124,7 +126,7 @@ function Question({ q }) {
   return (
     <section>
       <div className="qhead">
-        <div className="row small muted"><span>{q.section}</span><span>·</span><span>Question {q.n} of {QS.length}</span>{p.sql[q.n] === 'solved' && <span className="chip chip-ok">Solved</span>}</div>
+        <div className="row small muted"><span>{q.section}</span><span>·</span><span>Question {q.n} of {QS.length}</span>{p.sql[q.n] === 'solved' && <span className="chip chip-ok">Solved</span>}{PATTERN_OF[q.n] && <Link className="chip" to={`/practice/patterns#${PATTERN_OF[q.n].id}`} title="See the pattern and its recipe">Pattern: {PATTERN_OF[q.n].name}</Link>}</div>
         <h1 className="q-title">{q.title}</h1>
       </div>
       {q.given && q.given !== '—' && !schema.length && <div className="given">{q.given}</div>}
