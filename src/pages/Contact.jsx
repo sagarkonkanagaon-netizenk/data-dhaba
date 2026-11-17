@@ -57,7 +57,7 @@ export default function Contact() {
             <h2 className="contact-h">Policies</h2>
             <p className="small"><Link to="/refund">Refund and cancellation</Link> · <Link to="/shipping">Delivery</Link> · <Link to="/privacy">Privacy</Link> · <Link to="/terms">Terms</Link></p>
             <h2 className="contact-h">Business details</h2>
-            <p className="small muted">{BRAND.name}, a sole proprietorship of {BRAND.author} (Udyam registered). Bengaluru, Karnataka, India.</p>
+            <p className="small muted">{BRAND.name}, a sole proprietorship of {BRAND.author} (Udyam registered). Vijayapura, Karnataka, India.</p>
           </div>
 
           {state === 'done' ? (

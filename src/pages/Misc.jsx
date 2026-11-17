@@ -347,7 +347,7 @@ export function Terms() {
       ['Using the site', [`You can use ${BRAND.name} for your own learning and share links to any page. Please don\'t copy the handbooks or questions wholesale onto other sites.`]],
       ['No guarantees', ['We work hard to keep the content correct, but it is provided as is. It is learning material, not professional advice, and it can\'t promise a job or an exam result.']],
       ['Pro', ['Pro is a one-time payment for 6 months (₹2,499) or 1 year (₹3,599) that does not renew automatically. Payments are processed securely by Razorpay; we never see or store your card or UPI details. Refunds follow our refund and cancellation policy at datadhaba.in/#/refund.']],
-      ['Who runs Data Dhaba', [`${BRAND.name} is run by ${BRAND.author} as a sole proprietorship (registered with Udyam), based in Bengaluru, Karnataka, India. Contact: ${BRAND.email}.`]],
+      ['Who runs Data Dhaba', [`${BRAND.name} is run by ${BRAND.author} as a sole proprietorship (registered with Udyam), based in Vijayapura, Karnataka, India. Contact: ${BRAND.email}.`]],
       ['Delivery', ['Pro is digital. Nothing is shipped. Access turns on in your account as soon as the payment is confirmed, usually within seconds and always within 24 hours. If it has not turned on within 24 hours, email us with your payment ID and we will turn it on or refund you in full.']],
       ['Personal use', ['Pro is for the person who bought it. Please don\'t share your account or post Pro solutions publicly.']],
       ['Names and trademarks', ['Product names such as Databricks, Azure, Spark or Kafka belong to their owners and are used only to describe what you learn. RasoiRun is a made-up company.']],
