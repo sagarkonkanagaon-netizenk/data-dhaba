@@ -1,3 +1,5 @@
+import { MORE, MORE2, MORE3 } from './syllabusMore.js'
+
 // Full syllabus for every Atlas tool: modules from first steps to production and interviews.
 // Topic titles are public so learners can see the whole road; every explanation is Pro.
 // Format: 'Module: topic; topic; topic'.
@@ -503,10 +505,24 @@ const RAW = {
   ],
 }
 
-export const SYLLABUS = Object.fromEntries(Object.entries(RAW).map(([id, mods]) => [id, mods.map((m) => {
-  const i = m.indexOf(': ')
-  return { name: m.slice(0, i), topics: m.slice(i + 2).split('; ').map((s) => s.trim()) }
-})]))
+const parse = (m) => { const i = m.indexOf(': '); return { name: m.slice(0, i), topics: m.slice(i + 2).split('; ').map((x) => x.trim()) } }
+
+// MORE deepens a syllabus: a module with the same name gets extra topics, a new module goes in before
+// the interview module, so every syllabus still ends at interview level.
+function build(id) {
+  const mods = (RAW[id] || []).map(parse)
+  for (const extra of [...(MORE[id] || []), ...(MORE2[id] || []), ...(MORE3[id] || [])].map(parse)) {
+    const same = mods.find((m) => m.name === extra.name)
+    if (same) same.topics.push(...extra.topics.filter((x) => !same.topics.includes(x)))
+    else {
+      const at = mods.findIndex((m) => m.name === 'Interview level')
+      mods.splice(at < 0 ? mods.length : at, 0, extra)
+    }
+  }
+  return mods
+}
+
+export const SYLLABUS = Object.fromEntries(Object.keys(RAW).map((id) => [id, build(id)]))
 
 export const topicCount = (id) => (SYLLABUS[id] || []).reduce((a, m) => a + m.topics.length, 0)
 export const TOTAL_TOPICS = Object.keys(SYLLABUS).reduce((a, id) => a + topicCount(id), 0)
