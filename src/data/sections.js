@@ -6,6 +6,7 @@ export const SECTIONS = [
     items: [
       { to: '/today', icon: '☀️', label: 'Today', desc: 'Your next step and today\'s plan' },
       { to: '/daily', icon: '🔥', label: 'Daily SQL challenge', desc: 'A new question every midnight' },
+      { to: '/profile', icon: '🪪', label: 'My profile', desc: 'Your rank card, skill radar and badge case' },
       { to: '/progress', icon: '📈', label: 'My progress', desc: 'XP, badges and backups' },
     ],
   },
@@ -51,7 +52,7 @@ export const SECTIONS = [
 ]
 
 const PREFIX = [
-  ['/today', 'daily'], ['/daily', 'daily'], ['/progress', 'daily'],
+  ['/today', 'daily'], ['/daily', 'daily'], ['/progress', 'daily'], ['/profile', 'daily'],
   ['/interview', 'interview'], ['/quiz', 'interview'], ['/projects', 'interview'],
   ['/practice', 'practice'], ['/datasets', 'practice'], ['/playground', 'practice'], ['/drills', 'practice'],
   ['/path', 'learn'], ['/learn', 'learn'], ['/visual', 'learn'], ['/spark-visual', 'learn'], ['/atlas', 'learn'], ['/notes', 'learn'], ['/resources', 'learn'],

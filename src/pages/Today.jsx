@@ -84,7 +84,7 @@ export default function Today() {
             <h1>{greeting(now.getHours())}. <em>Here is your day.</em></h1>
             <p className="muted">One step at a time. Do the card on the left and you have moved forward today.</p>
           </div>
-          <Link to="/progress" className="td-me card" aria-label={`Level ${lv.i + 1}, ${lv.name}, ${t.xp} XP`}>
+          <Link to="/profile" className="td-me card" aria-label={`Level ${lv.i + 1}, ${lv.name}, ${t.xp} XP`}>
             <span className="td-lv" aria-hidden="true">{lv.icon}</span>
             <span className="td-me-txt">
               <span className="small muted">Level {lv.i + 1}</span>
