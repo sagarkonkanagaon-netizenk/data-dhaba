@@ -133,7 +133,7 @@ export function Pro() {
   const [busy, setBusy] = useState('')
   const [err, setErr] = useState('')
   const [done, setDone] = useState(takePaidNote)
-  useEffect(() => { if (selling) loadPrices().then(setPrices).catch(() => setPrices({ prices: { INR: { '6m': 199900, '1y': 299900 } } })) }, [selling])
+  useEffect(() => { if (selling) loadPrices().then(setPrices).catch(() => setPrices({ prices: { INR: { '6m': 249900, '1y': 359900 } } })) }, [selling])
   // USD shows only once the payment server has USD prices; until then everyone pays in rupees.
   const usd = Boolean(prices?.prices?.USD)
   const currency = cur === 'USD' && usd ? 'USD' : 'INR'
@@ -338,7 +338,7 @@ export function Terms() {
       ['Using the site', [`You can use ${BRAND.name} for your own learning and share links to any page. Please don\'t copy the handbooks or questions wholesale onto other sites.`]],
       ['No guarantees', ['We work hard to keep the content correct, but it is provided as is. It is learning material, not professional advice, and it can\'t promise a job or an exam result.']],
       ['Pro', [PAYMENTS_LIVE
-        ? 'Pro is a one-time payment for 6 months (₹1,999) or 1 year (₹2,999) that does not renew automatically. Payments are processed securely by Razorpay; we never see or store your card or UPI details. Refunds follow our refund and cancellation policy at datadhaba.in/#/refund.'
+        ? 'Pro is a one-time payment for 6 months (₹2,499) or 1 year (₹3,599) that does not renew automatically. Payments are processed securely by Razorpay; we never see or store your card or UPI details. Refunds follow our refund and cancellation policy at datadhaba.in/#/refund.'
         : 'Pro is not on sale yet, and joining the waitlist costs nothing. When it opens, Pro is a one-time payment for 6 months or 1 year that does not renew automatically. Refunds follow our refund and cancellation policy at datadhaba.in/#/refund.']],
       ['Delivery', ['Pro is digital. Nothing is shipped. Access turns on in your account as soon as the payment is confirmed, usually within seconds and always within 24 hours. If it has not turned on within 24 hours, email us with your payment ID and we will turn it on or refund you in full.']],
       ['Personal use', ['Pro is for the person who bought it. Please don\'t share your account or post Pro solutions publicly.']],

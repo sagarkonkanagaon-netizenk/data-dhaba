@@ -1,6 +1,6 @@
 # Pro payments: how they work and how to switch them on
 
-Pro is a one-time payment through Razorpay: **₹1,999 for 6 months** or **₹2,999 for 1 year**, no auto-renew.
+Pro is a one-time payment through Razorpay: **₹2,499 for 6 months** or **₹3,599 for 1 year**, no auto-renew.
 Visitors outside India can be shown US-dollar prices once you set them (see "Prices in US dollars" below).
 
 ## How it fits together
