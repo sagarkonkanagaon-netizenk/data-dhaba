@@ -136,6 +136,7 @@
   background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--text) 5%, transparent), transparent 70%), var(--card);
 }
 .pf-slot span { font-size: .8rem; font-weight: 700; color: var(--muted); letter-spacing: .04em; }
+.pf-slot-need { font-size: .7rem; color: var(--muted); line-height: 1.3; }
 .pf-slot.got { cursor: pointer; border-color: color-mix(in srgb, var(--gold) 40%, var(--line)); transition: transform .15s, box-shadow .15s; }
 .pf-slot.got span { color: var(--text); }
 .pf-slot.got:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }

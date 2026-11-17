@@ -149,7 +149,7 @@ export default function Profile() {
                   <span className="small muted">Closest badge</span>
                   <b>{next.title}</b>
                   <div className="pf-xpbar light"><i style={{ width: next.pct + '%' }} /></div>
-                  <span className="small">{next.reqs.filter((r) => !r.ok).map((r) => `${r.need - r.have} more: ${r.label.toLowerCase()}`).join(' · ')}</span>
+                  <span className="small">{next.reqs.filter((r) => !r.ok).map((r) => `${r.need - r.have} more: ${r.label.replace(/^[A-Z][a-z]/, (m) => m.toLowerCase())}`).join(' · ')}</span>
                 </div>
               </div>
             )}
@@ -162,7 +162,8 @@ export default function Profile() {
             {tokens.map((x) => (
               <button key={x.id} type="button" className={'pf-slot' + (x.earned ? ' got' : '')} disabled={!x.earned} onClick={() => setShow(x)} aria-label={x.earned ? `${x.title}, replay` : `${x.title}, locked`}>
                 <Token token={x} size={92} locked={!x.earned} spin={x.earned} />
-                <span>{x.earned ? x.title : '???'}</span>
+                <span>{x.title}</span>
+                {!x.earned && <small className="pf-slot-need">{x.reqs.filter((r) => !r.ok).map((r) => `${r.have}/${r.need} ${r.label.replace(/^[A-Z][a-z]/, (m) => m.toLowerCase())}`).join(' · ')}</small>}
               </button>
             ))}
           </div>
