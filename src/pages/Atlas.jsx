@@ -4,6 +4,7 @@ import { COLUMNS, LAYERS, TOOLS, PAGES, LAYER_BY_ID, COL_BY_ID, TOOL_BY_ID } fro
 import './atlas.css'
 import ProGate from '../components/ProGate.jsx'
 import { isLocked } from '../lib/tier.js'
+import { SYLLABUS, topicCount, TOTAL_TOPICS } from '../data/syllabus.js'
 
 // The Tech Stack Atlas: one map of every tool by the job it does and where it runs,
 // and a page per tool that always follows the same eight blocks.
@@ -44,6 +45,7 @@ export function AtlasMap() {
           <div><b>{TOOLS.length}</b><span>tools mapped</span></div>
           <div><b>{LAYERS.length}</b><span>pipeline layers</span></div>
           <div><b>{COLUMNS.length - 2}</b><span>clouds + platforms + open source</span></div>
+          <div><b>{TOTAL_TOPICS.toLocaleString('en-IN')}</b><span>syllabus topics, end to end</span></div>
           <div><b>{FULL}</b><span>full tool pages so far</span></div>
         </div>
 
@@ -107,6 +109,43 @@ function Block({ n, title, children, tone }) {
     </section>
   )
 }
+// The full syllabus: every topic title is public, every explanation is Pro.
+function Syllabus({ t }) {
+  const mods = SYLLABUS[t.id] || []
+  const [open, setOpen] = useState(0)
+  if (!mods.length) return null
+  const n = topicCount(t.id)
+  return (
+    <section className="at-syl" aria-labelledby="at-syl-h">
+      <div className="at-syl-head">
+        <div>
+          <span className="at-syl-k">Full syllabus</span>
+          <h2 id="at-syl-h">{t.name}, end to end</h2>
+          <p className="muted small">{mods.length} modules · {n} topics, from first steps to production and interview level. Every topic is explained in Pro with diagrams, runnable code, real failure stories and interview answers.</p>
+        </div>
+        <Link to="/pro" className="btn btn-primary btn-sm">Unlock all {n} lessons</Link>
+      </div>
+      <ol className="at-mods">
+        {mods.map((m, i) => (
+          <li key={m.name} className={open === i ? 'open' : ''}>
+            <button type="button" className="at-mod" aria-expanded={open === i} onClick={() => setOpen(open === i ? -1 : i)}>
+              <span className="at-mod-n">{String(i + 1).padStart(2, '0')}</span>
+              <b>{m.name}</b>
+              <span className="small muted">{m.topics.length} topics</span>
+              <span className="at-mod-arrow" aria-hidden="true">▾</span>
+            </button>
+            {open === i && (
+              <ul className="at-topics">
+                {m.topics.map((x) => <li key={x}><span>{x}</span><span className="at-pro" title="Explanation in Pro">🔒 Pro</span></li>)}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}
+
 const List = ({ items }) => <ul className="at-list">{items.map((x) => <li key={x}>{x}</li>)}</ul>
 
 export function AtlasTool() {
@@ -159,10 +198,12 @@ export function AtlasTool() {
           </div>
         ) : (
           <div className="card at-soon">
-            <b>The full page for {t.name} is being written.</b>
-            <p className="muted">It will follow the same eight blocks as every other tool. Meanwhile, these tools do the same job and some already have full pages.</p>
+            <b>The eight-block overview for {t.name} is being written.</b>
+            <p className="muted">The full topic-by-topic syllabus is below. Tools in the same row do the same job, and some already have full overview pages.</p>
           </div>
         )}
+
+        <Syllabus t={t} />
 
         <section className="at-twins">
           <h2>Same job: {layer.name.toLowerCase()}</h2>
