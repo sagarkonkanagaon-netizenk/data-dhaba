@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
+import ProGate from '../components/ProGate.jsx'
+import { isLocked } from '../lib/tier.js'
 import { Link } from 'react-router-dom'
 import './sparkviz.css'
 
@@ -270,11 +272,11 @@ export default function SparkViz() {
           <p>Four ideas decide whether a Spark job takes two minutes or two hours. Predict each one first, then watch the rows move.</p>
         </div>
         <div className="tabs" role="tablist" style={{ marginBottom: 16 }}>
-          {SCENES.map((s) => <button key={s.id} role="tab" aria-selected={s.id === id} className={s.id === id ? 'on' : ''} onClick={() => setId(s.id)}>{s.label}</button>)}
+          {SCENES.map((s) => <button key={s.id} role="tab" aria-selected={s.id === id} className={s.id === id ? 'on' : ''} onClick={() => setId(s.id)}>{isLocked('spark', s.id) ? '🔒 ' : ''}{s.label}</button>)}
         </div>
         <div className="viz card sv">
           <h2 className="sv-title">{scene.title}</h2>
-          <C key={scene.id} />
+          {isLocked('spark', scene.id) ? <ProGate what="all four Spark scenes" /> : <C key={scene.id} />}
         </div>
         <div className="row" style={{ marginTop: 20, flexWrap: 'wrap' }}>
           <Link className="btn btn-ghost" to="/learn/pyspark">Read the PySpark handbook</Link>
