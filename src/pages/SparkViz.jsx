@@ -3,6 +3,9 @@ import ProGate from '../components/ProGate.jsx'
 import { isLocked } from '../lib/tier.js'
 import { Link } from 'react-router-dom'
 import './sparkviz.css'
+import SparkCase from '../components/SparkCase.jsx'
+import { ISSUES, FAMILIES } from '../data/sparkIssues.js'
+import { FREE_CASES } from '../data/sparkCasesFree.js'
 
 // Spark, made visible: partitions, shuffles, skew and broadcast joins as moving rows.
 // Every scene opens with a prediction, because guessing first is what makes the answer stick.
@@ -251,11 +254,56 @@ function JoinScene() {
   )
 }
 
+/* ───────── 5. The issue library ───────── */
+function IssueLibrary() {
+  const [fam, setFam] = useState('all')
+  const [open, setOpen] = useState(null)
+  const list = ISSUES.filter((x) => fam === 'all' || x.fam === fam)
+  const issue = open && ISSUES.find((x) => x.id === open)
+  if (issue) {
+    const d = FREE_CASES[issue.id]
+    return (
+      <>
+        <button type="button" className="btn btn-ghost btn-sm" onClick={() => setOpen(null)}>← All {ISSUES.length} issues</button>
+        <h3 className="sl-title">{issue.title}</h3>
+        {d ? <SparkCase issue={issue} d={d} /> : (
+          <div className="sl-locked">
+            <div className="sc-pager"><span>🚨 On call</span>{issue.sym}</div>
+            <p>This case is in <b>Pro</b>: the simulated Spark UI before and after, a diagnose-first question, the root cause, the exact fix and the code.</p>
+            <Link to="/pro" className="btn btn-primary">See Pro</Link>
+          </div>
+        )}
+      </>
+    )
+  }
+  return (
+    <>
+      <p className="sv-note" style={{ marginTop: 0 }}>{ISSUES.length} real production problems, each one a simulated Spark UI you diagnose before you see the fix. {Object.keys(FREE_CASES).length} are free to try. The rest are in Pro.</p>
+      <div className="sl-fams" role="group" aria-label="Filter by family">
+        <button type="button" className={fam === 'all' ? 'on' : ''} onClick={() => setFam('all')}>All <span>{ISSUES.length}</span></button>
+        {FAMILIES.map((f) => <button key={f.id} type="button" className={fam === f.id ? 'on' : ''} onClick={() => setFam(f.id)}>{f.icon} {f.name} <span>{ISSUES.filter((x) => x.fam === f.id).length}</span></button>)}
+      </div>
+      <ol className="sl-list">
+        {list.map((x) => (
+          <li key={x.id}>
+            <button type="button" onClick={() => { setOpen(x.id); window.scrollTo?.(0, 0) }}>
+              <span className="sl-k">{FAMILIES.find((f) => f.id === x.fam).icon}</span>
+              <span className="sl-txt"><b>{x.title}</b><small>{x.sym}</small></span>
+              <span className={'sl-tag' + (FREE_CASES[x.id] ? ' free' : '')}>{FREE_CASES[x.id] ? 'Try free' : '🔒 Pro'}</span>
+            </button>
+          </li>
+        ))}
+      </ol>
+    </>
+  )
+}
+
 const SCENES = [
   { id: 'partitions', label: 'Partitions & tasks', title: 'How many partitions should a job have?', C: PartitionsScene },
   { id: 'shuffle', label: 'Narrow vs wide', title: 'What is a shuffle, and why is it slow?', C: ShuffleScene },
   { id: 'skew', label: 'Skew', title: 'Why does one task take forever?', C: SkewScene },
   { id: 'join', label: 'Broadcast join', title: 'Which side of a join should move?', C: JoinScene },
+  { id: 'issues', label: `Issue library · ${ISSUES.length}`, title: 'Diagnose real Spark incidents', C: IssueLibrary, open: true },
 ]
 
 export default function SparkViz() {
@@ -269,14 +317,14 @@ export default function SparkViz() {
         <div className="page-head">
           <div className="eyebrow">Spark Visualizer</div>
           <h1>See what Spark does with your data</h1>
-          <p>Four ideas decide whether a Spark job takes two minutes or two hours. Predict each one first, then watch the rows move.</p>
+          <p>Four ideas decide whether a Spark job takes two minutes or two hours. Predict each one first, then watch the rows move. Then take on the issue library: {ISSUES.length} real incidents in a simulated Spark UI.</p>
         </div>
         <div className="tabs" role="tablist" style={{ marginBottom: 16 }}>
-          {SCENES.map((s) => <button key={s.id} role="tab" aria-selected={s.id === id} className={s.id === id ? 'on' : ''} onClick={() => setId(s.id)}>{isLocked('spark', s.id) ? '🔒 ' : ''}{s.label}</button>)}
+          {SCENES.map((s) => <button key={s.id} role="tab" aria-selected={s.id === id} className={s.id === id ? 'on' : ''} onClick={() => setId(s.id)}>{!s.open && isLocked('spark', s.id) ? '🔒 ' : ''}{s.label}</button>)}
         </div>
         <div className="viz card sv">
           <h2 className="sv-title">{scene.title}</h2>
-          {isLocked('spark', scene.id) ? <ProGate what="all four Spark scenes" /> : <C key={scene.id} />}
+          {!scene.open && isLocked('spark', scene.id) ? <ProGate what="all four Spark scenes" /> : <C key={scene.id} />}
         </div>
         <div className="row" style={{ marginTop: 20, flexWrap: 'wrap' }}>
           <Link className="btn btn-ghost" to="/learn/pyspark">Read the PySpark handbook</Link>
