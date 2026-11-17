@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import Mission, { Onboarding, getProfile, startWeek } from '../components/Mission.jsx'
+import Mission, { Onboarding, getProfile } from '../components/Mission.jsx'
 import DailyBanner from '../components/DailyBanner.jsx'
 import Console from '../components/Console.jsx'
 import HeroMark from '../components/HeroMark.jsx'
@@ -76,7 +76,7 @@ export default function Home() {
             <p className="lead">The complete course, from your first SQL query to Spark, Databricks, the cloud and streaming. Practise on millions of rows right in your browser, and walk into interviews ready.</p>
             <div className="hero-cta">
               {returning
-                ? <Link to={`/path/${startWeek(profile)}`} className="btn btn-primary btn-lg">Continue learning</Link>
+                ? <Link to="/today" className="btn btn-primary btn-lg">Continue learning</Link>
                 : <button className="btn btn-primary btn-lg" onClick={() => setOnboard(true)}>Start learning</button>}
               <button className="btn btn-ghost btn-lg" onClick={() => document.getElementById('try')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Try a SQL query</button>
             </div>

@@ -12,6 +12,7 @@ import { SECTIONS, sectionOf, itemOf, HOME_OF } from '../data/sections.js'
 const Search = lazy(() => import('./Search.jsx'))
 const DEFAULT_TITLE = 'Data Dhaba · On your highway to get hired'
 
+// The footer lists Today in its About column, so it shows the other three doors.
 const MENUS = SECTIONS.filter((x) => x.id !== 'daily')
 
 export default function Layout() {
@@ -96,14 +97,14 @@ export default function Layout() {
         </div>
       </header>
       <nav className={'mobile-nav' + (menu ? ' open' : '')} aria-label="Mobile">
-        <NavLink to="/daily" className="m-daily">Today's SQL challenge</NavLink>
-        {MENUS.map((sec) => (
+        <NavLink to="/today" className="m-daily">☀️ Today: your next step</NavLink>
+        {SECTIONS.filter((x) => x.id !== 'daily').map((sec) => (
           <div key={sec.id} className="m-sec" data-sec={sec.id}>
             <div className="m-head">{sec.label}</div>
             <div className="m-items">{sec.items.map((i) => <NavLink key={i.to} to={i.to} end>{i.label}</NavLink>)}</div>
           </div>
         ))}
-        <div className="m-items m-extra"><NavLink to="/progress">My progress · {xp} XP</NavLink><NavLink to="/pro">Pro</NavLink>{AUTH_ENABLED && <NavLink to="/account">Account</NavLink>}<button type="button" className="m-theme" onClick={toggle}>{isDark ? 'Light theme' : 'Dark theme'}</button></div>
+        <div className="m-items m-extra"><NavLink to="/daily">Daily SQL challenge</NavLink><NavLink to="/progress">My progress · {xp} XP</NavLink><NavLink to="/pro">Pro</NavLink>{AUTH_ENABLED && <NavLink to="/account">Account</NavLink>}<button type="button" className="m-theme" onClick={toggle}>{isDark ? 'Light theme' : 'Dark theme'}</button></div>
       </nav>
       <main id="main" tabIndex={-1} data-section={here?.id || 'home'}>
         {here && here.items.length > 1 && (
@@ -125,7 +126,7 @@ export default function Layout() {
           </div>
           {MENUS.map((sec) => <div key={sec.id} data-sec={sec.id}><h2 className="foot-h">{sec.label}</h2>{sec.items.map((i) => <Link key={i.to} to={i.to}>{i.label === 'Overview' ? 'All of ' + sec.label : i.label}</Link>)}{sec.id === 'practice' && <Link to="/daily">Daily SQL challenge</Link>}</div>)}
           <div><h2 className="foot-h">Guides</h2><a href="/guide/">Handbook guides</a><a href="/sql-interview-questions/">SQL interview questions</a><a href="/python-interview-questions/">Python interview questions</a><a href="/glossary/">Data glossary</a></div>
-          <div><h2 className="foot-h">About</h2><Link to="/progress">My progress</Link><Link to="/about">About and mantras</Link><Link to="/pro">Pro</Link><a href={BRAND.portfolio} target="_blank" rel="noreferrer">Author's portfolio</a><Link to="/contact">Contact</Link></div>
+          <div><h2 className="foot-h">About</h2><Link to="/today">Today</Link><Link to="/progress">My progress</Link><Link to="/about">About and mantras</Link><Link to="/pro">Pro</Link><a href={BRAND.portfolio} target="_blank" rel="noreferrer">Author's portfolio</a><Link to="/contact">Contact</Link></div>
         </div>
         <div className="container footer-base">
           <span>© {new Date().getFullYear()} {BRAND.name}</span>
