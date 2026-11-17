@@ -1,0 +1,57 @@
+/* SQL tokens: 3D coins. The coin is two SVG faces plus a stack of edge discs, so it has real thickness when it spins. */
+.token { display: inline-block; width: var(--size); height: var(--size); perspective: calc(var(--size) * 6); flex: none; }
+.token-3d { position: relative; display: block; width: 100%; height: 100%; transform-style: preserve-3d; }
+.token-face, .token-edge { position: absolute; inset: 0; border-radius: 50%; backface-visibility: hidden; }
+.token-edge { inset: 1%; background: radial-gradient(circle, var(--edge) 0 60%, var(--edge2) 100%); backface-visibility: visible; }
+.coin-svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 calc(var(--size) * .04) calc(var(--size) * .06) rgba(0,0,0,.28)); }
+.coin-t { font-family: var(--font, system-ui), system-ui, sans-serif; font-weight: 900; letter-spacing: -.02em; }
+.coin-small { font-size: 13px; font-weight: 800; letter-spacing: .14em; }
+.coin-tiny { font-size: 10px; font-weight: 800; letter-spacing: .2em; }
+.coin-shine { animation: coin-shine 3.2s ease-in-out infinite; }
+@keyframes coin-shine { 0%, 55% { transform: translateX(-80px) rotate(25deg); } 85%, 100% { transform: translateX(300px) rotate(25deg); } }
+.token.spin .token-3d { animation: token-idle 5s ease-in-out infinite; }
+@keyframes token-idle { 0%, 100% { transform: rotateY(0deg) translateY(0); } 25% { transform: rotateY(-18deg) translateY(-3px); } 75% { transform: rotateY(18deg) translateY(-6px); } }
+.token.locked .coin-svg { filter: grayscale(1) contrast(.9); opacity: .38; }
+.token.locked .token-edge { opacity: .35; filter: grayscale(1); }
+.token.locked .coin-shine { display: none; }
+
+/* The reveal: dark stage, rotating light rays, coin flies in spinning and grows, poppers fire from both corners. */
+.tk-stage { position: fixed; inset: 0; z-index: 96; display: grid; place-items: center; padding: 16px; background: radial-gradient(circle at 50% 42%, rgba(30, 22, 6, .78), rgba(4, 4, 8, .92)); backdrop-filter: blur(4px); animation: fade-in .25s; overflow: hidden; }
+.tk-inner { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; max-width: 520px; }
+.tk-rays { position: absolute; left: 50%; top: 150px; width: 900px; height: 900px; margin: -450px 0 0 -450px; border-radius: 50%; pointer-events: none;
+  background: repeating-conic-gradient(from 0deg, var(--glow) 0deg 7deg, transparent 7deg 22deg);
+  -webkit-mask: radial-gradient(circle, #000 0 18%, transparent 62%); mask: radial-gradient(circle, #000 0 18%, transparent 62%);
+  opacity: 0; animation: tk-rays-in .6s 1.9s forwards, tk-rays-spin 18s linear infinite; }
+.tk-glow { position: absolute; left: 50%; top: 150px; width: 360px; height: 360px; margin: -180px 0 0 -180px; border-radius: 50%; background: radial-gradient(circle, var(--glow), transparent 65%); opacity: 0; animation: tk-glow 2.4s 1.9s ease-in-out infinite; pointer-events: none; }
+@keyframes tk-rays-in { to { opacity: .55; } }
+@keyframes tk-rays-spin { to { transform: rotate(360deg); } }
+@keyframes tk-glow { 0% { opacity: .5; transform: scale(.9); } 50% { opacity: 1; transform: scale(1.12); } 100% { opacity: .5; transform: scale(.9); } }
+.tk-coin { position: relative; z-index: 1; height: 300px; display: grid; place-items: center; animation: tk-in .3s both; }
+@keyframes tk-in { from { opacity: 0; } to { opacity: 1; } }
+.tk-coin .token-3d { animation: tk-fly 2.2s cubic-bezier(.16, .84, .3, 1) both, token-idle 5s 2.2s ease-in-out infinite; }
+@keyframes tk-fly {
+  0% { transform: translateY(60vh) scale(.12) rotateY(0deg) rotateZ(-30deg); }
+  62% { transform: translateY(-10px) scale(1.32) rotateY(1440deg) rotateZ(0deg); }
+  78% { transform: translateY(4px) scale(.94) rotateY(1800deg); }
+  90% { transform: translateY(-2px) scale(1.04) rotateY(1800deg); }
+  100% { transform: translateY(0) scale(1) rotateY(1800deg); }
+}
+.tk-flash { position: absolute; inset: -40vh -40vw; background: radial-gradient(circle at 50% 150px, #fff, transparent 40%); opacity: 0; pointer-events: none; animation: tk-flash .7s 1.35s ease-out; }
+@keyframes tk-flash { 0% { opacity: 0; } 25% { opacity: .85; } 100% { opacity: 0; } }
+.tk-text { opacity: 0; transform: translateY(14px); animation: tk-up .5s 2s forwards; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+@keyframes tk-up { to { opacity: 1; transform: none; } }
+.tk-kicker { font-size: .78rem; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: var(--tk-light); }
+.tk-title { margin: 0; font-size: clamp(2rem, 7vw, 3rem); line-height: 1.05; color: #fff; text-shadow: 0 2px 30px var(--glow); }
+.tk-desc { margin: 0; color: rgba(255, 255, 255, .78); }
+.tk-next { margin: 4px 0 10px; font-size: .86rem; color: rgba(255, 255, 255, .6); }
+.tk-btns { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.tk-btns .btn-ghost { color: #fff; border-color: rgba(255, 255, 255, .35); background: transparent; }
+.tk-popper { position: absolute; bottom: -10px; font-size: 64px; opacity: 0; animation: tk-pop .9s ease-out; pointer-events: none; }
+.tk-popper.l { left: 4vw; transform-origin: bottom left; --r: 18deg; }
+.tk-popper.r { right: 4vw; transform: scaleX(-1); transform-origin: bottom right; --r: -18deg; }
+@keyframes tk-pop { 0% { opacity: 0; translate: 0 60px; } 20% { opacity: 1; translate: 0 0; rotate: var(--r); } 80% { opacity: 1; } 100% { opacity: 0; } }
+.tk-confetti { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 97; }
+@media (prefers-reduced-motion: reduce) {
+  .tk-coin .token-3d, .tk-rays, .tk-glow, .tk-text, .tk-flash, .coin-shine, .token.spin .token-3d { animation: none !important; opacity: 1; transform: none; }
+  .tk-rays { opacity: .4; } .tk-flash { display: none; }
+}
