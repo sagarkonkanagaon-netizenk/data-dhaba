@@ -55,9 +55,9 @@ export default function Contact() {
             <p><a href={`mailto:${BRAND.email}`}>{BRAND.email}</a></p>
             <p className="small muted">Writing about a payment? Use the email on your account and include the payment ID from your receipt.</p>
             <h2 className="contact-h">Policies</h2>
-            <p className="small"><Link to="/refund">Refund and cancellation</Link> · <Link to="/privacy">Privacy</Link> · <Link to="/terms">Terms</Link></p>
-            <h2 className="contact-h">Run by</h2>
-            <p className="small muted">{BRAND.author}, {BRAND.authorRole}.</p>
+            <p className="small"><Link to="/refund">Refund and cancellation</Link> · <Link to="/shipping">Delivery</Link> · <Link to="/privacy">Privacy</Link> · <Link to="/terms">Terms</Link></p>
+            <h2 className="contact-h">Business details</h2>
+            <p className="small muted">{BRAND.name}, a sole proprietorship of {BRAND.author} (Udyam registered). Vijayapura, Karnataka, India.</p>
           </div>
 
           {state === 'done' ? (
