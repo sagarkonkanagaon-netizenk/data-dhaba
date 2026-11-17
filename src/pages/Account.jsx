@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { AUTH_ENABLED, client, loadProfile, sendEmailLink, verifyCode, signInWithGoogle, signOut, deviceLabel } from '../lib/auth.js'
+import { refreshTier, myPayments, money } from '../lib/pay.js'
+import { getTier } from '../lib/tier.js'
 
 export default function Account() {
   const [state, setState] = useState(AUTH_ENABLED ? 'loading' : 'off')
@@ -9,6 +11,8 @@ export default function Account() {
   const [code, setCode] = useState('')
   const [err, setErr] = useState(() => { try { const m = sessionStorage.getItem('dd:auth-error'); sessionStorage.removeItem('dd:auth-error'); return m || '' } catch (e) { return '' } })
   const [busy, setBusy] = useState(false)
+  const [tier, setTierState] = useState(getTier)
+  const [receipts, setReceipts] = useState([])
   const navigate = useNavigate()
   const [params] = useSearchParams()
   // Where to go after signing in. Kept in sessionStorage so it survives the email-link round trip.
@@ -25,7 +29,11 @@ export default function Account() {
       const p = await loadProfile()
       if (!p) setState('signed-out')
       else if (p.kicked) { setProfile(p); setState('kicked') }
-      else { setProfile(p); setState('signed-in') }
+      else {
+        setProfile(p); setState('signed-in')
+        refreshTier().then((t) => t && setTierState(t)).catch(() => {})
+        myPayments().then(setReceipts).catch(() => {})
+      }
     } catch (e) { setErr(e.message || String(e)); setState('signed-out') }
   }
 
@@ -103,9 +111,19 @@ export default function Account() {
             <>
               <dl className="account-facts">
                 <dt>Email</dt><dd>{profile.email}</dd>
-                <dt>Plan</dt><dd>{profile.plan === 'pro' ? `Pro${profile.pro_until ? `, until ${profile.pro_until}` : ''}` : 'Free'}</dd>
+                <dt>Plan</dt><dd>{tier.owner ? 'Owner (everything open)' : tier.pro ? `Pro, until ${tier.until}` : tier.until ? `Free (Pro ended ${tier.until})` : 'Free'}</dd>
                 <dt>This device</dt><dd>{profile.device_label || deviceLabel()}</dd>
               </dl>
+              {receipts.length > 0 && (
+                <div className="receipts">
+                  <h3>Your payments</h3>
+                  <ul className="small">{receipts.map((r) => (
+                    <li key={r.order_id}><b>{money(r.amount, r.currency)}</b> · Pro {r.plan_key === '1y' ? '1 year' : '6 months'} · {(r.paid_at || '').slice(0, 10)} · payment ID <code>{r.payment_id}</code>{r.mode === 'test' ? ' · test' : ''}</li>
+                  ))}</ul>
+                  <p className="small muted">Keep the payment ID for refunds or questions. Razorpay also emails you a receipt.</p>
+                </div>
+              )}
+              <div className="account-actions">{tier.pro ? <Link className="btn btn-primary" to="/pro/ladder">Open your Pro projects</Link> : <Link className="btn btn-primary" to="/pro">See Pro</Link>}</div>
               <p className="small muted">Your account works on one device at a time. Signing in somewhere else signs you out here.</p>
               <div className="account-actions"><button className="btn btn-ghost" disabled={busy} onClick={() => act(signOut, 'signed-out')}>Sign out</button></div>
             </>

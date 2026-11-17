@@ -1,9 +1,12 @@
-import { useState } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
+import { PAYMENTS_LIVE, PAYMENTS_TEST, getTier, hasPro } from '../lib/tier.js'
+import { buyPro, inIndia, loadPrices, money, takePaidNote } from '../lib/pay.js'
+import { useSignedIn } from '../components/Gate.jsx'
 import Waitlist from '../components/Waitlist.jsx'
 import { SHEETS } from '../pro/cheatsheets.js'
 const SHEET_COUNT = SHEETS.length
-import { PRO_PRICE, PRO_PLANS, PRO_PILLARS, PRO_PROJECTS, PRO_CHEATSHEETS, PRO_PROJECT_COUNT, PRO_FAQ, PRO_LADDER, PRO_LADDER_READY } from '../data/pro.js'
+import { PRO_PRICE, PRO_PLANS, PRO_PILLARS, PRO_PROJECTS, PRO_CHEATSHEETS, PRO_PROJECT_COUNT, PRO_FAQ, PRO_FAQ_LIVE, PRO_TODAY, PRO_LADDER, PRO_LADDER_READY } from '../data/pro.js'
 import guide from '../content/guide.json'
 import { BRAND, CERTS, FREE_PLATFORMS, MANTRAS, FINAL_WORD } from '../data/extras.js'
 import { useProgress, toggleIn } from '../lib/progress.js'
@@ -115,32 +118,84 @@ export function About() {
   )
 }
 
+// What a free account keeps once Pro is on sale (matches FREE in lib/tier.js).
+const FREE_LIVE = ['Weeks 1 and 2 of the 24-week path', 'The first 2 chapters of every handbook', 'SQL Lab problems 1 to 15 and Python Lab problems 1 to 10, auto-checked', 'The Playground, the daily challenge, flashcards and progress tracking', 'Two Spark scenes, one incident drill and three Atlas tool pages', 'No ads']
 const FREE = ['The full 24-week path and every handbook', 'SQL lab: 78 questions, auto-checked', 'Python lab with auto-checks', 'Incident drills, scenario and PySpark questions', 'Flashcards and progress tracking', 'No ads']
 export function Pro() {
+  const [params] = useSearchParams()
+  const navigate = useNavigate()
+  const signedIn = useSignedIn()
+  // Checkout is open to everyone with live keys; with test keys only on /pro?test=1, so visitors never see it.
+  const selling = PAYMENTS_LIVE || (PAYMENTS_TEST && params.get('test') === '1')
   const [plan, setPlan] = useState('')
+  const [prices, setPrices] = useState(null)
+  const [cur, setCur] = useState(() => (inIndia() ? 'INR' : 'USD'))
+  const [busy, setBusy] = useState('')
+  const [err, setErr] = useState('')
+  const [done, setDone] = useState(takePaidNote)
+  useEffect(() => { if (selling) loadPrices().then(setPrices).catch(() => setPrices({ prices: { INR: { '6m': 199900, '1y': 299900 } } })) }, [selling])
+  // USD shows only once the payment server has USD prices; until then everyone pays in rupees.
+  const usd = Boolean(prices?.prices?.USD)
+  const currency = cur === 'USD' && usd ? 'USD' : 'INR'
+  const priceOf = (pl) => (currency === 'USD' ? money(prices.prices.USD[pl.id], 'USD') : pl.amount)
   const pick = (name) => { setPlan(name); document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }
+  async function buy(pl) {
+    setErr(''); setDone(null)
+    if (!signedIn) { navigate(`/account?next=${encodeURIComponent('/pro' + (selling && !PAYMENTS_LIVE ? '?test=1' : ''))}`); return }
+    setBusy(pl.id)
+    try { const r = await buyPro(pl.id, currency); if (r) setDone(r) } catch (e) { setErr(e.message || String(e)) } finally { setBusy('') }
+  }
+  const tier = getTier()
   return (
     <div className="page">
       <div className="container">
+        {selling && !PAYMENTS_LIVE && <div className="note" role="status" style={{ marginBottom: 16 }}><b>Test mode.</b> Payments use Razorpay test keys: no real money moves. Only you can see this page.</div>}
         <div className="page-head center" style={{ marginInline: 'auto' }}>
-          <div className="eyebrow">Data Dhaba Pro · {PRO_PRICE.status}</div>
+          <div className="eyebrow">Data Dhaba Pro · {selling ? 'Open now' : PRO_PRICE.status}</div>
           <h1>Everything between learning and getting hired.</h1>
-          <p>The course teaches you data engineering. Pro gives you the portfolio, the shortcuts and the interview practice that land the job: {PRO_PROJECT_COUNT} end-to-end projects, 60+ cheat sheets, 500+ interview answers and an AI mock interviewer.</p>
+          {selling
+            ? <p>The course teaches you data engineering. Pro gives you the finish: every chapter, lab answer and drill, plus {PRO_LADDER_READY} career-ladder projects built end to end, with more added as they are finished.</p>
+            : <p>The course teaches you data engineering. Pro gives you the portfolio, the shortcuts and the interview practice that land the job: {PRO_PROJECT_COUNT} end-to-end projects, 60+ cheat sheets, 500+ interview answers and an AI mock interviewer.</p>}
         </div>
 
+        {(done || hasPro()) && selling && (
+          <div className="card card-pad pro-done" role="status" style={{ marginBottom: 16, borderColor: 'var(--ok, #2ea86b)' }}>
+            <h3 style={{ marginTop: 0 }}>{done ? '🎉 Pro is on. Welcome in!' : 'You have Pro'}</h3>
+            <p className="muted">{tier.owner ? 'Owner access: everything is open.' : `Your Pro runs until ${done?.until || tier.until}.`} Buying again adds the time to your current end date.</p>
+            <div className="row" style={{ flexWrap: 'wrap' }}><Link className="btn btn-primary" to="/pro/ladder">Open your Pro projects</Link><Link className="btn btn-ghost" to="/account">Your account and receipts</Link></div>
+          </div>
+        )}
+
+        {selling && usd && (
+          <p className="small muted center" style={{ marginTop: 0 }}>
+            {currency === 'INR' ? <>Prices in Indian rupees. <button className="linkish" onClick={() => setCur('USD')}>Paying from outside India?</button></> : <>Prices in US dollars. <button className="linkish" onClick={() => setCur('INR')}>Paying from India?</button></>}
+          </p>
+        )}
         <div className="pro-plans">
           {PRO_PLANS.map((pl) => (
             <div key={pl.id} className={'card pro-plan' + (pl.best ? ' best' : '')}>
-              <div className="spread"><span className="chip">{pl.name}</span>{pl.best ? <span className="chip chip-primary">Best value</span> : <span className="chip chip-warn">{PRO_PRICE.status}</span>}</div>
-              <div className="price">{pl.amount}</div>
-              <div className="small muted">{pl.per} · {pl.sub}</div>
-              <button className={'btn ' + (pl.best ? 'btn-primary' : 'btn-ghost')} onClick={() => pick(pl.name)}>Join the waitlist</button>
+              <div className="spread"><span className="chip">{pl.name}</span>{pl.best ? <span className="chip chip-primary">Best value</span> : <span className="chip chip-warn">{selling ? 'One-time' : PRO_PRICE.status}</span>}</div>
+              <div className="price">{selling ? priceOf(pl) : pl.amount}</div>
+              <div className="small muted">{pl.per}{currency === 'INR' || !selling ? ` · ${pl.sub}` : ''}</div>
+              {selling
+                ? <button className={'btn ' + (pl.best ? 'btn-primary' : 'btn-ghost')} disabled={Boolean(busy)} onClick={() => buy(pl)}>{busy === pl.id ? 'Opening checkout…' : signedIn ? `Get Pro · ${pl.name}` : 'Sign in to buy'}</button>
+                : <button className={'btn ' + (pl.best ? 'btn-primary' : 'btn-ghost')} onClick={() => pick(pl.name)}>Join the waitlist</button>}
             </div>
           ))}
         </div>
-        <p className="small muted center" style={{ marginTop: 0 }}>Coming soon. No payment now: you get an email the day it opens.</p>
+        {err && <p className="err center" role="alert">{err}</p>}
+        <p className="small muted center" style={{ marginTop: 0 }}>{selling
+          ? <>One-time payment, no auto-renew. Full refund within 7 days (<Link to="/refund">refund policy</Link>). Pay with UPI, cards, net banking or wallets through Razorpay.</>
+          : 'Coming soon. No payment now: you get an email the day it opens.'}</p>
 
-        <div id="waitlist" className="wl-wrap"><Waitlist plan={plan} /></div>
+        {selling && (
+          <>
+            <h2 className="ds-h">In Pro today</h2>
+            <div className="card card-pad"><ul className="ticks">{PRO_TODAY.map((x) => <li key={x}>{x}</li>)}</ul></div>
+          </>
+        )}
+
+        {!selling && <div id="waitlist" className="wl-wrap"><Waitlist plan={plan} /></div>}
 
         <h2 className="ds-h">Preview Pro</h2>
         <div className="grid g2 pro-preview">
@@ -158,7 +213,8 @@ export function Pro() {
           </Link>
         </div>
 
-        <h2 className="ds-h">What you get</h2>
+        <h2 className="ds-h">{selling ? 'On the way to Pro' : 'What you get'}</h2>
+        {selling && <p className="muted" style={{ marginTop: -4 }}>Being built now. Each part joins Pro as it is finished.</p>}
         <div className="grid g2 pro-pillars">
           {PRO_PILLARS.map((x) => (
             <div key={x.t} className="card card-pad pro-pillar">
@@ -168,7 +224,7 @@ export function Pro() {
           ))}
         </div>
 
-        <h2 className="ds-h">The {PRO_PROJECT_COUNT} projects</h2>
+        <h2 className="ds-h">{selling ? <>The project catalogue <span className="small muted">{PRO_PROJECT_COUNT} planned, in build</span></> : <>The {PRO_PROJECT_COUNT} projects</>}</h2>
         <p className="muted" style={{ marginTop: -4 }}>Each one is a portfolio piece: a brief, messy data, a step-by-step build, a solution walkthrough and a README ready for GitHub.</p>
         <div className="grid g2">
           {PRO_PROJECTS.map((g, i) => (
@@ -179,7 +235,7 @@ export function Pro() {
           ))}
         </div>
 
-        <h2 className="ds-h">The career ladder <span className="small muted">{PRO_LADDER_READY} of {PRO_LADDER.length} built</span></h2>
+        <h2 className="ds-h">The career ladder <span className="small muted">{PRO_LADDER_READY} of {PRO_LADDER.length} built</span> {selling && <Link className="small" to="/pro/ladder">open →</Link>}</h2>
         <p className="muted" style={{ marginTop: -4 }}>One project per role, from intern to head of data engineering. Each is built and checked end to end, with a brief, starter code, hints and a marking rubric. Solutions open with Pro.</p>
         <div className="card card-pad">
           <ol className="pro-list pro-ladder">{PRO_LADDER.map((p) => (
@@ -192,12 +248,12 @@ export function Pro() {
 
         <h2 className="ds-h">What the course includes without Pro</h2>
         <div className="card card-pad">
-          <ul className="ticks">{FREE.map((x) => <li key={x}>{x}</li>)}</ul>
+          <ul className="ticks">{(selling ? FREE_LIVE : FREE).map((x) => <li key={x}>{x}</li>)}</ul>
           <Link className="btn btn-ghost" to="/path">Start learning</Link>
         </div>
         <h2 className="ds-h">Questions</h2>
         <div className="faq">
-          {PRO_FAQ.map((f) => (
+          {(selling ? PRO_FAQ_LIVE : PRO_FAQ).map((f) => (
             <details key={f.q} className="faq-item"><summary>{f.q}</summary><p>{f.a}</p></details>
           ))}
         </div>
@@ -247,12 +303,13 @@ function Policy({ eyebrow, title, updated, sections }) {
 
 export function Privacy() {
   return (
-    <Policy eyebrow="Privacy" title="Your data, in plain words" updated="7 November 2026" sections={[
+    <Policy eyebrow="Privacy" title="Your data, in plain words" updated="17 November 2026" sections={[
       ['The short version', [`${BRAND.name} has no ads and no tracking cookies. To use most of the site you create an account with your email. We keep your email and your learning progress, and nothing else.`]],
       ['Your progress', ['XP, streaks, solved questions and checklists are saved in your browser and, when you are signed in, copied to your account so they follow you to a new device. Use Export on the My progress page to keep your own copy.']],
       ['The Pro waitlist', ['If you join the waitlist, we keep your name, email, the plan you picked, where you are in your career and any note you write. It is stored in a private database (or Google Form) that only the site\'s author can read.', 'We use it only to email you about Pro. We never sell it or share it. Email us and we will delete it.']],
       ['Accounts', ['When you sign in with an email link or Google, we store your email, your plan, and a random id plus a short label (such as "Chrome on Android") for the one device your account is active on. That is how one account stays on one device.', 'Accounts are run by Supabase, our database provider. You can ask us to delete your account at any time.']],
       ['Code that runs in your browser', ['The SQL engine (DuckDB) and Python (Pyodide) are downloaded from the jsDelivr CDN the first time you use them. Your queries and code run on your device and are not sent anywhere.']],
+      ['Payments', ['Pro payments are handled by Razorpay. Your card, UPI or bank details go to Razorpay, never to us. We keep the order and payment IDs, the plan, the amount and the date, so we can show your receipts, keep your Pro on and handle refunds.']],
       ['Contact messages', ['If you use the contact form, we keep your name, email, topic and message in the same private database, only to reply to you. Email us and we will delete it.']],
       ['Hosting', ['The site is hosted on GitHub Pages. GitHub may keep standard server logs, such as IP addresses, to run and protect the service.']],
     ]} />
@@ -261,8 +318,10 @@ export function Privacy() {
 
 export function Refund() {
   return (
-    <Policy eyebrow="Refunds" title="Refund and cancellation policy" updated="7 November 2026" sections={[
-      ['Pro is not on sale yet', ['Pro opens after the waitlist. This policy applies to every Pro purchase from the day it opens. Free accounts cost nothing, so there is nothing to refund.']],
+    <Policy eyebrow="Refunds" title="Refund and cancellation policy" updated="17 November 2026" sections={[
+      PAYMENTS_LIVE
+        ? ['Who this covers', ['This policy applies to every Data Dhaba Pro purchase. Payments are processed by Razorpay. Free accounts cost nothing, so there is nothing to refund.']]
+        : ['Pro is not on sale yet', ['Pro opens after the waitlist. This policy applies to every Pro purchase from the day it opens. Free accounts cost nothing, so there is nothing to refund.']],
       ['7-day full refund', ['If Pro is not right for you, ask for a refund within 7 days of your purchase and you get the full amount back. No reason needed.', 'To ask, email us from the email on your account with the payment ID from your receipt, or use the contact form and pick "Pro and payments".']],
       ['After 7 days', ['After the 7-day window, payments are not refundable, including for unused months. You keep Pro until the end of the period you paid for.']],
       ['How refunds are paid', ['Approved refunds go back to the original payment method (UPI, card or net banking). We start them within 2 working days; your bank usually shows the money within 5 to 7 working days after that.']],
@@ -275,10 +334,14 @@ export function Refund() {
 
 export function Terms() {
   return (
-    <Policy eyebrow="Terms" title="Terms of use" updated="4 November 2026" sections={[
+    <Policy eyebrow="Terms" title="Terms of use" updated="17 November 2026" sections={[
       ['Using the site', [`You can use ${BRAND.name} for your own learning and share links to any page. Please don\'t copy the handbooks or questions wholesale onto other sites.`]],
       ['No guarantees', ['We work hard to keep the content correct, but it is provided as is. It is learning material, not professional advice, and it can\'t promise a job or an exam result.']],
-      ['Pro', ['Pro is not on sale yet, and joining the waitlist costs nothing. When it opens, Pro is a one-time payment for 6 months or 1 year that does not renew automatically. Refunds follow our refund and cancellation policy at datadhaba.in/#/refund.']],
+      ['Pro', [PAYMENTS_LIVE
+        ? 'Pro is a one-time payment for 6 months (₹1,999) or 1 year (₹2,999) that does not renew automatically. Payments are processed securely by Razorpay; we never see or store your card or UPI details. Refunds follow our refund and cancellation policy at datadhaba.in/#/refund.'
+        : 'Pro is not on sale yet, and joining the waitlist costs nothing. When it opens, Pro is a one-time payment for 6 months or 1 year that does not renew automatically. Refunds follow our refund and cancellation policy at datadhaba.in/#/refund.']],
+      ['Delivery', ['Pro is digital. Nothing is shipped. Access turns on in your account as soon as the payment is confirmed, usually within seconds and always within 24 hours. If it has not turned on within 24 hours, email us with your payment ID and we will turn it on or refund you in full.']],
+      ['Personal use', ['Pro is for the person who bought it. Please don\'t share your account or post Pro solutions publicly.']],
       ['Names and trademarks', ['Product names such as Databricks, Azure, Spark or Kafka belong to their owners and are used only to describe what you learn. RasoiRun is a made-up company.']],
     ]} />
   )

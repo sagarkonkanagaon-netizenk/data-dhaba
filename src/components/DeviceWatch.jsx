@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { mightBeSignedIn, loadProfile, AUTH_ENABLED, AUTH_EVENT } from '../lib/auth.js'
 import { startCloudSync } from '../lib/cloud.js'
+import { refreshTier } from '../lib/pay.js'
+import { setTier } from '../lib/tier.js'
 
 // Checks every few minutes, and when the tab comes back, that this device is still the account's active one.
 export default function DeviceWatch() {
@@ -14,12 +16,13 @@ export default function DeviceWatch() {
     return () => window.removeEventListener(AUTH_EVENT, on)
   }, [])
   useEffect(() => {
-    if (!mightBeSignedIn()) return
+    if (!mightBeSignedIn()) { setTier(null); return }
     let stop = false
     const check = () => loadProfile().then((p) => {
-      if (stop || !p) return
-      if (p.kicked) setKicked(true)
-      else startCloudSync()
+      if (stop) return
+      if (!p) { setTier(null); return }
+      if (p.kicked) { setTier(null); setKicked(true) }
+      else { startCloudSync(); refreshTier().catch(() => {}) }
     }).catch(() => {})
     check()
     const t = setInterval(check, 5 * 60 * 1000)

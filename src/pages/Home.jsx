@@ -10,6 +10,7 @@ import books from '../content/books-index.json'
 import { WEEKS, PHASES } from '../data/path.js'
 import { useProgress } from '../lib/progress.js'
 import { PRO_PRICE, PRO_PROJECT_COUNT } from '../data/pro.js'
+import { PAYMENTS_LIVE } from '../lib/tier.js'
 import { weekDone } from './Path.jsx'
 import { JOURNEY } from '../data/journey.js'
 
@@ -203,7 +204,7 @@ export default function Home() {
               <Link to="/path/1" className="btn btn-primary">Start week 1</Link>
             </div>
             <div className="plan card plan-pro">
-              <span className="basic-k">Pro · coming soon · from {PRO_PRICE.amount} for 6 months</span>
+              <span className="basic-k">Pro · {PAYMENTS_LIVE ? 'open now' : 'coming soon'} · from {PRO_PRICE.amount} for 6 months</span>
               <h3>Everything to get hired</h3>
               <ul className="ticks">
                 <li>{PRO_PROJECT_COUNT} end-to-end portfolio projects</li>

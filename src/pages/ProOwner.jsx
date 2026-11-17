@@ -1,6 +1,5 @@
-import { useMemo, useState } from 'react'
-import Markdown from '../components/Markdown.jsx'
-import { highlight } from '../lib/md.js'
+import { useState } from 'react'
+import ProjectReader from '../components/ProjectReader.jsx'
 import { PRO_LADDER } from '../data/pro.js'
 
 // Owner-only reader for the Pro projects. The files on the site are encrypted (AES-256-GCM, key from the
@@ -24,37 +23,10 @@ async function gunzipJson(bytes) {
   return JSON.parse(await new Response(stream).text())
 }
 
-const LANG = { py: 'python', sql: 'sql', sh: 'bash', json: 'json', yml: 'yaml', yaml: 'yaml', scala: 'scala' }
-const GROUPS = [
-  ['Start here', (p) => ['README.md', 'COMPLETION.md', 'course/BRIEF.md', 'starter/README.md'].includes(p)],
-  ['Course for learners', (p) => p.startsWith('course/')],
-  ['Python code', (p) => /^(src|tools|dags|data|mock|pipeline|app|jobs|databricks|beam|streaming|connect)\//.test(p) && p.endsWith('.py')],
-  ['SQL and dbt models', (p) => /\.(sql|lkml)$/.test(p) || /^(models|macros|seeds|dbt_tests|snapshots|analyses)\//.test(p) || /dbt_project|profiles/.test(p)],
-  ['Tests', (p) => p.startsWith('tests/') || /(^|\/)test_[^/]*\.py$/.test(p)],
-  ['Infra, CI and config', (p) => /^(infra|terraform|\.github|config|adf|contracts|docker|k8s|helm)\//.test(p) || /(Makefile|Dockerfile|docker-compose|\.tf$|\.ya?ml$|\.toml$|\.ini$|\.env|requirements|\.gitignore)/.test(p)],
-  ['Docs and design', (p) => /^(docs|architecture)\//.test(p) || p.endsWith('.md')],
-  ['Other files', () => true],
-]
-function group(files) {
-  const out = GROUPS.map(([name]) => ({ name, files: [] }))
-  for (const f of files) out[GROUPS.findIndex(([, test]) => test(f.path))].files.push(f)
-  const first = ['README.md', 'course/BRIEF.md', 'COMPLETION.md', 'starter/README.md']
-  out[0].files.sort((a, b) => first.indexOf(a.path) - first.indexOf(b.path))
-  return out.filter((g) => g.files.length)
-}
-
-function FileView({ file }) {
-  if (!file) return null
-  const ext = file.path.split('.').pop().toLowerCase()
-  if (ext === 'md') return <Markdown md={file.text} />
-  return <pre className="owner-code"><code dangerouslySetInnerHTML={{ __html: highlight(file.text, LANG[ext]) }} /></pre>
-}
-
 export default function ProOwner() {
   const [pass, setPass] = useState('')
   const [state, setState] = useState({ step: 'locked' })
   const [project, setProject] = useState(null)
-  const [path, setPath] = useState('README.md')
 
   async function unlock(e) {
     e.preventDefault()
@@ -74,15 +46,10 @@ export default function ProOwner() {
     setProject({ n: p.n, loading: true })
     const bytes = new Uint8Array(await (await fetch(BASE + p.file, { cache: 'no-store' })).arrayBuffer())
     const data = await gunzipJson(await open(state.key, bytes))
-    data.files.sort((a, b) => a.path.localeCompare(b.path))
-    data.groups = group(data.files)
     setProject({ n: p.n, ...data })
-    setPath('README.md')
     setTimeout(() => document.querySelector('.owner-reader')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50)
   }
 
-  const file = useMemo(() => project?.files?.find((f) => f.path === path), [project, path])
-  const pick = (p) => { setPath(p); setTimeout(() => document.querySelector('.owner-file')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 30) }
 
   if (state.step !== 'open') {
     return (
@@ -115,25 +82,7 @@ export default function ProOwner() {
         ))}
       </div>
       {project?.loading && <p className="muted">Decrypting…</p>}
-      {project?.files && (
-        <div className="owner-reader">
-          <nav className="card card-pad owner-tree" aria-label="Files">
-            <div className="small muted" style={{ marginBottom: 6 }}>{project.files.length} files · tap a folder to open it</div>
-            {project.groups.map((g, i) => (
-              <details key={g.name} open={i === 0 || g.files.some((f) => f.path === path)}>
-                <summary><b>{g.name}</b> <span className="chip">{g.files.length}</span></summary>
-                <ul>{g.files.map((f) => (
-                  <li key={f.path}><button className={f.path === path ? 'on' : ''} onClick={() => pick(f.path)}>{f.path}</button></li>
-                ))}</ul>
-              </details>
-            ))}
-          </nav>
-          <article className="card card-pad owner-file">
-            <div className="small muted" style={{ marginBottom: 8 }}>{project.name} / {path}</div>
-            <FileView file={file} />
-          </article>
-        </div>
-      )}
+      {project?.files && <ProjectReader key={project.n} project={project} />}
     </div></div>
   )
 }
