@@ -64,7 +64,7 @@ export default function TokenReveal({ token, next, onClose }) {
         <div className="tk-rays" aria-hidden="true" />
         <div className="tk-glow" aria-hidden="true" />
         <div className="tk-flash" aria-hidden="true" />
-        <div className="tk-coin"><Token token={token} size={220} /></div>
+        <div className="tk-coin"><Token token={token} size={290} /></div>
         <div className="tk-text">
           <span className="tk-kicker">{token.name} unlocked</span>
           <h2 className="tk-title">{token.title}</h2>

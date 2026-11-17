@@ -16,21 +16,21 @@ export const METALS = {
 
 // Each token lists its requirements as [label, have, need]. All must be met.
 export const TOKENS = [
-  { id: 'sql-bronze', metal: 'bronze', shape: 'scallop', emblem: 'chai', big: '50', small: 'SOLVED', name: 'Bronze badge', title: 'Chai Coder', desc: '50 SQL problems solved',
+  { id: 'sql-bronze', metal: 'bronze', shape: 'scallop', emblem: 'chai', rank: 1, big: '50', small: 'SOLVED', name: 'Bronze badge', title: 'Chai Coder', desc: '50 SQL problems solved',
     req: (s) => [['SQL problems solved', s.sql, 50]] },
-  { id: 'sql-silver', metal: 'silver', shape: 'hex', emblem: 'tandoor', big: '100', small: 'SOLVED', name: 'Silver badge', title: 'Query Tandoor', desc: '100 SQL problems solved',
+  { id: 'sql-silver', metal: 'silver', shape: 'hex', emblem: 'tandoor', rank: 2, big: '100', small: 'SOLVED', name: 'Silver badge', title: 'Query Tandoor', desc: '100 SQL problems solved',
     req: (s) => [['SQL problems solved', s.sql, 100]] },
-  { id: 'sql-gold', metal: 'gold', shape: 'thali', emblem: 'join', big: '250', small: 'SOLVED', name: 'Gold badge', title: 'Golden Thali', desc: '250 SQL problems solved',
+  { id: 'sql-gold', metal: 'gold', shape: 'thali', emblem: 'join', rank: 3, gem: ['#ff3b5c', '#7a0a26'], big: '250', small: 'SOLVED', name: 'Gold badge', title: 'Golden Thali', desc: '250 SQL problems solved',
     req: (s) => [['SQL problems solved', s.sql, 250]] },
-  { id: 'sql-platinum', metal: 'platinum', shape: 'shield', emblem: 'crown', big: '500', small: 'SOLVED', name: 'Platinum badge', title: 'Pipeline Maharaja', desc: '500 SQL problems solved',
+  { id: 'sql-platinum', metal: 'platinum', shape: 'shield', emblem: 'crown', rank: 4, gem: ['#3dffb0', '#0b6b47'], big: '500', small: 'SOLVED', name: 'Platinum badge', title: 'Pipeline Maharaja', desc: '500 SQL problems solved',
     req: (s) => [['SQL problems solved', s.sql, 500]] },
-  { id: 'sql-diamond', metal: 'diamond', shape: 'gem', emblem: 'facets', big: '1000', small: 'SOLVED', name: 'Diamond badge', title: 'Kohinoor of Queries', desc: '1,000 SQL problems solved',
+  { id: 'sql-diamond', metal: 'diamond', shape: 'gem', emblem: 'facets', rank: 5, gem: ['#ff6ec7', '#5a1a8a'], big: '1000', small: 'SOLVED', name: 'Diamond badge', title: 'Kohinoor of Queries', desc: '1,000 SQL problems solved',
     req: (s) => [['SQL problems solved', s.sql, 1000]] },
-  { id: 'streak-100', metal: 'emerald', shape: 'sun', emblem: 'sunrise', big: '100', small: 'DAYS', name: 'Emerald badge', title: 'Hundred Sunrises', desc: 'Daily SQL solved 100 days in a row',
+  { id: 'streak-100', metal: 'emerald', shape: 'sun', emblem: 'sunrise', rank: 4, gem: ['#ffd84d', '#a8650a'], big: '100', small: 'DAYS', name: 'Emerald badge', title: 'Hundred Sunrises', desc: 'Daily SQL solved 100 days in a row',
     req: (s) => [['Best daily SQL streak (days)', s.best, 100]] },
-  { id: 'mock-10', metal: 'ruby', shape: 'seal', emblem: 'letter', big: '10', small: 'HIRES', name: 'Ruby badge', title: 'Offer Letter Seal', desc: '10 timed mock rounds with a Strong hire signal',
+  { id: 'mock-10', metal: 'ruby', shape: 'seal', emblem: 'letter', rank: 4, gem: ['#ffd84d', '#a8650a'], big: '10', small: 'HIRES', name: 'Ruby badge', title: 'Offer Letter Seal', desc: '10 timed mock rounds with a Strong hire signal',
     req: (s) => [['Strong hire mock rounds', s.strong, 10]] },
-  { id: 'patterns-25', metal: 'sapphire', shape: 'rangoli', emblem: 'weave', big: '25', small: 'PATTERNS', name: 'Sapphire badge', title: 'Pattern Weaver', desc: 'All 25 SQL patterns mastered: a problem of each passed 3 spaced reviews',
+  { id: 'patterns-25', metal: 'sapphire', shape: 'rangoli', emblem: 'weave', rank: 4, gem: ['#ffffff', '#6a4bd6'], big: '25', small: 'PATTERNS', name: 'Sapphire badge', title: 'Pattern Weaver', desc: 'All 25 SQL patterns mastered: a problem of each passed 3 spaced reviews',
     req: (s) => [['Patterns mastered in spaced review', s.mastered, 25]] },
 ]
 

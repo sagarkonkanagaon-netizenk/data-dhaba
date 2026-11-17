@@ -6,6 +6,8 @@ import './token.css'
 // lighting filter so the metal reads as carved, plus an engraved ribbon with the number.
 
 const C = 100
+// Extra room around the 200x200 badge body for laurels, wings and the crest jewel.
+const VB = '-34 -34 268 268'
 const pt = (r, a) => [C + r * Math.cos(a), C + r * Math.sin(a)]
 const poly = (pts) => 'M' + pts.map((p) => p.map((v) => v.toFixed(1)).join(' ')).join(' L') + ' Z'
 function star(n, ro, ri, rot = -Math.PI / 2) {
@@ -88,6 +90,58 @@ const EMBLEMS = {
   ),
 }
 
+
+// Ornaments grow with rarity, like rank emblems: 1 plain, 2 laurels, 3 wings + gem inlays,
+// 4 crest jewel + sparkles, 5 holographic foil.
+function Laurel({ fill, filter }) {
+  const leaves = []
+  for (let i = 0; i < 11; i++) {
+    const deg = 122 + i * 12
+    const a = (deg * Math.PI) / 180
+    for (const side of [1, -1]) {
+      const ang = side > 0 ? a : Math.PI - a
+      const [x, y] = pt(110, ang)
+      const tangent = (ang * 180) / Math.PI + (side > 0 ? 90 : -90)
+      for (const off of [-1, 1]) {
+        leaves.push(<ellipse key={side + ':' + i + ':' + off} cx={x} cy={y} rx="4.5" ry="11" transform={`rotate(${tangent + off * 35 * side} ${x} ${y}) translate(0 -7)`} />)
+      }
+    }
+  }
+  const arc = (from, to, sweep) => `M${pt(110, (from * Math.PI) / 180).join(' ')} A110 110 0 0 ${sweep} ${pt(110, (to * Math.PI) / 180).join(' ')}`
+  return (
+    <g fill={fill} filter={filter}>
+      <path d={arc(118, 252, 1)} fill="none" stroke={fill} strokeWidth="3.5" strokeLinecap="round" />
+      <path d={arc(62, -72, 0)} fill="none" stroke={fill} strokeWidth="3.5" strokeLinecap="round" />
+      {leaves}
+    </g>
+  )
+}
+function Wings({ fill, filter }) {
+  const side = (dir) => (
+    <g transform={dir < 0 ? 'translate(200 0) scale(-1 1)' : undefined}>
+      {[0, 1, 2, 3, 4, 5].map((i) => {
+        const len = 92 - i * 10
+        const ang = -42 + i * 14
+        return <path key={i} d={`M0 0 C ${len * 0.25} -16, ${len * 0.75} -14, ${len} -2 C ${len * 0.8} 9, ${len * 0.3} 12, 0 0 Z`} transform={`translate(168 ${84 + i * 5}) rotate(${ang})`} />
+      })}
+    </g>
+  )
+  return <g fill={fill} filter={filter}>{side(1)}{side(-1)}</g>
+}
+function Gem({ x, y, r, color, dark, id }) {
+  return (
+    <g>
+      <circle cx={x} cy={y} r={r + 2.5} fill={dark} />
+      <circle cx={x} cy={y} r={r} fill={`url(#${id})`} />
+      <circle cx={x - r * 0.35} cy={y - r * 0.35} r={r * 0.3} fill="#fff" opacity=".8" />
+    </g>
+  )
+}
+function Sparkles() {
+  const at = [[-14, 20, 0], [212, 36, .6], [-6, 176, 1.2], [206, 168, .3], [100, -26, .9]]
+  return <g className="coin-sparkles">{at.map(([x, y, d]) => <path key={x + '' + y} style={{ animationDelay: d + 's' }} d={`M${x} ${y - 9} L${x + 2.2} ${y - 2.2} L${x + 9} ${y} L${x + 2.2} ${y + 2.2} L${x} ${y + 9} L${x - 2.2} ${y + 2.2} L${x - 9} ${y} L${x - 2.2} ${y - 2.2} Z`} fill="#fff" />)}</g>
+}
+
 function Lights({ id }) {
   return (
     <>
@@ -112,9 +166,11 @@ export function CoinFace({ token, back = false }) {
   const uid = 'b' + useId().replace(/[^a-z0-9]/gi, '')
   const [light, mid, dark, rim] = METALS[token.metal]
   const shape = SHAPES[token.shape]
+  const rank = token.rank || 1
+  const gem = token.gem || ['#ff4d6d', '#7a0a26']
   const g = (n) => `${uid}${n}`
   return (
-    <svg viewBox="0 0 200 200" className="coin-svg" aria-hidden="true">
+    <svg viewBox={VB} className="coin-svg" aria-hidden="true">
       <defs>
         <Lights id={uid} />
         <radialGradient id={g('face')} cx="34%" cy="28%" r="80%">
@@ -127,13 +183,23 @@ export function CoinFace({ token, back = false }) {
           <stop offset="0" stopColor={light} /><stop offset=".55" stopColor={mid} /><stop offset="1" stopColor={dark} />
         </linearGradient>
         <clipPath id={g('clip')}><path d={shape} /></clipPath>
+        <radialGradient id={g('gem')} cx="35%" cy="30%" r="75%"><stop offset="0" stopColor="#fff" /><stop offset=".35" stopColor={gem[0]} /><stop offset="1" stopColor={gem[1]} /></radialGradient>
+        <linearGradient id={g('holo')} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#ff6ec7" /><stop offset=".25" stopColor="#ffe66d" /><stop offset=".5" stopColor="#6dffb0" /><stop offset=".75" stopColor="#6db8ff" /><stop offset="1" stopColor="#c56dff" />
+        </linearGradient>
       </defs>
+      {!back && rank >= 3 && <Wings fill={`url(#${g('raised')})`} filter={`url(#${g('relief')})`} />}
+      {!back && rank === 2 && <Laurel fill={`url(#${g('raised')})`} filter={`url(#${g('relief')})`} />}
       {/* the slab, bevelled */}
       <path d={shape} fill={`url(#${g('face')})`} filter={`url(#${g('bevel')})`} />
       {/* carved-in inner field: the same silhouette, smaller, darker, so the border reads as a raised frame */}
       <g transform="translate(100 100) scale(.8) translate(-100 -100)">
         <path d={shape} fill={`url(#${g('deep')})`} opacity=".55" />
         <path d={shape} fill="none" stroke={light} strokeOpacity=".55" strokeWidth="2.4" transform="translate(1.4 1.8)" />
+      </g>
+      <g clipPath={`url(#${g('clip')})`} opacity=".16" stroke={light} strokeWidth=".7">
+        {Array.from({ length: 36 }, (_, i) => <line key={i} x1="100" y1="100" x2={pt(130, (i * Math.PI) / 18)[0]} y2={pt(130, (i * Math.PI) / 18)[1]} />)}
+        {[30, 44, 58].map((r) => <circle key={r} cx="100" cy="100" r={r} fill="none" />)}
       </g>
       {token.shape === 'thali' && !back && [0, 1, 2, 3, 4, 5].map((i) => {
         const [x, y] = pt(70, -Math.PI / 2 + (i * Math.PI) / 3)
@@ -158,8 +224,17 @@ export function CoinFace({ token, back = false }) {
           </g>
           <text x="100" y="163" textAnchor="middle" className="coin-t coin-rib" fill={light} opacity=".7" transform="translate(.8 1)">{token.big} {token.small}</text>
           <text x="100" y="163" textAnchor="middle" className="coin-t coin-rib" fill={rim}>{token.big} {token.small}</text>
+          {rank >= 3 && <><Gem x={22} y={100} r={6} color={gem} dark={rim} id={g('gem')} /><Gem x={178} y={100} r={6} color={gem} dark={rim} id={g('gem')} /></>}
+          {rank >= 4 && (
+            <g filter={`url(#${g('relief')})`}>
+              <path d="M84 6 L92 -16 L100 -4 L108 -16 L116 6 Z" fill={`url(#${g('raised')})`} />
+              <Gem x={100} y={-4} r={9} color={gem} dark={rim} id={g('gem')} />
+            </g>
+          )}
+          {rank >= 5 && <g clipPath={`url(#${g('clip')})`} className="coin-holo"><rect x="0" y="0" width="200" height="200" fill={`url(#${g('holo')})`} /></g>}
         </>
       )}
+      {!back && rank >= 4 && <Sparkles />}
       <g clipPath={`url(#${g('clip')})`}><rect className="coin-shine" x="-60" y="-40" width="34" height="300" fill="#fff" opacity=".28" transform="rotate(25 100 100)" /></g>
     </svg>
   )
@@ -169,7 +244,7 @@ export function CoinFace({ token, back = false }) {
 function Edge({ token, i, n, size }) {
   const [, , dark, rim] = METALS[token.metal]
   return (
-    <svg viewBox="0 0 200 200" className="token-edge" style={{ transform: `translateZ(${(i - (n - 1) / 2) * (size / 120)}px)` }} aria-hidden="true">
+    <svg viewBox={VB} className="token-edge" style={{ transform: `translateZ(${(i - (n - 1) / 2) * (size / 120)}px)` }} aria-hidden="true">
       <path d={SHAPES[token.shape]} fill={i % 2 ? dark : rim} />
     </svg>
   )

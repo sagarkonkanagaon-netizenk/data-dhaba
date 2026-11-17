@@ -18,7 +18,7 @@ export default function TokenCabinet() {
       <div className="tkc-grid">
         {all.map((t) => (
           <button key={t.id} type="button" className={'tkc-item' + (t.earned ? ' got' : '')} onClick={() => t.earned && setShow(t)} disabled={!t.earned} aria-label={t.earned ? `${t.title}, ${t.name}. Replay the reveal` : `${t.title}, locked, ${t.pct}% of the way`}>
-            <Token token={t} size={96} locked={!t.earned} spin={t.earned} />
+            <Token token={t} size={124} locked={!t.earned} spin={t.earned} />
             <b>{t.title}</b>
             <span className="small muted">{t.desc}</span>
             {t.earned
