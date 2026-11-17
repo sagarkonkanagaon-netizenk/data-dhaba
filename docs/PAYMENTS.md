@@ -37,6 +37,11 @@ hands them only to Pro accounts.
 3. Payment capture should be **Automatic** (the default).
 
 ### 3. Supabase Edge Functions
+**Easiest (works from a phone):** add the GitHub secrets listed at the top of
+`.github/workflows/supabase-functions.yml` (a Supabase access token plus the Razorpay values), then
+Actions → "Deploy payment functions" → Run workflow. It sets the Supabase secrets and deploys both functions with
+JWT verification off, and redeploys by itself whenever a function changes on main. Or by hand:
+
 1. Edge Functions → Deploy a new function → Via editor. Name it `pro-pay`, paste `supabase/functions/pro-pay/index.ts`, Deploy.
 2. Same again for `razorpay-webhook` with `supabase/functions/razorpay-webhook/index.ts`.
 3. For **both** functions, open the function's settings and turn **off** JWT verification

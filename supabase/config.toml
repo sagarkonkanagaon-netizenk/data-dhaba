@@ -1,0 +1,8 @@
+# Minimal Supabase CLI config, used only by .github/workflows/supabase-functions.yml to deploy the payment functions.
+project_id = "data-dhaba"
+
+[functions.pro-pay]
+verify_jwt = false
+
+[functions.razorpay-webhook]
+verify_jwt = false
