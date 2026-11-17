@@ -41,7 +41,7 @@ jobs:
           fi
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: 2.122.1   # pinned: "latest" asks the GitHub API and can hit its rate limit
       - name: Copy secrets to Supabase
         env:
           RAZORPAY_KEY_ID: ${{ secrets.RAZORPAY_KEY_ID }}
