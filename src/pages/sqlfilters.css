@@ -1,0 +1,29 @@
+/* SQL Lab: study lists and filters in the problem sidebar */
+.qf { display: flex; flex-direction: column; gap: 6px; padding: 4px 8px 10px; border-bottom: 1px solid var(--line); margin-bottom: 6px; }
+.qf select, .qf input { width: 100%; font: inherit; font-size: .84rem; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: inherit; min-width: 0; }
+.qf-list { font-weight: 600; }
+.qf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.qf-levels { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.qf-levels button { font: inherit; font-size: .78rem; padding: 5px 0; border-radius: 8px; border: 1px solid var(--line); background: transparent; color: inherit; cursor: pointer; }
+.qf-levels button.on { font-weight: 700; border-color: currentColor; }
+.qf-levels button.Easy.on, .lvl-chip.Easy { color: #12805c; }
+.qf-levels button.Medium.on, .lvl-chip.Medium { color: #b26a00; }
+.qf-levels button.Hard.on, .lvl-chip.Hard { color: #c9284f; }
+:root[data-theme="dark"] .qf-levels button.Easy.on, :root[data-theme="dark"] .lvl-chip.Easy { color: #42d6a4; }
+:root[data-theme="dark"] .qf-levels button.Medium.on, :root[data-theme="dark"] .lvl-chip.Medium { color: #f5b04c; }
+:root[data-theme="dark"] .qf-levels button.Hard.on, :root[data-theme="dark"] .lvl-chip.Hard { color: #ff6b8b; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .qf-levels button.Easy.on, :root:not([data-theme="light"]) .lvl-chip.Easy { color: #42d6a4; }
+  :root:not([data-theme="light"]) .qf-levels button.Medium.on, :root:not([data-theme="light"]) .lvl-chip.Medium { color: #f5b04c; }
+  :root:not([data-theme="light"]) .qf-levels button.Hard.on, :root:not([data-theme="light"]) .lvl-chip.Hard { color: #ff6b8b; }
+}
+.qf-foot { display: flex; justify-content: space-between; align-items: center; }
+.linklike { font: inherit; background: none; border: 0; padding: 0; color: var(--primary); cursor: pointer; }
+.lvl-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-left: 6px; vertical-align: middle; }
+.lvl-dot.Easy { background: #2bb383; } .lvl-dot.Medium { background: #e69a1e; } .lvl-dot.Hard { background: #e0436b; }
+.qlist .qf-levels button { display: block; text-align: center; padding: 5px 0; border: 1px solid var(--line); font-size: .78rem; color: var(--text-2); }
+.qlist .qf-levels button.on { background: color-mix(in srgb, currentColor 10%, transparent); color: var(--sec); }
+.qlist .qf-levels button.Easy.on { color: #12805c; } .qlist .qf-levels button.Medium.on { color: #b26a00; } .qlist .qf-levels button.Hard.on { color: #c9284f; }
+.qlist .qf-foot .linklike { display: inline; width: auto; padding: 0; background: none; color: var(--primary); font-size: .8rem; }
+.qlist .qf-foot .linklike:hover { background: none; text-decoration: underline; }
+.qf-foot span { white-space: nowrap; }

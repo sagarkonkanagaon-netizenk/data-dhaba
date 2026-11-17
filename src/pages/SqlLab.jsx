@@ -15,8 +15,10 @@ import StepThrough from '../components/StepThrough.jsx'
 import { recordResult } from '../lib/review.js'
 import { diffResults } from '../lib/diff.js'
 import RowDiff from '../components/RowDiff.jsx'
-import { PATTERN_OF } from '../data/sqlPatterns.js'
+import { PATTERN_OF, PATTERNS } from '../data/sqlPatterns.js'
+import { LISTS, LIST_BY_ID } from '../data/sqlLists.js'
 import Stuck from '../components/Stuck.jsx'
+import './sqlfilters.css'
 
 const QS = data.questions
 const SECTIONS = [...new Set(QS.map((q) => q.section))]
@@ -38,6 +40,41 @@ async function expected(q) {
   return refCache.get(q.n)
 }
 
+const FKEY = 'dd:sql-filter'
+const NO_FILTER = { list: '', level: '', status: '', pattern: '', text: '' }
+
+// Filter the problem list by study list, difficulty, status, pattern and text.
+function filterQs(f, p) {
+  const base = f.list ? LIST_BY_ID[f.list].qs.map((n) => QS.find((x) => x.n === n)).filter(Boolean) : QS
+  const t = f.text.trim().toLowerCase()
+  return base.filter((x) => (!f.level || x.level === f.level)
+    && (!f.status || (f.status === 'solved' ? p.sql[x.n] === 'solved' : f.status === 'tried' ? p.sql[x.n] === 'tried' : !p.sql[x.n]))
+    && (!f.pattern || (PATTERN_OF[x.n] && PATTERN_OF[x.n].id === f.pattern))
+    && (!t || (x.n + ' ' + x.title).toLowerCase().includes(t)))
+}
+
+function Filters({ f, setF, count }) {
+  const set = (k) => (e) => setF({ ...f, [k]: e.target.value })
+  const active = Object.values(f).some(Boolean)
+  return (
+    <div className="qf">
+      <select value={f.list} onChange={set('list')} aria-label="Study list" className="qf-list">
+        <option value="">All {QS.length} problems</option>
+        {LISTS.map((l) => <option key={l.id} value={l.id}>{l.icon} {l.name} ({l.qs.length})</option>)}
+      </select>
+      <div className="qf-levels" role="group" aria-label="Difficulty">
+        {['', 'Easy', 'Medium', 'Hard'].map((l) => <button key={l || 'all'} type="button" className={(f.level === l ? 'on ' : '') + (l || 'All')} onClick={() => setF({ ...f, level: l })}>{l || 'All'}</button>)}
+      </div>
+      <div className="qf-row">
+        <select value={f.status} onChange={set('status')} aria-label="Status"><option value="">Any status</option><option value="todo">To do</option><option value="tried">Tried</option><option value="solved">Solved</option></select>
+        <select value={f.pattern} onChange={set('pattern')} aria-label="Pattern"><option value="">Any pattern</option>{PATTERNS.map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}</select>
+      </div>
+      <input type="search" value={f.text} onChange={set('text')} placeholder="Search problems" aria-label="Search problems" />
+      <div className="qf-foot small muted"><span>{count} shown</span>{active && <button type="button" className="linklike" onClick={() => setF({ ...NO_FILTER })}>Clear filters</button>}</div>
+    </div>
+  )
+}
+
 export function EngineStatus({ state }) {
   if (state === 'loading') return <span className="loading"><span className="spinner" /> Starting the SQL engine. The first run downloads it once, then it's instant.</span>
   return null
@@ -48,6 +85,19 @@ export default function SqlLab() {
   const navigate = useNavigate()
   const p = useProgress()
   const [listOpen, setListOpen] = useState(false)
+  const loc = useLocation()
+  const [filter, setFilterState] = useState(() => {
+    let f = { ...NO_FILTER }
+    try { f = { ...f, ...(JSON.parse(localStorage.getItem(FKEY)) || {}) } } catch (e) { /* ignore */ }
+    const l = new URLSearchParams(loc.search).get('list')
+    if (l && LIST_BY_ID[l]) f = { ...NO_FILTER, list: l }
+    return f
+  })
+  const setFilter = (f) => { setFilterState(f); try { localStorage.setItem(FKEY, JSON.stringify(f)) } catch (e) { /* ignore */ } }
+  const shown = filterQs(filter, p)
+  const groups = filter.list
+    ? [[LIST_BY_ID[filter.list].name, shown]]
+    : SECTIONS.map((s) => [s, shown.filter((x) => x.section === s)]).filter(([, xs]) => xs.length)
   if (n === 'scratch') return <Playground />
   const q = QS.find((x) => String(x.n) === String(n)) || QS[0]
   const solved = Object.values(p.sql).filter((v) => v === 'solved').length
@@ -61,18 +111,20 @@ export default function SqlLab() {
           <button className="qlist-toggle" aria-expanded={listOpen} onClick={() => setListOpen(!listOpen)}>
             <span>Question {q.n} of {QS.length}</span><b>{listOpen ? 'Hide list ▴' : 'All questions ▾'}</b>
           </button>
+          <Filters f={filter} setF={setFilter} count={shown.length} />
           <div className="qlist-body" onClick={() => setListOpen(false)}>
-          {SECTIONS.map((s) => (
+          {groups.map(([s, items]) => (
             <div key={s}>
               <div className="sec">{s}</div>
-              {QS.filter((x) => x.section === s).map((x) => (
+              {items.map((x) => (
                 <button key={x.n} className={x.n === q.n ? 'on' : ''} onClick={() => navigate(`/practice/sql/${x.n}`)}>
-                  <span className="n">{x.n}</span><span>{x.title}</span>
+                  <span className="n">{x.n}</span><span>{x.title}<i className={'lvl-dot ' + x.level} title={x.level} /></span>
                   <span className="st">{isLocked('sql', x.n) ? '🔒' : p.sql[x.n] === 'solved' ? '✅' : p.sql[x.n] === 'tried' ? '•' : ''}</span>
                 </button>
               ))}
             </div>
           ))}
+          {!shown.length && <p className="small muted" style={{ padding: 8 }}>No problems match. Clear a filter.</p>}
           </div>
         </aside>
         {isLocked('sql', q.n) ? <section><div className="qhead"><div className="row small muted"><span>{q.section}</span><span>·</span><span>Question {q.n} of {QS.length}</span></div><h1 className="q-title">{q.title}</h1></div><ProGate what={`all ${QS.length} SQL problems with answers`} /></section> : <Question key={q.n} q={q} />}
@@ -171,7 +223,7 @@ function Question({ q }) {
   return (
     <section>
       <div className="qhead">
-        <div className="row small muted"><span>{q.section}</span><span>·</span><span>Question {q.n} of {QS.length}</span>{p.sql[q.n] === 'solved' && <span className="chip chip-ok">Solved</span>}{PATTERN_OF[q.n] && <Link className="chip" to={`/practice/patterns#${PATTERN_OF[q.n].id}`} title="See the pattern and its recipe">Pattern: {PATTERN_OF[q.n].name}</Link>}</div>
+        <div className="row small muted"><span>{q.section}</span><span>·</span><span>Question {q.n} of {QS.length}</span>{q.level && <span className={'chip lvl-chip ' + q.level}>{q.level}</span>}{p.sql[q.n] === 'solved' && <span className="chip chip-ok">Solved</span>}{PATTERN_OF[q.n] && <Link className="chip" to={`/practice/patterns#${PATTERN_OF[q.n].id}`} title="See the pattern and its recipe">Pattern: {PATTERN_OF[q.n].name}</Link>}</div>
         <h1 className="q-title">{q.title}</h1>
       </div>
       {q.given && q.given !== '—' && !schema.length && <div className="given">{q.given}</div>}
