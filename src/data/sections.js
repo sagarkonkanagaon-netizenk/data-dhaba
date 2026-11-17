@@ -28,6 +28,7 @@ export const SECTIONS = [
     items: [
       { to: '/practice', icon: '🛠️', label: 'Overview', desc: 'Pick what to practise' },
       { to: '/practice/sql', icon: '🗄️', label: 'SQL Lab', desc: '109 questions, checked instantly' },
+      { to: '/practice/mock', icon: '⏱️', label: 'Mock rounds', desc: 'Timed SQL interviews with a scorecard' },
       { to: '/playground', icon: '🧪', label: 'SQL Playground', desc: 'Any query on 2.6M rows' },
       { to: '/practice/tables', icon: '📋', label: 'Practice tables', desc: 'Every table and column, explained' },
       { to: '/practice/python', icon: '🐍', label: 'Python Lab', desc: 'Coding problems with auto-checks' },

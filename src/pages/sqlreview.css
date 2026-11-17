@@ -1,0 +1,17 @@
+.review { --sec: var(--c-practice); }
+.review h2 { font-size: 1.15rem; margin: 22px 0 10px; }
+.rv-empty { padding: 20px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.rv-empty p { margin: 0; }
+.rv-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.rv-item { padding: 14px 16px; display: flex !important; flex-direction: column; gap: 6px; height: 100%; }
+.rv-item .chip { align-self: flex-start; }
+.rv-go { color: var(--sec); font-weight: 600; margin-top: auto; }
+.rv-clear { color: var(--c-practice); font-weight: 600; }
+.rv-boxes { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 22px; }
+.rv-boxes > div { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--card); display: flex; flex-direction: column; gap: 2px; }
+.rv-boxes > div:last-child { border-color: color-mix(in srgb, var(--c-practice) 45%, var(--line)); }
+.rv-boxes b { font-size: 1.4rem; }
+.rv-boxes span { font-size: .8rem; color: var(--muted); }
+.rv-up { list-style: none; padding: 0; margin: 0; }
+.rv-up li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+@media (max-width: 700px) { .rv-boxes { grid-template-columns: repeat(2, 1fr); } }

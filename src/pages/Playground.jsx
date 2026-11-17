@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import CodeEditor from '../components/CodeEditor.jsx'
 import ResultTable from '../components/ResultTable.jsx'
 import { runIsolated, ensureBig, forgetBig } from '../lib/duck.js'
+import { explainSql, parsePlan } from '../lib/plan.js'
+import PlanView from '../components/PlanView.jsx'
 import { BIG, BIG_TOTAL, BIG_EXAMPLES, bigSetupSql } from '../data/bigdata.js'
 import data from '../content/sql-questions.json'
 
@@ -40,6 +42,7 @@ export default function Playground() {
   const [busy, setBusy] = useState(false)
   const [status, setStatus] = useState(null)
   const [open, setOpen] = useState(null)
+  const [plan, setPlan] = useState(null)
   const bigReady = useRef(false)
   useEffect(() => { try { sessionStorage.removeItem('z2h:scratch') } catch (e) { /* ignore */ } }, [])
   useEffect(() => { try { localStorage.setItem('z2h:code:sql:scratch', code) } catch (e) { /* ignore */ } }, [code])
@@ -62,7 +65,18 @@ export default function Playground() {
     }
     setStatus(null); setBusy(false)
   }
-  const run = () => runWith(code)
+  const run = () => { setPlan(null); return runWith(code) }
+  // Explain: run the query under EXPLAIN ANALYZE and show the plan in plain words.
+  async function explain() {
+    const sql = explainSql(code)
+    if (!sql) { setPlan({ error: 'The plan works on a SELECT query. Put the SELECT last.' }); return }
+    setBusy(true)
+    if (big) { await ensureBig(bigSetupSql(), { names: BIG.map((b) => b.name) }); bigReady.current = true }
+    const r = await runIsolated({ setup: SAMPLE_SETUP, sql })
+    setBusy(false)
+    if (r.error) { setPlan({ error: r.error }); return }
+    try { setPlan(parsePlan(r.result) || { error: 'No plan came back.' }) } catch (e) { setPlan({ error: 'Could not read the plan: ' + e.message }) }
+  }
   const load = (sql, useBig) => { setCode(sql); if (useBig && !big) setBig(true); runWith(sql, useBig || big) }
   const peek = (t, useBig) => load(`SELECT *\nFROM ${t}\nLIMIT 100;`, useBig)
 
@@ -121,10 +135,12 @@ export default function Playground() {
               <CodeEditor value={code} onChange={setCode} onRun={run} minHeight={300} />
               <div className="play-bar">
                 <button className="btn btn-primary" onClick={run} disabled={busy}>{busy ? 'Running…' : '▶ Run'}</button>
+                <button className="btn btn-ghost" onClick={explain} disabled={busy} title="See how the engine runs your query and where the time goes">⚙ Explain plan</button>
                 <button className="btn btn-ghost btn-sm" onClick={() => setCode('')} disabled={busy}>Clear</button>
                 <span className="small muted">DuckDB SQL: <code>LIMIT</code> not <code>TOP</code>, plus extras like <code>QUALIFY</code> and <code>GROUP BY ALL</code>.</span>
               </div>
             </div>
+            {plan && <PlanView plan={plan} onClose={() => setPlan(null)} />}
             {status && <div className="loading" style={{ marginTop: 12 }}><span className="spinner" /> {status}</div>}
             {res && (
               <div className="result play-result">

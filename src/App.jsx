@@ -55,6 +55,8 @@ const ProProject = page(() => import('./pages/ProProject.jsx'))
 const ProOwner = page(() => import('./pages/ProOwner.jsx'))
 const SheetIndex = page(() => import('./pages/ProSheets.jsx'), 'SheetIndex')
 const Sheet = page(() => import('./pages/ProSheets.jsx'), 'Sheet')
+const SqlReview = page(() => import('./pages/SqlReview.jsx'))
+const MockRound = page(() => import('./pages/MockRound.jsx'))
 const Today = page(() => import('./pages/Today.jsx'))
 const ProgressPage = page(() => import('./pages/Progress.jsx'))
 const Account = page(() => import('./pages/Account.jsx'))
@@ -77,6 +79,8 @@ export default function App() {
             <Route path="learn/:book/:chapter" element={<Chapter />} />
             <Route path="practice" element={<Practice />} />
             <Route path="practice/patterns" element={<SqlPatterns />} />
+            <Route path="practice/mock" element={<MockRound />} />
+            <Route path="practice/review" element={<SqlReview />} />
             <Route path="practice/sql" element={<SqlLab />} />
             <Route path="practice/sql/:n" element={<SqlLab />} />
             <Route path="practice/python" element={<PyLab />} />
