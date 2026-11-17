@@ -1,4 +1,4 @@
-// SQL tokens: elite, collectible coins. Each one is worked out from saved progress, review state
+// SQL badges: elite, carved collectibles, each with its own shape and name. Each one is worked out from saved progress, review state
 // and mock-round history, so a token can never be faked by clicking around.
 import { dailyStreakOf, bestDailyStreak } from '../lib/streaks.js'
 
@@ -16,21 +16,21 @@ export const METALS = {
 
 // Each token lists its requirements as [label, have, need]. All must be met.
 export const TOKENS = [
-  { id: 'sql-bronze', metal: 'bronze', big: '50', small: 'SOLVED', name: 'Bronze token', title: 'Line Cook', desc: '50 SQL problems solved',
+  { id: 'sql-bronze', metal: 'bronze', shape: 'scallop', emblem: 'chai', big: '50', small: 'SOLVED', name: 'Bronze badge', title: 'Chai Coder', desc: '50 SQL problems solved',
     req: (s) => [['SQL problems solved', s.sql, 50]] },
-  { id: 'sql-silver', metal: 'silver', big: '100', small: 'SOLVED', name: 'Silver token', title: 'Sous Chef', desc: '100 SQL problems solved',
+  { id: 'sql-silver', metal: 'silver', shape: 'hex', emblem: 'tandoor', big: '100', small: 'SOLVED', name: 'Silver badge', title: 'Query Tandoor', desc: '100 SQL problems solved',
     req: (s) => [['SQL problems solved', s.sql, 100]] },
-  { id: 'sql-gold', metal: 'gold', big: '250', small: 'SOLVED', name: 'Gold token', title: 'Head Chef', desc: '250 SQL problems solved',
+  { id: 'sql-gold', metal: 'gold', shape: 'thali', emblem: 'join', big: '250', small: 'SOLVED', name: 'Gold badge', title: 'Golden Thali', desc: '250 SQL problems solved',
     req: (s) => [['SQL problems solved', s.sql, 250]] },
-  { id: 'sql-platinum', metal: 'platinum', big: '500', small: 'SOLVED', name: 'Platinum token', title: 'Executive Chef', desc: '500 SQL problems solved',
+  { id: 'sql-platinum', metal: 'platinum', shape: 'shield', emblem: 'crown', big: '500', small: 'SOLVED', name: 'Platinum badge', title: 'Pipeline Maharaja', desc: '500 SQL problems solved',
     req: (s) => [['SQL problems solved', s.sql, 500]] },
-  { id: 'sql-diamond', metal: 'diamond', big: '1000', small: 'SOLVED', name: 'Diamond token', title: 'Dhaba Legend', desc: '1,000 SQL problems solved',
+  { id: 'sql-diamond', metal: 'diamond', shape: 'gem', emblem: 'facets', big: '1000', small: 'SOLVED', name: 'Diamond badge', title: 'Kohinoor of Queries', desc: '1,000 SQL problems solved',
     req: (s) => [['SQL problems solved', s.sql, 1000]] },
-  { id: 'streak-100', metal: 'emerald', big: '100', small: 'DAY STREAK', name: 'Emerald token', title: 'Iron Habit', desc: 'Daily SQL solved 100 days in a row',
+  { id: 'streak-100', metal: 'emerald', shape: 'sun', emblem: 'sunrise', big: '100', small: 'DAYS', name: 'Emerald badge', title: 'Hundred Sunrises', desc: 'Daily SQL solved 100 days in a row',
     req: (s) => [['Best daily SQL streak (days)', s.best, 100]] },
-  { id: 'mock-10', metal: 'ruby', big: '10', small: 'STRONG HIRE', name: 'Ruby token', title: 'Offer Magnet', desc: '10 timed mock rounds with a Strong hire signal',
+  { id: 'mock-10', metal: 'ruby', shape: 'seal', emblem: 'letter', big: '10', small: 'HIRES', name: 'Ruby badge', title: 'Offer Letter Seal', desc: '10 timed mock rounds with a Strong hire signal',
     req: (s) => [['Strong hire mock rounds', s.strong, 10]] },
-  { id: 'patterns-25', metal: 'sapphire', big: '25', small: 'PATTERNS', name: 'Sapphire token', title: 'Pattern Master', desc: 'All 25 SQL patterns mastered: a problem of each passed 3 spaced reviews',
+  { id: 'patterns-25', metal: 'sapphire', shape: 'rangoli', emblem: 'weave', big: '25', small: 'PATTERNS', name: 'Sapphire badge', title: 'Pattern Weaver', desc: 'All 25 SQL patterns mastered: a problem of each passed 3 spaced reviews',
     req: (s) => [['Patterns mastered in spaced review', s.mastered, 25]] },
 ]
 

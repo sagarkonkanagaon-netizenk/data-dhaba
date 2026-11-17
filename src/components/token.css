@@ -1,12 +1,13 @@
 /* SQL tokens: 3D coins. The coin is two SVG faces plus a stack of edge discs, so it has real thickness when it spins. */
 .token { display: inline-block; width: var(--size); height: var(--size); perspective: calc(var(--size) * 6); flex: none; }
 .token-3d { position: relative; display: block; width: 100%; height: 100%; transform-style: preserve-3d; }
-.token-face, .token-edge { position: absolute; inset: 0; border-radius: 50%; backface-visibility: hidden; }
-.token-edge { inset: 1%; background: radial-gradient(circle, var(--edge) 0 60%, var(--edge2) 100%); backface-visibility: visible; }
+.token-face, .token-edge { position: absolute; inset: 0; backface-visibility: hidden; }
+.token-edge { width: 100%; height: 100%; backface-visibility: visible; }
 .coin-svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 calc(var(--size) * .04) calc(var(--size) * .06) rgba(0,0,0,.28)); }
 .coin-t { font-family: var(--font, system-ui), system-ui, sans-serif; font-weight: 900; letter-spacing: -.02em; }
 .coin-small { font-size: 13px; font-weight: 800; letter-spacing: .14em; }
 .coin-tiny { font-size: 10px; font-weight: 800; letter-spacing: .2em; }
+.coin-rib { font-size: 11px; font-weight: 900; letter-spacing: .12em; }
 .coin-shine { animation: coin-shine 3.2s ease-in-out infinite; }
 @keyframes coin-shine { 0%, 55% { transform: translateX(-80px) rotate(25deg); } 85%, 100% { transform: translateX(300px) rotate(25deg); } }
 .token.spin .token-3d { animation: token-idle 5s ease-in-out infinite; }

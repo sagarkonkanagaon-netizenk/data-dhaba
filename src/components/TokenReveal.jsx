@@ -54,7 +54,7 @@ export default function TokenReveal({ token, next, onClose }) {
     window.addEventListener('keydown', k)
     return () => { stop(); window.removeEventListener('keydown', k) }
   }, [token.id]) // eslint-disable-line react-hooks/exhaustive-deps
-  const share = `I just unlocked the ${token.name} (${token.title}) on Data Dhaba: ${token.desc}. ${location.origin}`
+  const share = `I just earned the ${token.title} badge on Data Dhaba: ${token.desc}. ${location.origin}`
   return (
     <div className="tk-stage" role="dialog" aria-label={`${token.name} unlocked`} style={{ '--glow': glow, '--tk-light': light }} onClick={onClose}>
       <canvas ref={cv} className="tk-confetti" aria-hidden="true" />
@@ -69,11 +69,11 @@ export default function TokenReveal({ token, next, onClose }) {
           <span className="tk-kicker">{token.name} unlocked</span>
           <h2 className="tk-title">{token.title}</h2>
           <p className="tk-desc">{token.desc}.</p>
-          {next && <p className="tk-next">Next: {next.name}, {next.desc.toLowerCase()}.</p>}
+          {next && <p className="tk-next">Next: {next.title}, {next.desc.toLowerCase()}.</p>}
           <div className="tk-btns">
             <button className="btn btn-primary" onClick={onClose}>Keep going</button>
             <a className="btn btn-ghost" href={`https://www.linkedin.com/feed/?shareActive=true&text=${encodeURIComponent(share)}`} target="_blank" rel="noreferrer">Share on LinkedIn</a>
-            <Link className="btn btn-ghost" to="/progress#tokens" onClick={onClose}>See all tokens</Link>
+            <Link className="btn btn-ghost" to="/progress#tokens" onClick={onClose}>See all badges</Link>
           </div>
         </div>
       </div>
