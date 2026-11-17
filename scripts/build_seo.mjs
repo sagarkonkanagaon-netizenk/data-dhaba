@@ -216,7 +216,7 @@ page({
 // Plain-HTML copies of the app's /#/pro, /#/about, /#/contact, /#/terms, /#/privacy, /#/refund and /#/shipping.
 // Payment gateways (Razorpay) and search engines read these without running JavaScript.
 const HOME = { name: 'Home', path: '/' }
-const BUSINESS = `${BRAND.name} is run by ${BRAND.author} as a sole proprietorship (Udyam registered), based in Vijayapura, Karnataka, India.`
+const BUSINESS = `${BRAND.name} is run by ${BRAND.author} as a sole proprietorship (Udyam registration UDYAM-KR-07-0077672), based in Vijayapura, Karnataka, India.`
 const appLink = (hash, text) => `<p><a href="/#${hash}">${esc(text)}</a></p>`
 for (const pol of Object.values(POLICIES)) {
   const path = `${pol.path}/`
