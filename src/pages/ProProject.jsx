@@ -5,6 +5,7 @@ import { PROJECT, steps, README, TALKING, RESUME } from '../pro/project-lakehous
 import { useProgress, toggleIn } from '../lib/progress.js'
 import { makeTar, saveBlob } from '../lib/tar.js'
 import { PRO_PROJECT_COUNT } from '../data/pro.js'
+import { PAYMENTS_LIVE } from '../lib/tier.js'
 
 const FLOW = [
   ['Raw files', 'JSON and CSV in a volume'],
@@ -125,7 +126,7 @@ export default function ProProject() {
 
         <div className="card card-pad pro-end" style={{ marginTop: 32 }}>
           <div><h3>{PRO_PROJECT_COUNT - 1} more projects like this in Pro</h3><p className="muted">Streaming, CDC, data vault, Airflow, dbt, Docker and cloud builds on AWS, Azure and GCP, each with data, solutions and a README.</p></div>
-          <Link className="btn btn-primary" to="/pro">Join the Pro waitlist</Link>
+          <Link className="btn btn-primary" to="/pro">{PAYMENTS_LIVE ? 'Get Pro' : 'Join the Pro waitlist'}</Link>
         </div>
       </div>
     </div>

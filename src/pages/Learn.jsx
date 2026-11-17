@@ -1,6 +1,6 @@
 import { pdfFor } from '../data/pdfs.jsx'
 import ProGate from '../components/ProGate.jsx'
-import { isLocked } from '../lib/tier.js'
+import { isLocked, PAYMENTS_LIVE } from '../lib/tier.js'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import booksIndex from '../content/books-index.json'
@@ -178,11 +178,19 @@ function ProLock({ items }) {
         <ol className="pro-lock-list">
           {items.map((t) => <li key={t}><span aria-hidden="true">🔒</span>{t}</li>)}
         </ol>
-        <p className="muted">Pro opens soon. Join the waitlist and we'll email you the day it does.</p>
-        <div className="row" style={{ gap: 10, flexWrap: 'wrap', marginBottom: 16 }}>
-          <Link className="btn btn-ghost" to="/pro">See what Pro includes</Link>
-        </div>
-        <Waitlist />
+        {PAYMENTS_LIVE ? (
+          <div className="row" style={{ gap: 10, flexWrap: 'wrap', marginBottom: 16 }}>
+            <Link className="btn btn-primary" to="/pro">Get Pro</Link>
+          </div>
+        ) : (
+          <>
+            <p className="muted">Pro opens soon. Join the waitlist and we'll email you the day it does.</p>
+            <div className="row" style={{ gap: 10, flexWrap: 'wrap', marginBottom: 16 }}>
+              <Link className="btn btn-ghost" to="/pro">See what Pro includes</Link>
+            </div>
+            <Waitlist />
+          </>
+        )}
       </div>
     </section>
   )

@@ -12,6 +12,9 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { marked } from 'marked'
 import { GLOSSARY } from '../src/data/glossary.js'
+import { POLICIES } from '../src/data/policies.js'
+import { BRAND } from '../src/data/extras.js'
+import { PRO_PLANS, PRO_TODAY } from '../src/data/pro.js'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const DIST = join(ROOT, 'dist')
@@ -79,7 +82,7 @@ footer{color:var(--muted);font-size:14px;padding-top:24px;padding-bottom:40px;bo
 ${body}
 ${cta ? `<div class="card cta"><strong>${esc(cta.title)}</strong><p>${esc(cta.text)}</p><div class="btns"><a class="btn" href="${cta.href}">${esc(cta.button)}</a><a class="btn ghost" href="/#/account">Create an account</a></div></div>` : ''}
 </main>
-<footer>Data Dhaba · On your highway to get hired. Learn data engineering by doing it, right in your browser. · <a href="/guide/">Handbooks</a> · <a href="/sql-interview-questions/">SQL questions</a> · <a href="/python-interview-questions/">Python questions</a> · <a href="/glossary/">Glossary</a></footer>
+<footer>Data Dhaba · On your highway to get hired. Learn data engineering by doing it, right in your browser. · <a href="/guide/">Handbooks</a> · <a href="/sql-interview-questions/">SQL questions</a> · <a href="/python-interview-questions/">Python questions</a> · <a href="/glossary/">Glossary</a><br><a href="/about/">About</a> · <a href="/pricing/">Pricing</a> · <a href="/contact/">Contact</a> · <a href="/terms/">Terms</a> · <a href="/privacy/">Privacy</a> · <a href="/refund/">Refunds</a> · <a href="/shipping/">Delivery</a></footer>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "1648f240a4c44ca0b4feeda8efcf7e12"}'></script>
 </body>
 </html>
@@ -207,6 +210,49 @@ page({
   crumbs: [{ name: 'Home', path: '/' }, { name: 'Glossary', path: '/glossary/' }],
   body: `<ul class="list">${[...GLOSSARY].sort((a, b) => a.term.localeCompare(b.term)).map((g) => `<li><a href="/glossary/${g.slug}/">${esc(g.term)}</a>: ${esc(g.short)}</li>`).join('')}</ul>`,
   cta: { title: 'From words to work', text: 'Each term links to the chapter that teaches it, with examples you can run.', href: '/#/learn', button: 'Open the handbooks' },
+})
+
+// ── business pages: pricing, about, contact and the policies ───────────────
+// Plain-HTML copies of the app's /#/pro, /#/about, /#/contact, /#/terms, /#/privacy, /#/refund and /#/shipping.
+// Payment gateways (Razorpay) and search engines read these without running JavaScript.
+const HOME = { name: 'Home', path: '/' }
+const BUSINESS = `${BRAND.name} is run by ${BRAND.author} as a sole proprietorship (Udyam registration UDYAM-KR-07-0077672), based in Vijayapura, Karnataka, India.`
+const appLink = (hash, text) => `<p><a href="/#${hash}">${esc(text)}</a></p>`
+for (const pol of Object.values(POLICIES)) {
+  const path = `${pol.path}/`
+  page({
+    path, title: `${pol.title} | Data Dhaba`, h1: pol.title, description: clip(pol.sections[0][1][0]),
+    crumbs: [HOME, { name: pol.eyebrow, path }],
+    body: `<p class="lead">Last updated ${esc(pol.updated)}</p>${pol.sections.map(([h, b]) => `<h2>${esc(h)}</h2>${b.map((t) => `<p>${esc(t)}</p>`).join('')}`).join('')}<p>Questions? Email <a href="mailto:${BRAND.email}">${esc(BRAND.email)}</a>.</p>${appLink(pol.path, 'Open this page in the app')}`,
+  })
+}
+page({
+  path: '/pricing/', title: 'Data Dhaba Pro pricing | Data Dhaba', h1: 'Data Dhaba Pro pricing',
+  description: `Data Dhaba Pro: ${PRO_PLANS.map((p) => `${p.amount} ${p.per}`).join(' or ')}. One-time payment, no auto-renew, 7-day full refund.`,
+  crumbs: [HOME, { name: 'Pricing', path: '/pricing/' }],
+  body: `<p class="lead">Data Dhaba is an online data engineering course. The free account teaches the start of every topic. Pro unlocks everything.</p>
+<table><thead><tr><th>Plan</th><th>Price (INR)</th><th>Access</th></tr></thead><tbody>${PRO_PLANS.map((p) => `<tr><td>Pro · ${esc(p.name)}</td><td><strong>${esc(p.amount)}</strong></td><td>${esc(p.per)} (${esc(p.sub)})</td></tr>`).join('')}</tbody></table>
+<h2>What Pro includes</h2><ul class="list">${PRO_TODAY.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
+<h2>How payment works</h2><ul class="list"><li>One-time payment through Razorpay: UPI, debit or credit card, net banking or wallet.</li><li>No auto-renew. Buying again adds time to your current end date.</li><li>Pro turns on in your account as soon as the payment is confirmed. It is digital: nothing is shipped (<a href="/shipping/">delivery policy</a>).</li><li>Full refund within 7 days of purchase (<a href="/refund/">refund policy</a>).</li></ul>${appLink('/pro', 'See Pro in the app')}`,
+})
+page({
+  path: '/about/', title: 'About Data Dhaba | Data Dhaba', h1: 'About Data Dhaba',
+  description: `${BRAND.name} is a hands-on online data engineering course made by ${BRAND.author}.`,
+  crumbs: [HOME, { name: 'About', path: '/about/' }],
+  body: `<p class="lead">Most data engineering courses stop at slides. ${esc(BRAND.name)} is hands-on and built from real production work: you write SQL and Python that actually runs, fix broken pipelines, and practise the interviews.</p>
+<h2>Who we are</h2><p>${esc(BUSINESS)} The course, handbooks and interview material are written by ${esc(BRAND.author)}, a data engineer with years of building and running data platforms.</p>
+<h2>What we sell</h2><p>${esc(BRAND.name)} Pro, an online course subscription: ${PRO_PLANS.map((p) => `${esc(p.amount)} ${esc(p.per)}`).join(' or ')}. See <a href="/pricing/">pricing</a>.</p>
+<h2>Contact</h2><p>Email <a href="mailto:${BRAND.email}">${esc(BRAND.email)}</a> or use the <a href="/contact/">contact page</a>.</p>${appLink('/about', 'Open this page in the app')}`,
+})
+page({
+  path: '/contact/', title: 'Contact Data Dhaba | Data Dhaba', h1: 'Contact us',
+  description: `Contact ${BRAND.name}: email ${BRAND.email}..`,
+  crumbs: [HOME, { name: 'Contact', path: '/contact/' }],
+  body: `<p class="lead">Questions about learning, Pro, payments or refunds? Write to us and we reply by email.</p>
+<h2>Email</h2><p><a href="mailto:${BRAND.email}">${esc(BRAND.email)}</a></p>
+<h2>Contact form</h2><p>Use the <a href="/#/contact">contact form in the app</a>. For a payment question, pick "Pro and payments" and include your payment ID.</p>
+<h2>Business details</h2><p>${esc(BUSINESS)}</p>
+<h2>Policies</h2><ul class="list"><li><a href="/pricing/">Pricing</a></li><li><a href="/terms/">Terms of use</a></li><li><a href="/privacy/">Privacy policy</a></li><li><a href="/refund/">Refund and cancellation policy</a></li><li><a href="/shipping/">Shipping and delivery policy</a></li></ul>`,
 })
 
 // ── sitemap + robots ─────────────────────────────────────────────────────
