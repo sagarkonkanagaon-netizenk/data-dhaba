@@ -6,6 +6,7 @@ import { runIsolated, ensureBig, compareResults } from '../lib/duck.js'
 import { BIG, bigSetupSql } from '../data/bigdata.js'
 import { DAILY, dayKey, dayNumber, keyForNumber, challengeFor } from '../data/daily.js'
 import { useProgress, setIn } from '../lib/progress.js'
+import { dailyStreakOf } from '../lib/streaks.js'
 
 const LOCAL = 'z2h:daily'
 function readLocal() { try { return JSON.parse(localStorage.getItem(LOCAL)) || {} } catch (e) { return {} } }
@@ -24,14 +25,7 @@ function expected(c) {
   return expCache.get(c.id)
 }
 
-export function dailyStreak(checks, today = dayKey()) {
-  const solved = new Set(Object.entries(checks).filter(([k, v]) => k.startsWith('daily:') && v && v.solved && (!v.on || v.on === k.slice(6))).map(([k]) => k.slice(6)))
-  let n = dayNumber(today)
-  if (!solved.has(keyForNumber(n))) n--
-  let s = 0
-  while (n >= 1 && solved.has(keyForNumber(n))) { s++; n-- }
-  return s
-}
+export const dailyStreak = dailyStreakOf
 
 function fmtTime(secs) { const m = Math.floor(secs / 60); const s = secs % 60; return m ? `${m}m ${s}s` : `${s}s` }
 

@@ -8,6 +8,7 @@ import { DRILLS } from '../data/drills.js'
 import { useProgress, streak, exportProgress, importProgress, resetProgress } from '../lib/progress.js'
 import { weekStats } from './Path.jsx'
 import { tally, levelOf, badgesOf, LEVELS } from '../lib/xp.js'
+import TokenCabinet from '../components/TokenCabinet.jsx'
 
 export default function ProgressPage() {
   const p = useProgress()
@@ -25,7 +26,7 @@ export default function ProgressPage() {
   const last28 = Array.from({ length: 28 }, (_, i) => { const d = new Date(); d.setDate(d.getDate() - (27 - i)); return d.toISOString().slice(0, 10) })
 
   const loc = useLocation()
-  useEffect(() => { if (loc.hash === '#backup') setTimeout(() => document.getElementById('backup')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50) }, [loc.hash])
+  useEffect(() => { if (loc.hash === '#backup' || loc.hash === '#tokens') setTimeout(() => document.getElementById(loc.hash.slice(1))?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50) }, [loc.hash])
   const download = () => {
     const blob = new Blob([exportProgress()], { type: 'application/json' })
     const a = document.createElement('a')
@@ -82,6 +83,7 @@ export default function ProgressPage() {
             </Link>
           ))}
         </div>
+        <TokenCabinet />
         <h2>Skill map</h2>
         <div className="card card-pad" style={{ marginBottom: 28 }}>
           {PHASES.map((ph) => {

@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { useProgress } from '../lib/progress.js'
 import { tally, levelOf, badgesOf, POINTS } from '../lib/xp.js'
+import { tokensOf, TOKENS } from '../data/tokens.js'
+import { PATTERN_OF } from '../data/sqlPatterns.js'
+import TokenReveal from './TokenReveal.jsx'
 
 const LABEL = { chapter: 'Chapter read', sql: 'SQL question solved', py: 'Python question solved', spark: 'PySpark answer known', scenario: 'Scenario practised', drill: 'Incident resolved', project: 'Project shipped', check: 'Checklist item done', card: 'Flashcard learned', daily: 'Daily challenge solved' }
 
@@ -40,18 +43,27 @@ export default function Celebrate() {
   const [toast, setToast] = useState(null)
   const [big, setBig] = useState(null)
   const [badge, setBadge] = useState(null)
+  const [token, setToken] = useState(null)
   const tRef = useRef(0)
   useEffect(() => () => clearTimeout(tRef.current), [])
   useEffect(() => {
     const t = tally(p)
     const badges = badgesOf(p).filter((b) => b.earned).map((b) => b.id)
+    const toks = tokensOf(p, PATTERN_OF).filter((x) => x.earned).map((x) => x.id)
     const before = prev.current
-    prev.current = { t, badges }
+    prev.current = { t, badges, toks }
     if (!before || t.xp <= before.t.xp) return
     const delta = t.xp - before.t.xp
     const kind = Object.keys(t.n).find((k) => t.n[k] > before.t.n[k])
     const lvBefore = levelOf(before.t.xp); const lv = levelOf(t.xp)
     const newBadge = badgesOf(p).find((b) => b.earned && !before.badges.includes(b.id))
+    // A new SQL token gets the full reveal, and replaces the smaller badge card for that moment.
+    const newTok = toks.find((id) => !before.toks.includes(id))
+    if (newTok) {
+      const i = TOKENS.findIndex((x) => x.id === newTok)
+      setToken({ t: TOKENS[i], next: i < 4 ? TOKENS[i + 1] : null, key: Date.now() })
+      return
+    }
     setToast({ delta, label: kind ? LABEL[kind] : 'Quiz score', id: Date.now() })
     clearTimeout(tRef.current); tRef.current = setTimeout(() => setToast(null), 2600)
     if (lv.i > lvBefore.i) { setBig({ type: 'level', lv }); confetti(true) }
@@ -64,6 +76,7 @@ export default function Celebrate() {
     <>
       {toast && <div key={toast.id} className="xp-toast" role="status" onAnimationEnd={(e) => { if (e.animationName === "toast-out") setToast(null) }}><b>+{toast.delta} XP</b><span>{toast.label}</span></div>}
       {badge && <div key={badge.key} className="badge-pop" role="status" onClick={() => setBadge(null)}><span className="b-ico">{badge.icon}</span><div><div className="eyebrow" style={{ margin: 0 }}>Badge earned</div><b>{badge.name}</b><small>{badge.desc}</small></div></div>}
+      {token && <TokenReveal key={token.key} token={token.t} next={token.next} onClose={() => setToken(null)} />}
       {big && (
         <div className="levelup" role="dialog" aria-label={big.type === 'level' ? 'Level up' : 'Badge earned'} onClick={() => setBig(null)}>
           <div className="levelup-card" onClick={(e) => e.stopPropagation()}>
