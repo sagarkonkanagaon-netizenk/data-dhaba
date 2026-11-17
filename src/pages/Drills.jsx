@@ -3,6 +3,8 @@ import ProGate from '../components/ProGate.jsx'
 import { isLocked } from '../lib/tier.js'
 import { Link, useParams } from 'react-router-dom'
 import { DRILLS } from '../data/drills.js'
+import { PRO_DRILLS, PRO_THEMES } from '../data/drillsPro.js'
+import './drills.css'
 import CodeEditor from '../components/CodeEditor.jsx'
 import ResultTable from '../components/ResultTable.jsx'
 import Markdown from '../components/Markdown.jsx'
@@ -29,8 +31,43 @@ export default function Drills() {
             </Link>
           ))}
         </div>
+        <ProLibrary />
       </div>
     </div>
+  )
+}
+
+function ProLibrary() {
+  const [t, setT] = useState('All')
+  const list = t === 'All' ? PRO_DRILLS : PRO_DRILLS.filter((d) => d.t === t)
+  return (
+    <section className="dl-pro" aria-labelledby="dl-pro-h">
+      <div className="dl-pro-head">
+        <div>
+          <div className="eyebrow">Pro on-call library</div>
+          <h2 id="dl-pro-h">{PRO_DRILLS.length} more incidents, each tested on real data</h2>
+          <p className="muted">Doubled loads, UTC days, SCD2 overlaps, CDC deletes, Kafka lag, small files, cost spikes. Every drill has the broken query, the data, the fix and the prevention a senior engineer would put in place.</p>
+        </div>
+        <Link to="/pro" className="btn btn-primary">Unlock all {PRO_DRILLS.length}</Link>
+      </div>
+      <div className="dl-tabs" role="tablist" aria-label="Incident themes">
+        {['All', ...PRO_THEMES].map((x) => (
+          <button key={x} type="button" role="tab" aria-selected={t === x} className={'dl-tab' + (t === x ? ' on' : '')} onClick={() => setT(x)}>
+            {x}<span>{x === 'All' ? PRO_DRILLS.length : PRO_DRILLS.filter((d) => d.t === x).length}</span>
+          </button>
+        ))}
+      </div>
+      <div className="dl-grid">
+        {list.map((d) => (
+          <Link key={d.id} to="/pro" className="dl-card card card-link" aria-label={`${d.title}, Pro drill`}>
+            <div className="spread small"><span className="chip">{d.t}</span><span className="chip chip-primary">🔒 Pro</span></div>
+            <b>{d.title}</b>
+            <div className="pager">{d.pager}</div>
+            <span className="small muted">{d.level}</span>
+          </Link>
+        ))}
+      </div>
+    </section>
   )
 }
 

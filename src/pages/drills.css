@@ -1,0 +1,12 @@
+.dl-pro { margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--line); }
+.dl-pro-head { display: flex; gap: 20px; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; margin-bottom: 18px; }
+.dl-pro-head > div { max-width: 680px; min-width: 0; }
+.dl-pro-head h2 { margin: 4px 0 8px; }
+.dl-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 16px; scrollbar-width: thin; }
+.dl-tab { flex: none; display: inline-flex; gap: 8px; align-items: center; border: 1px solid var(--line); background: var(--card); color: var(--text); border-radius: 999px; padding: 7px 14px; font: inherit; font-size: .86rem; cursor: pointer; }
+.dl-tab span { font-size: .76rem; opacity: .7; }
+.dl-tab.on { background: var(--text); color: var(--bg); border-color: var(--text); }
+.dl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.dl-card { display: flex; flex-direction: column; gap: 10px; padding: 16px; min-width: 0; }
+.dl-card .pager { font-size: .78rem; padding: 9px 11px; overflow-wrap: anywhere; }
+@media (max-width: 520px) { .dl-grid { grid-template-columns: 1fr; } }
