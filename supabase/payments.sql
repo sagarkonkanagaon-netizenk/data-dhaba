@@ -55,7 +55,7 @@ create table if not exists public.payments (
   user_id     uuid not null references auth.users (id) on delete cascade,
   email       text,
   plan_key    text not null check (plan_key in ('6m', '1y')),
-  amount      int  not null check (amount > 0),                  -- smallest unit: paise (₹1,999 = 199900) or cents
+  amount      int  not null check (amount > 0),                  -- smallest unit: paise (₹2,499 = 249900) or cents
   currency    text not null default 'INR' check (currency in ('INR', 'USD')),
   status      text not null default 'created' check (status in ('created', 'paid', 'refunded')),
   payment_id  text unique,

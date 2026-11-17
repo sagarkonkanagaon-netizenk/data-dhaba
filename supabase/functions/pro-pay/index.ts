@@ -13,7 +13,7 @@ import { createClient } from 'jsr:@supabase/supabase-js@2'
 const LABEL: Record<string, string> = { '6m': 'Data Dhaba Pro · 6 months', '1y': 'Data Dhaba Pro · 1 year' }
 const cents = (v?: string) => (v && /^\d{3,6}$/.test(v) ? Number(v) : 0)
 const PRICES: Record<string, Record<string, number>> = {
-  INR: { '6m': 199900, '1y': 299900 },                       // ₹1,999 and ₹2,999: confirmed by Sagar, do not change here
+  INR: { '6m': 249900, '1y': 359900 },                       // ₹2,499 and ₹3,599: confirmed by Sagar, do not change here
   USD: { '6m': cents(Deno.env.get('PRO_USD_6M')), '1y': cents(Deno.env.get('PRO_USD_1Y')) },
 }
 // While the keys are test keys (rzp_test_...), only these emails may start a checkout, so nobody else
