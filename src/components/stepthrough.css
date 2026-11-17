@@ -1,0 +1,15 @@
+.st-box { border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin: 12px 0; background: var(--card); display: flex; flex-direction: column; gap: 10px; }
+.st-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
+.st-top .btn { margin-left: auto; }
+.st-rail { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.st-rail button { font: inherit; font-size: .85rem; display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 10px; border: 1px solid var(--line); background: transparent; color: inherit; cursor: pointer; }
+.st-rail button small { color: var(--muted); font-size: .75rem; }
+.st-rail button.past { background: color-mix(in srgb, var(--c-practice) 8%, transparent); }
+.st-rail button.on { border-color: var(--c-practice); background: color-mix(in srgb, var(--c-practice) 16%, transparent); font-weight: 700; }
+.st-n { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-size: .72rem; background: var(--bg-2); }
+.st-rail button.on .st-n { background: var(--c-practice); color: #fff; }
+.st-say { font-size: .95rem; line-height: 1.5; }
+.st-change { display: inline-block; margin-left: 8px; padding: 1px 8px; border-radius: 99px; font-size: .8rem; font-weight: 600; background: var(--bg-2); }
+.st-sql summary { cursor: pointer; font-size: .85rem; color: var(--muted); }
+.st-sql pre { white-space: pre-wrap; font-size: .82rem; margin: 6px 0 0; }
+.st-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; }

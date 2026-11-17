@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import data from '../content/sql-questions.json'
 import CodeEditor from '../components/CodeEditor.jsx'
 import ResultTable from '../components/ResultTable.jsx'
@@ -8,7 +8,9 @@ import Markdown from '../components/Markdown.jsx'
 import Playground from './Playground.jsx'
 import { runIsolated, compareResults } from '../lib/duck.js'
 import { useProgress, setIn, getProgress } from '../lib/progress.js'
-import { DIALECTS, transpileSql } from '../lib/py.js'
+import { DIALECTS, transpileSql, sqlSteps } from '../lib/py.js'
+import StepThrough from '../components/StepThrough.jsx'
+import { recordResult } from '../lib/review.js'
 import { diffResults } from '../lib/diff.js'
 import RowDiff from '../components/RowDiff.jsx'
 import { PATTERN_OF } from '../data/sqlPatterns.js'
@@ -53,7 +55,7 @@ export default function SqlLab() {
         <aside className={'qlist card' + (listOpen ? ' open' : '')} style={{ padding: 8 }}>
           <div className="spread" style={{ padding: '6px 8px' }}><b>SQL lab</b><span className="chip chip-primary">{solved}/{QS.length}</span></div>
           <div style={{ padding: '0 8px 6px' }}><Link to="/playground" className="small">▶ SQL playground: run any query →</Link></div>
-          <div style={{ padding: '0 8px 6px' }}><Link to="/practice/patterns" className="small">◆ 25 SQL patterns: learn the shapes →</Link></div>
+          <div style={{ padding: '0 8px 6px' }}><Link to="/practice/patterns" className="small">◆ 25 SQL patterns: learn the shapes →</Link><br /><Link to="/practice/mock" className="small">⏱ Timed mock rounds: test yourself →</Link><br /><Link to="/practice/review" className="small">↻ Spaced review: keep it fresh →</Link></div>
           <button className="qlist-toggle" aria-expanded={listOpen} onClick={() => setListOpen(!listOpen)}>
             <span>Question {q.n} of {QS.length}</span><b>{listOpen ? 'Hide list ▴' : 'All questions ▾'}</b>
           </button>
@@ -79,7 +81,9 @@ export default function SqlLab() {
 
 function Question({ q }) {
   const navigate = useNavigate()
-  const [code, setCode] = useState(() => loadCode(q))
+  const fresh = new URLSearchParams(useLocation().search).get('review') === '1'
+  // From spaced review, start from a blank editor so the learner solves it from memory.
+  const [code, setCode] = useState(() => (fresh ? q.starter || `-- ${q.title} (review: solve it from memory)\n\n` : loadCode(q)))
   const [busy, setBusy] = useState(null)
   const [engine, setEngine] = useState(null)
   const [res, setRes] = useState(null)
@@ -89,6 +93,7 @@ function Question({ q }) {
   const [dialect, setDialect] = useState(() => { try { return localStorage.getItem('dd:sql-dialect') || 'duckdb' } catch (e) { return 'duckdb' } })
   const [trans, setTrans] = useState(null)
   const [preview, setPreview] = useState(null)
+  const [walk, setWalk] = useState(null)
   const p = useProgress()
   const idx = QS.findIndex((x) => x.n === q.n)
   const next = QS[idx + 1]
@@ -133,8 +138,24 @@ function Question({ q }) {
     if (w.error) { setVerdict({ ok: false, why: 'Could not compute the expected answer: ' + w.error }); return }
     const v = compareResults(r.result, w.result)
     setVerdict(v)
+    recordResult(q.n, v.ok)
     if (v.ok) setIn('sql', q.n, 'solved')
     else { setWant(w.result); setDiff(diffResults(r.result, w.result)); if (getProgress().sql[q.n] !== 'solved') setIn('sql', q.n, 'tried') }
+  }
+
+  // Watch it run: split the query into execution steps and run each one.
+  async function stepThrough() {
+    setBusy('steps'); setWalk(null)
+    const src = await source()
+    if (src.error) { setBusy(null); return }
+    setEngine('translate')
+    const sp = await sqlSteps(src.sql)
+    setEngine(null)
+    if (sp.error) { setWalk({ error: sp.error }); setBusy(null); return }
+    const pre = sp.pre ? sp.pre + ';\n' : ''
+    const steps = []
+    for (const st of sp.steps) steps.push({ ...st, r: await withEngine(() => runIsolated({ setup: q.setup, sql: pre + st.sql })) })
+    setWalk({ steps }); setBusy(null)
   }
 
   async function showTable(t) {
@@ -187,6 +208,7 @@ function Question({ q }) {
           <CodeEditor value={code} onChange={setCode} onRun={run} />
           <div className="toolbar">
             <button className="btn btn-ghost" onClick={run} disabled={!!busy}>{busy === 'run' ? 'Running…' : '▶ Run'}</button>
+            <button className="btn btn-ghost" onClick={stepThrough} disabled={!!busy} title="See your query run one clause at a time">{busy === 'steps' ? 'Splitting…' : '🎞 Watch it run'}</button>
             {!isConcept && <button className="btn btn-primary" onClick={check} disabled={!!busy}>{busy === 'check' ? 'Checking…' : 'Check answer'}</button>}
             <label className="small muted dialect-pick">Write as <select value={dialect} onChange={(e) => setDialect(e.target.value)} aria-label="SQL dialect">{DIALECTS.map(([id, label]) => <option key={id} value={id}>{label}</option>)}</select></label>
             <button className="btn btn-ghost btn-sm" style={{ marginLeft: 'auto' }} onClick={() => { setCode(q.starter || `-- ${q.title}\n\n`); setRes(null); setVerdict(null) }}>Reset</button>
@@ -198,6 +220,7 @@ function Question({ q }) {
             : <details className="reveal dialect-out" style={{ marginTop: 8 }}><summary>Translated from {DIALECTS.find((d) => d[0] === dialect)[1]} to DuckDB</summary><div className="inner"><pre><code>{trans.sql}</code></pre></div></details>)}
         </>
       )}
+      {walk && <StepThrough key={walk.steps ? walk.steps.length + walk.steps[0].sql : 'e'} data={walk} onClose={() => setWalk(null)} />}
       {verdict && (
         <div className={'verdict ' + (verdict.ok ? 'ok' : 'bad')} style={{ margin: '10px 0' }}>
           <span>{verdict.ok ? '✅' : '❌'}</span>

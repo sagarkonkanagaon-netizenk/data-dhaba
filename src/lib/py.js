@@ -52,3 +52,15 @@ export function transpileSql(sql, dialect) {
     worker.postMessage({ id, base, transpile: { sql, dialect, wheel } })
   })
 }
+
+// Split a SELECT into the steps SQL runs it in (FROM, WHERE, GROUP BY ... LIMIT), one query per step.
+export function sqlSteps(sql) {
+  if (!worker) spawn()
+  const id = ++seq
+  const base = new URL(BASE, window.location.href).href
+  const wheel = new URL(import.meta.env.BASE_URL + 'vendor/sqlglot-30.32.0-py3-none-any.whl', window.location.href).href
+  return new Promise((resolve) => {
+    pending.set(id, resolve)
+    worker.postMessage({ id, base, steps: { sql, wheel } })
+  })
+}
