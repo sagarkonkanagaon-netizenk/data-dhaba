@@ -23,8 +23,15 @@ const SLOGANS = [
 const PROPS = ['chai', 'charpai', 'lantern', 'board', 'kettle', 'tandoor']
 const PATTERNS = ['diamonds', 'flowers', 'stripes', 'dots', 'zigzag', 'eyes']
 
-// Different strides for each feature, so neighbouring numbers never look alike.
-function pick(n, arr, stride, off = 0) { return arr[((n * stride) + off) % arr.length] }
+// Each feature uses its own hash of the number, so cards next to each other, or in the same
+// grid column, never share a look.
+function hash(n, salt) {
+  let h = Math.imul(n ^ 0x9e3779b9, 0x85ebca6b) ^ Math.imul(salt + 1, 0xc2b2ae35)
+  h = Math.imul(h ^ (h >>> 16), 0x7feb352d)
+  h = Math.imul(h ^ (h >>> 15), 0x846ca68b)
+  return (h ^ (h >>> 16)) >>> 0
+}
+function pick(n, arr, salt) { return arr[hash(n, salt) % arr.length] }
 
 function Pattern({ kind, x, y, w, h, c1, c2 }) {
   const out = []
@@ -111,17 +118,17 @@ function Lorry({ color, c1, c2, c3, pattern, slogan, flip, body, crown, big }) {
 }
 
 export function artOf(n) {
-  const pal = pick(n, PALETTES, 5, 1)
+  const pal = pick(n, PALETTES, 1)
   return {
     pal,
-    truck: pick(n, TRUCK, 7, 3),
-    pattern: pick(n, PATTERNS, 1),
-    slogan: pick(n, SLOGANS, 11, 2),
-    prop: pick(n, PROPS, 13, 4),
-    flip: n % 2 === 1,
-    body: pick(n, ['box', 'tanker', 'flatbed'], 1, Math.floor(n / 6)),
-    crown: (n * 5 + 1) % 3,
-    big: n % 4 === 3,
+    truck: pick(n, TRUCK, 2),
+    pattern: pick(n, PATTERNS, 3),
+    slogan: pick(n, SLOGANS, 4),
+    prop: pick(n, PROPS, 5),
+    flip: hash(n, 6) % 2 === 1,
+    body: pick(n, ['box', 'tanker', 'flatbed'], 7),
+    crown: hash(n, 8) % 3,
+    big: hash(n, 9) % 4 === 0,
     night: pal === PALETTES[1] || pal === PALETTES[6],
   }
 }
