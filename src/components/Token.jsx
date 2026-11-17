@@ -251,7 +251,30 @@ function Edge({ token, i, n, size }) {
 }
 
 // A badge with thickness: front, back and a stack of silhouette slices, so it can spin in 3D.
+// A locked badge never shows its real design: a sealed stone coin with a keyhole and one pip per rank.
+function Sealed({ token, size }) {
+  const pips = Array.from({ length: token.rank || 1 }, (_, i) => i)
+  const id = 'seal-' + token.id
+  return (
+    <span className="token sealed" style={{ '--size': size + 'px' }} role="img" aria-label={`${token.title}, locked. Design revealed when earned`}>
+      <svg viewBox="0 0 200 200" aria-hidden="true">
+        <defs>
+          <radialGradient id={id + '-g'} cx="38%" cy="32%" r="75%"><stop offset="0" stopColor="#4a4763" /><stop offset=".6" stopColor="#25233a" /><stop offset="1" stopColor="#141323" /></radialGradient>
+          <linearGradient id={id + '-r'} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#6d6a8c" /><stop offset=".5" stopColor="#2a283f" /><stop offset="1" stopColor="#5a5778" /></linearGradient>
+        </defs>
+        <circle cx="100" cy="100" r="86" fill={`url(#${id}-r)`} />
+        <circle cx="100" cy="100" r="76" fill={`url(#${id}-g)`} />
+        <circle cx="100" cy="100" r="64" fill="none" stroke="rgba(255,255,255,.08)" strokeWidth="1.5" strokeDasharray="3 5" />
+        <path d="M100 66a15 15 0 0 1 9 27l6 33H85l6-33a15 15 0 0 1 9-27z" fill="#0c0b16" stroke="rgba(255,255,255,.12)" strokeWidth="1.5" />
+        {pips.map((i) => <circle key={i} cx={100 + (i - (pips.length - 1) / 2) * 13} cy="148" r="3.6" fill="rgba(255,255,255,.28)" />)}
+        <path className="seal-shine" d="M40 60 A70 70 0 0 1 120 32" fill="none" stroke="rgba(255,255,255,.18)" strokeWidth="4" strokeLinecap="round" />
+      </svg>
+    </span>
+  )
+}
+
 export default function Token({ token, size = 120, locked = false, spin = false, className = '' }) {
+  if (locked) return <Sealed token={token} size={size} />
   const n = 9
   const half = ((n - 1) / 2) * (size / 120) + 0.5
   return (

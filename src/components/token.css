@@ -64,3 +64,9 @@
 @keyframes coin-twinkle { 0%, 100% { opacity: 0; transform: scale(.3) rotate(0deg); } 50% { opacity: .95; transform: scale(1) rotate(45deg); } }
 .token.locked .coin-holo, .token.locked .coin-sparkles { display: none; }
 @media (prefers-reduced-motion: reduce) { .coin-holo, .coin-sparkles path { animation: none; } .coin-sparkles path { opacity: .7; } }
+
+/* Sealed (locked) badge: the real design stays secret until earned */
+.token.sealed { display: inline-grid; place-items: center; width: var(--size); height: var(--size); }
+.token.sealed svg { width: 82%; height: 82%; filter: drop-shadow(0 6px 14px rgba(10, 8, 30, .35)); animation: seal-bob 4s ease-in-out infinite; }
+@keyframes seal-bob { 50% { transform: translateY(-3px); } }
+@media (prefers-reduced-motion: reduce) { .token.sealed svg { animation: none; } }
