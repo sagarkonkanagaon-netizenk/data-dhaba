@@ -319,9 +319,7 @@ export function Privacy() {
 export function Refund() {
   return (
     <Policy eyebrow="Refunds" title="Refund and cancellation policy" updated="17 November 2026" sections={[
-      PAYMENTS_LIVE
-        ? ['Who this covers', ['This policy applies to every Data Dhaba Pro purchase. Payments are processed by Razorpay. Free accounts cost nothing, so there is nothing to refund.']]
-        : ['Pro is not on sale yet', ['Pro opens after the waitlist. This policy applies to every Pro purchase from the day it opens. Free accounts cost nothing, so there is nothing to refund.']],
+      ['Who this covers', ['This policy applies to every Data Dhaba Pro purchase. Payments are processed by Razorpay. Free accounts cost nothing, so there is nothing to refund.']],
       ['7-day full refund', ['If Pro is not right for you, ask for a refund within 7 days of your purchase and you get the full amount back. No reason needed.', 'To ask, email us from the email on your account with the payment ID from your receipt, or use the contact form and pick "Pro and payments".']],
       ['After 7 days', ['After the 7-day window, payments are not refundable, including for unused months. You keep Pro until the end of the period you paid for.']],
       ['How refunds are paid', ['Approved refunds go back to the original payment method (UPI, card or net banking). We start them within 2 working days; your bank usually shows the money within 5 to 7 working days after that.']],
@@ -332,14 +330,24 @@ export function Refund() {
   )
 }
 
+export function Shipping() {
+  return (
+    <Policy eyebrow="Delivery" title="Shipping and delivery policy" updated="17 November 2026" sections={[
+      ['Digital product, nothing shipped', [`${BRAND.name} Pro is an online course subscription. There are no physical goods and nothing is shipped to any address.`]],
+      ['When you get access', ['Pro turns on in your Data Dhaba account as soon as Razorpay confirms your payment, usually within seconds. You can use it right away at datadhaba.in, signed in with the same email.']],
+      ['If access does not turn on', ['If Pro is not active within 24 hours of a successful payment, email us with your payment ID. We will turn it on, or refund you in full.']],
+      ['Delivery charges', ['There are no delivery or handling charges. The price on the Pro page is the full amount you pay.']],
+    ]} />
+  )
+}
+
 export function Terms() {
   return (
     <Policy eyebrow="Terms" title="Terms of use" updated="17 November 2026" sections={[
       ['Using the site', [`You can use ${BRAND.name} for your own learning and share links to any page. Please don\'t copy the handbooks or questions wholesale onto other sites.`]],
       ['No guarantees', ['We work hard to keep the content correct, but it is provided as is. It is learning material, not professional advice, and it can\'t promise a job or an exam result.']],
-      ['Pro', [PAYMENTS_LIVE
-        ? 'Pro is a one-time payment for 6 months (₹2,499) or 1 year (₹3,599) that does not renew automatically. Payments are processed securely by Razorpay; we never see or store your card or UPI details. Refunds follow our refund and cancellation policy at datadhaba.in/#/refund.'
-        : 'Pro is not on sale yet, and joining the waitlist costs nothing. When it opens, Pro is a one-time payment for 6 months or 1 year that does not renew automatically. Refunds follow our refund and cancellation policy at datadhaba.in/#/refund.']],
+      ['Pro', ['Pro is a one-time payment for 6 months (₹2,499) or 1 year (₹3,599) that does not renew automatically. Payments are processed securely by Razorpay; we never see or store your card or UPI details. Refunds follow our refund and cancellation policy at datadhaba.in/#/refund.']],
+      ['Who runs Data Dhaba', [`${BRAND.name} is run by ${BRAND.author} as a sole proprietorship (registered with Udyam), based in Bengaluru, Karnataka, India. Contact: ${BRAND.email}.`]],
       ['Delivery', ['Pro is digital. Nothing is shipped. Access turns on in your account as soon as the payment is confirmed, usually within seconds and always within 24 hours. If it has not turned on within 24 hours, email us with your payment ID and we will turn it on or refund you in full.']],
       ['Personal use', ['Pro is for the person who bought it. Please don\'t share your account or post Pro solutions publicly.']],
       ['Names and trademarks', ['Product names such as Databricks, Azure, Spark or Kafka belong to their owners and are used only to describe what you learn. RasoiRun is a made-up company.']],

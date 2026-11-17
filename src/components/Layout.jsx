@@ -134,7 +134,7 @@ export default function Layout() {
         </div>
         <div className="container footer-base">
           <span>© {new Date().getFullYear()} {BRAND.name}</span>
-          <nav aria-label="Legal"><Link to="/privacy">Privacy</Link><Link to="/terms">Terms</Link><Link to="/refund">Refunds</Link><Link to="/contact">Contact</Link><Link to="/pro">Pro waitlist</Link>{AUTH_ENABLED && <Link to="/account">Account</Link>}</nav>
+          <nav aria-label="Legal"><Link to="/privacy">Privacy</Link><Link to="/terms">Terms</Link><Link to="/refund">Refunds</Link><Link to="/shipping">Delivery</Link><Link to="/contact">Contact</Link><Link to="/pro">Pricing</Link>{AUTH_ENABLED && <Link to="/account">Account</Link>}</nav>
         </div>
       </footer>
       {search && <Suspense fallback={null}><Search onClose={() => setSearch(false)} /></Suspense>}
