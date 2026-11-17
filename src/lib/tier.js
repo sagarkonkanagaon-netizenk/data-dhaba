@@ -1,7 +1,17 @@
 // Free vs Pro. Free gives the start of everything; Pro gives the finish.
-// Locks stay off until payments are live; a preview build can turn them on with VITE_PRO_LOCKS=on.
-export const LOCKS_ON = import.meta.env.VITE_PRO_LOCKS === 'on'
-export const PAYMENTS_LIVE = false
+//
+// Payments switch on with the Razorpay key id the site is built with (VITE_RAZORPAY_KEY_ID, public by design):
+//   rzp_live_…  -> Pro is on sale to everyone and the free limits below apply.
+//   rzp_test_…  -> nothing changes for visitors; the checkout shows only on /pro?test=1, for testing.
+//   (none)      -> waitlist only, as before.
+// A preview build can turn the locks on without payments with VITE_PRO_LOCKS=on.
+//
+// Who has Pro is decided by the database (has_pro / my_pro in supabase/payments.sql). The copy kept here only
+// decides what the page shows; the Pro project files themselves are served only to accounts the database says have Pro.
+export const RZP_KEY = import.meta.env.VITE_RAZORPAY_KEY_ID || ''
+export const PAYMENTS_LIVE = /^rzp_live_/.test(RZP_KEY)
+export const PAYMENTS_TEST = /^rzp_test_/.test(RZP_KEY)
+export const LOCKS_ON = PAYMENTS_LIVE || import.meta.env.VITE_PRO_LOCKS === 'on'
 
 export const FREE = {
   chapters: 2,            // first 2 chapters of every handbook
@@ -13,8 +23,21 @@ export const FREE = {
   atlas: ['databricks', 'spark', 'kafka'],
 }
 
-// Until accounts carry a Pro flag (with payments), nobody has Pro.
-export function hasPro() { return false }
+// ---- the signed-in learner's Pro status, refreshed from the database ----
+export const TIER_EVENT = 'dd:tier'
+const KEY = 'dd:pro'
+const NONE = { pro: false, owner: false, until: null }
+let tier = (() => { try { return { ...NONE, ...JSON.parse(localStorage.getItem(KEY) || '{}') } } catch (e) { return NONE } })()
+
+export function getTier() { return tier }
+export function hasPro() { return Boolean(tier.pro) }
+export function setTier(next) {
+  const t = next ? { pro: Boolean(next.pro), owner: Boolean(next.owner), until: next.until || null } : NONE
+  const changed = t.pro !== tier.pro || t.owner !== tier.owner || t.until !== tier.until
+  tier = t
+  try { if (t.pro || t.until) localStorage.setItem(KEY, JSON.stringify(t)); else localStorage.removeItem(KEY) } catch (e) { /* ignore */ }
+  if (changed) { try { window.dispatchEvent(new Event(TIER_EVENT)) } catch (e) { /* ignore */ } }
+}
 
 export function isLocked(kind, id) {
   if (!LOCKS_ON || hasPro()) return false

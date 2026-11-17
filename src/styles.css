@@ -1147,3 +1147,10 @@ main .page-head h1 em, main .daily-head h1 em, main .play-head h1 em { color: va
 .plan-win { border: 1px dashed var(--primary); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }
 .plan-card { margin-bottom: 16px; }
 @media (max-width: 560px) { .plan-facts { gap: 6px; } .plan-facts > div { padding: 8px; } .plan-facts b { font-size: .82rem; } .plan-facts small { font-size: .72rem; } .plan-facts span { font-size: .66rem; } }
+
+/* Pro checkout */
+.linkish { background: none; border: 0; padding: 0; color: var(--primary); font: inherit; text-decoration: underline; cursor: pointer; }
+.receipts { margin-top: 16px; }
+.receipts h3 { margin: 0 0 6px; font-size: 1rem; }
+.receipts ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.receipts code { overflow-wrap: anywhere; }

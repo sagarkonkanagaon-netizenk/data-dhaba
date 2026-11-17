@@ -95,6 +95,25 @@ export const PRO_LADDER_READY = PRO_LADDER.filter((p) => p.ready).length
 
 export const PRO_PROJECT_COUNT = PRO_PROJECTS.reduce((a, g) => a + g.items.length, 0)
 
+// What Pro holds on the day it goes on sale. Keep this list to things that exist and unlock today.
+export const PRO_TODAY = [
+  'Every handbook chapter, and every new handbook as it is added',
+  'Every SQL Lab and Python Lab problem, with official answers',
+  'The full 24-week path, every Spark scene, every incident drill and every Atlas tool page',
+  `${PRO_LADDER_READY} career-ladder projects (intern to big data engineer): brief, starter code, full solution, tests, walkthrough and README`,
+  'New career-ladder projects as each one is finished, at no extra cost during your Pro period',
+]
+
+export const PRO_FAQ_LIVE = [
+  { q: 'How do I pay?', a: 'Pick a plan and pay through Razorpay with UPI, a debit or credit card, net banking or a wallet. Pro turns on the moment the payment goes through.' },
+  { q: 'Is it a subscription that renews by itself?', a: 'No. You pay once for 6 months or 1 year, and it does not renew automatically. Buying again adds the time to your current end date.' },
+  { q: 'Can I get a refund?', a: 'Yes. Ask within 7 days of your purchase and you get the full amount back, no reason needed. See datadhaba.in/#/refund.' },
+  { q: 'Money left my account but Pro did not turn on.', a: 'It usually turns on within a few minutes on its own. If it does not, email us with the payment ID from your Razorpay receipt and we will fix it or refund you in full.' },
+  { q: 'Can I share my account?', a: 'Each account works on one device at a time. Signing in somewhere else signs you out on the first device.' },
+  { q: 'I am paying from outside India.', a: 'You can pay by international card. If prices in US dollars are available for your region, the Pro page offers them.' },
+  { q: 'I am a student and can\'t afford it.', a: 'Email for a free student pass. Nobody should be priced out of learning.' },
+]
+
 export const PRO_FAQ = [
   { q: 'When does Pro open?', a: 'Soon. Join the waitlist and you get an email the day it opens.' },
   { q: 'Do I pay anything now?', a: 'No. The waitlist asks for no card or UPI details.' },

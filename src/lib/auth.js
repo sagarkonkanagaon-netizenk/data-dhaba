@@ -95,6 +95,7 @@ export async function signInWithGoogle() {
 export async function signOut() {
   const sb = await client()
   if (sb) await sb.auth.signOut({ scope: 'local' })
+  try { localStorage.removeItem('dd:pro') } catch (e) { /* ignore */ }
   announce()
 }
 
