@@ -38,6 +38,7 @@ const Flashcards = page(() => import('./pages/Flashcards.jsx'))
 const Quiz = page(() => import('./pages/Quiz.jsx'))
 const Visual = page(() => import('./pages/Visual.jsx'))
 const SparkViz = page(() => import('./pages/SparkViz.jsx'))
+const SqlPatterns = page(() => import('./pages/SqlPatterns.jsx'))
 const Atlas = page(() => import('./pages/Atlas.jsx'))
 const Notes = page(() => import('./pages/Notes.jsx'))
 const Note = page(() => import('./pages/Notes.jsx'), 'Note')
@@ -74,6 +75,7 @@ export default function App() {
             <Route path="learn/:book" element={<Book />} />
             <Route path="learn/:book/:chapter" element={<Chapter />} />
             <Route path="practice" element={<Practice />} />
+            <Route path="practice/patterns" element={<SqlPatterns />} />
             <Route path="practice/sql" element={<SqlLab />} />
             <Route path="practice/sql/:n" element={<SqlLab />} />
             <Route path="practice/python" element={<PyLab />} />

@@ -8,8 +8,27 @@ async function init(base) {
   return pyodide
 }
 
+// SQL dialect translation with sqlglot (pure Python, MIT licence), unpacked once from a vendored wheel.
+let glot = false
+async function transpile(py, { sql, dialect, wheel }) {
+  if (!glot) { const buf = await (await fetch(wheel)).arrayBuffer(); py.unpackArchive(buf, 'wheel'); glot = true }
+  py.globals.set('__sql', sql); py.globals.set('__dialect', dialect)
+  return JSON.parse(py.runPython(`
+import json, sqlglot
+try:
+    __r = json.dumps({"sql": ";\\n".join(sqlglot.transpile(__sql, read=__dialect, write="duckdb", pretty=True))})
+except Exception as __e:
+    __r = json.dumps({"error": str(__e).split("\\n")[0]})
+__r
+`))
+}
+
 self.onmessage = async (e) => {
   const { id, code, base, check, show } = e.data
+  if (e.data.transpile) {
+    try { self.postMessage({ id, ...(await transpile(await init(base), e.data.transpile)) }) } catch (err) { self.postMessage({ id, error: String(err.message || err) }) }
+    return
+  }
   let out = ''
   try {
     const py = await init(base)

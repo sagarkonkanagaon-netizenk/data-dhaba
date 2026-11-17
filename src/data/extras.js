@@ -96,7 +96,7 @@ export const FREE_PLATFORMS = [
   { title: 'Microsoft Learn', href: 'https://learn.microsoft.com/en-us/training/', desc: 'Official, free learning paths with sandboxed exercises for Azure data services and Fabric.' },
   { title: 'Azure free account', href: 'https://azure.microsoft.com/free', desc: 'Free credit for your first month plus always-free services. Enough to try ADF and ADLS.' },
   { title: 'DataTalksClub DE Zoomcamp', href: 'https://github.com/DataTalksClub/data-engineering-zoomcamp', desc: 'A free, community-run 9 to 10 week course with a graded capstone. Great companion for orchestration and Kafka.' },
-  { title: 'StrataScratch and LeetCode SQL', href: 'https://www.stratascratch.com', desc: 'More real interview SQL once you finish the 78 questions here.' },
+  { title: 'StrataScratch and LeetCode SQL', href: 'https://www.stratascratch.com', desc: 'More real interview SQL once you finish the 109 questions here.' },
 ]
 
 export const MANTRAS = [

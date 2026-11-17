@@ -148,7 +148,7 @@ function cleanErr(e) {
   return String(e && e.message ? e.message : e).replace(/^Error: /, '').replace(new RegExp('lab_[a-z0-9_]+\\.', 'g'), '')
 }
 
-function norm(v) {
+export function norm(v) {
   if (v === null || v === undefined) return '∅'
   if (typeof v === 'number') return (Math.round(v * 100) / 100).toFixed(2)
   if (typeof v === 'boolean') return v ? 'true' : 'false'
