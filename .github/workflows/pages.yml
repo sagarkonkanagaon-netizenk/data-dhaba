@@ -12,9 +12,12 @@ permissions:
   pages: write
   id-token: write
 
+# Each PR gets its own lane: a new push cancels only that PR's older build.
+# Deploys from main queue one after another and are never cancelled, so merging
+# two PRs back to back cannot cancel a PR check or a live deploy.
 concurrency:
-  group: pages
-  cancel-in-progress: true
+  group: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'pages' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   content-check:
