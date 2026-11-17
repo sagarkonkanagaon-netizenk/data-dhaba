@@ -57,6 +57,7 @@ const SheetIndex = page(() => import('./pages/ProSheets.jsx'), 'SheetIndex')
 const Sheet = page(() => import('./pages/ProSheets.jsx'), 'Sheet')
 const SqlReview = page(() => import('./pages/SqlReview.jsx'))
 const MockRound = page(() => import('./pages/MockRound.jsx'))
+const Today = page(() => import('./pages/Today.jsx'))
 const ProgressPage = page(() => import('./pages/Progress.jsx'))
 const Account = page(() => import('./pages/Account.jsx'))
 
@@ -106,6 +107,7 @@ export default function App() {
             <Route path="notes/:slug" element={<Note />} />
             <Route path="projects" element={<Projects />} />
             <Route path="resources" element={<Resources />} />
+            <Route path="today" element={<Today />} />
             <Route path="progress" element={<ProgressPage />} />
             <Route path="account" element={<Account />} />
             <Route path="pro" element={<Pro />} />

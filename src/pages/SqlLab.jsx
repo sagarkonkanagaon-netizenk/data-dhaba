@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import ProGate from '../components/ProGate.jsx'
+import { isLocked } from '../lib/tier.js'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import data from '../content/sql-questions.json'
 import CodeEditor from '../components/CodeEditor.jsx'
@@ -66,14 +68,14 @@ export default function SqlLab() {
               {QS.filter((x) => x.section === s).map((x) => (
                 <button key={x.n} className={x.n === q.n ? 'on' : ''} onClick={() => navigate(`/practice/sql/${x.n}`)}>
                   <span className="n">{x.n}</span><span>{x.title}</span>
-                  <span className="st">{p.sql[x.n] === 'solved' ? '✅' : p.sql[x.n] === 'tried' ? '•' : ''}</span>
+                  <span className="st">{isLocked('sql', x.n) ? '🔒' : p.sql[x.n] === 'solved' ? '✅' : p.sql[x.n] === 'tried' ? '•' : ''}</span>
                 </button>
               ))}
             </div>
           ))}
           </div>
         </aside>
-        <Question key={q.n} q={q} />
+        {isLocked('sql', q.n) ? <section><div className="qhead"><div className="row small muted"><span>{q.section}</span><span>·</span><span>Question {q.n} of {QS.length}</span></div><h1 className="q-title">{q.title}</h1></div><ProGate what={`all ${QS.length} SQL problems with answers`} /></section> : <Question key={q.n} q={q} />}
       </div>
     </div>
   )

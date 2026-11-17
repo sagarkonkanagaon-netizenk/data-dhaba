@@ -1,14 +1,24 @@
-// The site in four sections. Menus, footer, breadcrumbs and page colours all come from this list.
+// The site in four doors: Today, Learn, Practice, Career. Menus, footer, breadcrumbs and page colours all come from this list.
 export const SECTIONS = [
   {
+    id: 'daily', label: 'Today', icon: '☀️', blurb: 'Your day',
+    lead: 'Your one next step, today\'s challenge and your streak, in one place.',
+    items: [
+      { to: '/today', icon: '☀️', label: 'Today', desc: 'Your next step and today\'s plan' },
+      { to: '/daily', icon: '🔥', label: 'Daily SQL challenge', desc: 'A new question every midnight' },
+      { to: '/progress', icon: '📈', label: 'My progress', desc: 'XP, badges and backups' },
+    ],
+  },
+  {
     id: 'learn', label: 'Learn', icon: '🎓', blurb: 'Understand it',
-    lead: 'A 24-week path, five handbooks and animated SQL. Read a little every day.',
+    lead: 'A 24-week path, handbooks, every tool on one map and animated SQL and Spark.',
     items: [
       { to: '/learn', icon: '📚', label: 'Overview', desc: 'Handbooks and where to start' },
       { to: '/path', icon: '🗺️', label: '24-week path', desc: '5½ months, SQL to job offer' },
+      { to: '/atlas', icon: '🧭', label: 'Tech Stack Atlas', desc: 'Every DE tool by job and cloud' },
       { to: '/visual', icon: '✨', label: 'Visual SQL', desc: 'Joins and window functions, animated' },
+      { to: '/spark-visual', icon: '⚡', label: 'Spark Visualizer', desc: 'Watch partitions, shuffles and skew' },
       { to: '/notes', icon: '📝', label: 'Notes & PDFs', desc: 'Download the handbooks to keep' },
-      { to: '/projects', icon: '🏗️', label: 'Projects', desc: 'Portfolio builds you can show' },
       { to: '/resources', icon: '🔗', label: 'Resources', desc: 'Certifications and free platforms' },
     ],
   },
@@ -26,10 +36,11 @@ export const SECTIONS = [
     ],
   },
   {
-    id: 'interview', label: 'Interview', icon: '🎤', blurb: 'Get hired',
-    lead: 'Quizzes, flashcards and model answers for the rounds that decide offers.',
+    id: 'interview', label: 'Career', icon: '🎤', blurb: 'Get hired',
+    lead: 'Portfolio projects, quizzes, flashcards and model answers for the rounds that decide offers.',
     items: [
       { to: '/interview', icon: '🎯', label: 'Overview', desc: 'Everything for interview day' },
+      { to: '/projects', icon: '🏗️', label: 'Projects', desc: 'Portfolio builds you can show' },
       { to: '/interview/quiz', icon: '🧠', label: 'Quiz', desc: '102 questions on Azure, AWS and GCP' },
       { to: '/interview/flashcards', icon: '🃏', label: 'Flashcards', desc: 'Five minutes of spaced repetition' },
       { to: '/interview/scenarios', icon: '🔥', label: 'Scenario questions', desc: 'Model answers and push-backs' },
@@ -37,17 +48,13 @@ export const SECTIONS = [
       { to: '/interview/playbook', icon: '🎙️', label: 'Tell me about yourself', desc: 'The six-beat intro' },
     ],
   },
-  {
-    id: 'daily', label: 'Daily', icon: '🔥', blurb: 'Keep the streak',
-    lead: 'One SQL challenge a day, the same for everyone.',
-    items: [{ to: '/daily', icon: '🔥', label: 'Daily SQL challenge', desc: 'A new question every midnight' }],
-  },
 ]
 
 const PREFIX = [
-  ['/daily', 'daily'], ['/interview', 'interview'], ['/quiz', 'interview'],
+  ['/today', 'daily'], ['/daily', 'daily'], ['/progress', 'daily'],
+  ['/interview', 'interview'], ['/quiz', 'interview'], ['/projects', 'interview'],
   ['/practice', 'practice'], ['/datasets', 'practice'], ['/playground', 'practice'], ['/drills', 'practice'],
-  ['/path', 'learn'], ['/learn', 'learn'], ['/visual', 'learn'], ['/notes', 'learn'], ['/projects', 'learn'], ['/resources', 'learn'],
+  ['/path', 'learn'], ['/learn', 'learn'], ['/visual', 'learn'], ['/spark-visual', 'learn'], ['/atlas', 'learn'], ['/notes', 'learn'], ['/resources', 'learn'],
 ]
 
 export function sectionOf(pathname) {
@@ -62,4 +69,4 @@ export function itemOf(pathname, sec) {
 }
 
 // Where each top-menu link goes.
-export const HOME_OF = { learn: '/learn', practice: '/practice', interview: '/interview', daily: '/daily' }
+export const HOME_OF = { daily: '/today', learn: '/learn', practice: '/practice', interview: '/interview' }

@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import ProGate from '../components/ProGate.jsx'
+import { isLocked } from '../lib/tier.js'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import data from '../content/py-questions.json'
 import CodeEditor from '../components/CodeEditor.jsx'
@@ -39,12 +41,12 @@ export default function PyLab() {
           <div className="qlist-body" onClick={() => setListOpen(false)}>
           {QS.map((x) => (
             <button key={x.n} className={x.n === q.n ? 'on' : ''} onClick={() => navigate(`/practice/python/${x.n}`)}>
-              <span className="n">{x.n}</span><span>{x.title}</span><span className="st">{p.py[x.n] === 'solved' ? '✅' : p.py[x.n] === 'tried' ? '•' : ''}</span>
+              <span className="n">{x.n}</span><span>{x.title}</span><span className="st">{isLocked('py', x.n) ? '🔒' : p.py[x.n] === 'solved' ? '✅' : p.py[x.n] === 'tried' ? '•' : ''}</span>
             </button>
           ))}
           </div>
         </aside>
-        <PyQuestion key={q.n} q={q} />
+        {isLocked('py', q.n) ? <section><div className="qhead"><div className="row small muted"><span>{q.section}</span><span>·</span><span>Question {q.n} of {QS.length}</span></div><h1 className="q-title">{q.title}</h1></div><ProGate what={`all ${QS.length} Python and PySpark problems with answers`} /></section> : <PyQuestion key={q.n} q={q} />}
       </div>
     </div>
   )

@@ -1,4 +1,6 @@
 import { pdfFor } from '../data/pdfs.jsx'
+import ProGate from '../components/ProGate.jsx'
+import { isLocked } from '../lib/tier.js'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import booksIndex from '../content/books-index.json'
@@ -237,7 +239,7 @@ export function Chapter() {
           <h4><Link to={`/learn/${book}`}>{b.title}</Link></h4>
           {chs.map((x) => (
             <Link key={x.slug} to={`/learn/${book}/${x.slug}`} className={x.slug === chapter ? 'active' : ''}>
-              <span className="n">{x.pro ? '🔒' : x.num}</span><span>{x.title}</span>{x.pro ? <span className="tick pro-tick">Pro</span> : p.chapters[`${book}/${x.num}`] && <span className="tick">✓</span>}
+              <span className="n">{x.pro || isLocked('chapter', x.num) ? '🔒' : x.num}</span><span>{x.title}</span>{x.pro ? <span className="tick pro-tick">Pro</span> : p.chapters[`${book}/${x.num}`] && <span className="tick">✓</span>}
             </Link>
           ))}
         </aside>
@@ -248,8 +250,13 @@ export function Chapter() {
             <button className="btn btn-ghost btn-sm side-toggle" onClick={() => setSide((s) => !s)}>Chapters</button>
           </div>
           <div className="prose"><h1>{c.title}</h1></div>
-          <Markdown md={c.md} />
-          {c.pro ? <ProLock items={c.locked} /> : <div className="done-bar">
+          {!c.pro && isLocked('chapter', c.num) ? (() => {
+            const cut = c.md.search(/\n## /)
+            const head = cut > 0 ? c.md.slice(0, cut) : c.md.slice(0, 900)
+            const rest = cut > 0 ? c.md.slice(cut, cut + 1400) : ''
+            return <><Markdown md={head} /><ProGate what={`chapter ${c.num} and the rest of ${b.title}`} preview={<Markdown md={rest} />} /></>
+          })() : <Markdown md={c.md} />}
+          {c.pro ? <ProLock items={c.locked} /> : isLocked('chapter', c.num) ? null : <div className="done-bar">
             <div><b>{done ? 'Nice. Chapter marked as read.' : 'Finished this chapter?'}</b><div className="small muted">Your path and progress update automatically.</div></div>
             <button className={'btn ' + (done ? 'btn-ghost' : 'btn-primary')} onClick={() => toggleIn('chapters', key)}>{done ? '✓ Read' : 'Mark as read'}</button>
           </div>}

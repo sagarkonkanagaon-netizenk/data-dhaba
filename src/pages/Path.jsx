@@ -1,4 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
+import ProGate from '../components/ProGate.jsx'
+import { isLocked } from '../lib/tier.js'
 import booksIndex from '../content/books-index.json'
 import guide from '../content/guide.json'
 import { PHASES, WEEKS, TIMETABLE, PATH } from '../data/path.js'
@@ -173,12 +175,12 @@ export function Week() {
           <span className="ticket-k">Ticket from your lead at {PATH.company}</span>
           <p>{w.story}</p>
         </div>
-
         <h3>Your week, day by day</h3>
         <ol className="days" style={{ marginBottom: 28 }}>
           {w.days.map((d, i) => <li key={i}><span className="day-k">{['Mon', 'Tue', 'Wed', 'Thu', 'Sat–Sun'][i]}</span><span>{d}</span></li>)}
         </ol>
 
+        {isLocked('week', w.n) ? <ProGate what={`week ${w.n} and the full 24-week path`} /> : <>
         <h3>1. Read</h3>
         <div className="stack" style={{ marginBottom: 28 }}>
           {w.read.map((ref) => {
@@ -229,6 +231,7 @@ export function Week() {
             })}
           </ul>
         </div>
+        </>}
 
         <div className="chapter-foot">
           {prev ? <Link to={`/path/${prev.n}`}><small>← Week {prev.n}</small>{prev.title}</Link> : <span />}
