@@ -3,12 +3,15 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { AUTH_ENABLED, client, loadProfile, sendEmailLink, verifyCode, signInWithGoogle, signOut, deviceLabel } from '../lib/auth.js'
 import { refreshTier, myPayments, money } from '../lib/pay.js'
 import { getTier } from '../lib/tier.js'
+import Turnstile, { TURNSTILE_KEY } from '../components/Turnstile.jsx'
 
 export default function Account() {
   const [state, setState] = useState(AUTH_ENABLED ? 'loading' : 'off')
   const [profile, setProfile] = useState(null)
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
+  const [human, setHuman] = useState('')
+  const [resetHuman, setResetHuman] = useState(0)
   const [err, setErr] = useState(() => { try { const m = sessionStorage.getItem('dd:auth-error'); sessionStorage.removeItem('dd:auth-error'); return m || '' } catch (e) { return '' } })
   const [busy, setBusy] = useState(false)
   const [tier, setTierState] = useState(getTier)
@@ -81,13 +84,14 @@ export default function Account() {
           )}
 
           {state === 'signed-out' && (
-            <form onSubmit={(e) => { e.preventDefault(); if (validEmail) act(() => sendEmailLink(email.trim()), 'code') }}>
+            <form onSubmit={(e) => { e.preventDefault(); if (validEmail) act(() => sendEmailLink(email.trim(), human).finally(() => setResetHuman((n) => n + 1)), 'code') }}>
               <label className="wl-f">
                 <span>Email</span>
                 <input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required />
               </label>
+              <Turnstile onToken={setHuman} reset={resetHuman} />
               <div className="account-actions">
-                <button className="btn btn-primary" type="submit" disabled={busy || !validEmail}>{busy ? 'Sending…' : 'Email me a sign-in link'}</button>
+                <button className="btn btn-primary" type="submit" disabled={busy || !validEmail || (TURNSTILE_KEY && !human)}>{busy ? 'Sending…' : 'Email me a sign-in code'}</button>
                 <button className="btn btn-ghost" type="button" disabled={busy} onClick={() => act(signInWithGoogle)}>Continue with Google</button>
               </div>
             </form>
@@ -95,7 +99,7 @@ export default function Account() {
 
           {state === 'code' && (
             <form onSubmit={(e) => { e.preventDefault(); act(() => verifyCode(email.trim(), code.trim())) }}>
-              <p>We sent an email to <b>{email}</b>. Open the link in that email on this device to sign in. If the email shows a code, you can type it here instead.</p>
+              <p>We sent a sign-in code to <b>{email}</b>. Type it below. Can't find it? Check Spam or Promotions.</p>
               <label className="wl-f">
                 <span>Code</span>
                 <input inputMode="numeric" autoComplete="one-time-code" maxLength={8} value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))} />
