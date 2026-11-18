@@ -126,11 +126,11 @@ export default function Layout() {
         <div className="container footer-grid">
           <div>
             <Link to="/" className="brand"><img className="brand-mark" src="./favicon.svg" alt="" width="34" height="34" /><span className="wordmark">data<b>dhaba</b></span></Link>
-            <p style={{ marginTop: 12, maxWidth: 360 }}>A hands-on path into data engineering. Written by {BRAND.author}, {BRAND.authorRole}.</p>
+            <p style={{ marginTop: 12, maxWidth: 360 }}>A hands-on path into data engineering, written by working data engineers.</p>
           </div>
           {MENUS.map((sec) => <div key={sec.id} data-sec={sec.id}><h2 className="foot-h">{sec.label}</h2>{sec.items.map((i) => <Link key={i.to} to={i.to}>{i.label === 'Overview' ? 'All of ' + sec.label : i.label}</Link>)}{sec.id === 'practice' && <Link to="/daily">Daily SQL challenge</Link>}</div>)}
           <div><h2 className="foot-h">Guides</h2><a href="/guide/">Handbook guides</a><a href="/sql-interview-questions/">SQL interview questions</a><a href="/python-interview-questions/">Python interview questions</a><a href="/glossary/">Data glossary</a></div>
-          <div><h2 className="foot-h">About</h2><Link to="/today">Today</Link><Link to="/profile">My profile</Link><Link to="/progress">My progress</Link><Link to="/about">About and mantras</Link><Link to="/pro">Pro</Link><a href={BRAND.portfolio} target="_blank" rel="noreferrer">Author's portfolio</a><Link to="/contact">Contact</Link></div>
+          <div><h2 className="foot-h">About</h2><Link to="/today">Today</Link><Link to="/profile">My profile</Link><Link to="/progress">My progress</Link><Link to="/about">About and mantras</Link><Link to="/pro">Pro</Link><Link to="/contact">Contact</Link></div>
         </div>
         <div className="container footer-base">
           <span>© {new Date().getFullYear()} {BRAND.name}</span>

@@ -41,7 +41,7 @@ export function Projects() {
         </div>
         <div className="card card-pad" style={{ marginTop: 28 }}>
           <h3>Want worked examples?</h3>
-          <p className="muted">The <a href={`${BRAND.github}/spark-pipeline-labs`} target="_blank" rel="noreferrer">spark-pipeline-labs</a> repo has runnable PySpark labs (medallion, SCD Type 2, data quality, streaming) with tests and CI, so you can see what a finished project looks like.</p>
+          <p className="muted">The Pro career-ladder projects are full worked examples, with starter code, tests and a solution walkthrough, so you can see what a finished project looks like.</p>
         </div>
       </div>
     </div>
@@ -102,11 +102,9 @@ export function About() {
           <p>Most data engineering courses stop at slides. {BRAND.name} is hands-on and built from real production work: you write SQL and Python that actually runs, fix broken pipelines, and practise the interviews.</p>
         </div>
         <div className="card card-pad">
-          <h3>Made by {BRAND.author}</h3>
-          <p className="muted">{BRAND.authorRole}. I wrote the handbooks, notes and interview material here from years of building and running data platforms.</p>
+          <h3>Made by working data engineers</h3>
+          <p className="muted">The handbooks, notes and interview material here come from years of building and running data platforms in production.</p>
           <div className="row" style={{ flexWrap: 'wrap' }}>
-            <a className="btn btn-ghost btn-sm" href={BRAND.portfolio} target="_blank" rel="noreferrer">Portfolio</a>
-            <a className="btn btn-ghost btn-sm" href={BRAND.github} target="_blank" rel="noreferrer">GitHub</a>
             <a className="btn btn-ghost btn-sm" href={`mailto:${BRAND.email}`}>Email</a>
           </div>
         </div>
