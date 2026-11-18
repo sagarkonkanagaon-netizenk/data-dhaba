@@ -216,7 +216,7 @@ page({
 // Plain-HTML copies of the app's /#/pro, /#/about, /#/contact, /#/terms, /#/privacy, /#/refund and /#/shipping.
 // Payment gateways (Razorpay) and search engines read these without running JavaScript.
 const HOME = { name: 'Home', path: '/' }
-const BUSINESS = `${BRAND.name} is run by ${BRAND.author} as a sole proprietorship (Udyam registration UDYAM-KR-07-0077672), based in Vijayapura, Karnataka, India.`
+const BUSINESS = `${BRAND.name} is run by DATA DHABA, a sole proprietorship (Udyam registration UDYAM-KR-07-0077672) based in Vijayapura, Karnataka, India.`
 const appLink = (hash, text) => `<p><a href="/#${hash}">${esc(text)}</a></p>`
 for (const pol of Object.values(POLICIES)) {
   const path = `${pol.path}/`
@@ -237,10 +237,10 @@ page({
 })
 page({
   path: '/about/', title: 'About Data Dhaba | Data Dhaba', h1: 'About Data Dhaba',
-  description: `${BRAND.name} is a hands-on online data engineering course made by ${BRAND.author}.`,
+  description: `${BRAND.name} is a hands-on online data engineering course built by working data engineers.`,
   crumbs: [HOME, { name: 'About', path: '/about/' }],
   body: `<p class="lead">Most data engineering courses stop at slides. ${esc(BRAND.name)} is hands-on and built from real production work: you write SQL and Python that actually runs, fix broken pipelines, and practise the interviews.</p>
-<h2>Who we are</h2><p>${esc(BUSINESS)} The course, handbooks and interview material are written by ${esc(BRAND.author)}, a data engineer with years of building and running data platforms.</p>
+<h2>Who we are</h2><p>${esc(BUSINESS)} The course, handbooks and interview material are written by working data engineers from years of building and running data platforms.</p>
 <h2>What we sell</h2><p>${esc(BRAND.name)} Pro, an online course subscription: ${PRO_PLANS.map((p) => `${esc(p.amount)} ${esc(p.per)}`).join(' or ')}. See <a href="/pricing/">pricing</a>.</p>
 <h2>Contact</h2><p>Email <a href="mailto:${BRAND.email}">${esc(BRAND.email)}</a> or use the <a href="/contact/">contact page</a>.</p>${appLink('/about', 'Open this page in the app')}`,
 })
