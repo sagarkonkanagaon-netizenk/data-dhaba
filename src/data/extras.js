@@ -3,7 +3,7 @@ export const BRAND = {
   tagline: 'On your highway to get hired',
   author: 'Sagar Konkanagaon',
   authorRole: 'Senior Data Engineer, Bengaluru',
-  email: 'sagarkonkanagaon@gmail.com',
+  email: 'datadhaba.help@gmail.com',
   portfolio: 'https://data-foundry-sand.vercel.app',
   github: 'https://github.com/sagarkonkanagaon-netizenk',
 }
