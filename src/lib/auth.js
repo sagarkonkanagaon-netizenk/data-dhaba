@@ -70,9 +70,9 @@ export function deviceLabel() {
 
 const redirectTo = () => window.location.origin + window.location.pathname
 
-export async function sendEmailLink(email) {
+export async function sendEmailLink(email, captchaToken) {
   const sb = await client()
-  const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo() } })
+  const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo(), ...(captchaToken ? { captchaToken } : {}) } })
   if (error) throw error
 }
 
