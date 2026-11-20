@@ -118,7 +118,7 @@ export function About() {
 }
 
 // What a free account keeps once Pro is on sale (matches FREE in lib/tier.js).
-const FREE_LIVE = ['Weeks 1 and 2 of the 24-week path', 'The first 2 chapters of every handbook', 'SQL Lab problems 1 to 15 and Python Lab problems 1 to 10, auto-checked', 'The Playground, the daily challenge, flashcards and progress tracking', 'Two Spark scenes, one incident drill and three Atlas tool pages', 'No ads']
+const FREE_LIVE = ['Weeks 1 and 2 of the 24-week path', 'The first 2 chapters of every handbook', 'Sample labs: SQL problems 1 to 5 and Python problems 1 to 3, auto-checked', 'The Playground, the daily challenge, flashcards and progress tracking', 'Two Spark scenes, one incident drill and three Atlas tool pages', 'No ads']
 const FREE = ['The full 24-week path and every handbook', 'SQL lab: 78 questions, auto-checked', 'Python lab with auto-checks', 'Incident drills, scenario and PySpark questions', 'Flashcards and progress tracking', 'No ads']
 export function Pro() {
   const [params] = useSearchParams()
