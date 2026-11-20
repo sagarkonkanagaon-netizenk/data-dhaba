@@ -62,6 +62,8 @@ const SheetIndex = page(() => import('./pages/ProSheets.jsx'), 'SheetIndex')
 const Sheet = page(() => import('./pages/ProSheets.jsx'), 'Sheet')
 const DesignIndex = page(() => import('./pages/ProDesign.jsx'), 'DesignIndex')
 const DesignCase = page(() => import('./pages/ProDesign.jsx'), 'DesignCase')
+const TemplateIndex = page(() => import('./pages/ProTemplates.jsx'), 'TemplateIndex')
+const TemplatePage = page(() => import('./pages/ProTemplates.jsx'), 'TemplatePage')
 const SqlReview = page(() => import('./pages/SqlReview.jsx'))
 const MockRound = page(() => import('./pages/MockRound.jsx'))
 const Today = page(() => import('./pages/Today.jsx'))
@@ -133,6 +135,8 @@ export default function App() {
             <Route path="pro/python/:slug" element={<ProLessons course="python" />} />
             <Route path="pro/cheatsheets" element={<SheetIndex />} />
             <Route path="pro/cheatsheets/:slug" element={<Sheet />} />
+            <Route path="pro/templates" element={<TemplateIndex />} />
+            <Route path="pro/templates/:slug" element={<TemplatePage />} />
             <Route path="interview/design" element={<DesignIndex />} />
             <Route path="interview/design/:slug" element={<DesignCase />} />
             <Route path="about" element={<About />} />

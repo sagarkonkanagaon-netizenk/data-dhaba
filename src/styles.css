@@ -1173,3 +1173,8 @@ main .page-head h1 em, main .daily-head h1 em, main .play-head h1 em { color: va
 .design-quote { margin: 0 0 18px; padding: 14px 18px; border-left: 3px solid var(--primary); background: var(--bg-2); border-radius: 0 12px 12px 0; font-size: 1.02rem; line-height: 1.6; }
 .design-body .codeblock pre { font-size: .76rem; line-height: 1.45; }
 .design-body table { display: block; overflow-x: auto; }
+
+/* Production templates */
+.tpl-card h3 { margin: 10px 0 6px; }
+.tpl-card .chips { margin-top: 10px; }
+.tpl-title { overflow-wrap: anywhere; }

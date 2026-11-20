@@ -70,6 +70,7 @@ export default function ProLadder() {
             <Link className="btn btn-ghost btn-sm" to="/practice">SQL and Python labs</Link>
             <Link className="btn btn-ghost btn-sm" to="/interview/kit">Interview kit · 500 questions</Link>
             <Link className="btn btn-ghost btn-sm" to="/interview/design">System design · 20 cases</Link>
+            <Link className="btn btn-ghost btn-sm" to="/pro/templates">Production templates · 15</Link>
             <Link className="btn btn-ghost btn-sm" to="/interview/job-kit">Job kit</Link>
           </div>
         )}
