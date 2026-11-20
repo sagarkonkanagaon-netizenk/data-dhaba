@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import Markdown from './Markdown.jsx'
 import { highlight } from '../lib/md.js'
 import { makeTar, saveBlob } from '../lib/tar.js'
+import Protected from './Protected.jsx'
 
 // Reads one Pro project ({ name, files: [{ path, text }] }): a file tree grouped by purpose, and the open file.
 // Used by the owner vault and by the Pro projects page.
@@ -31,7 +32,7 @@ function FileView({ file }) {
   return <pre className="owner-code"><code dangerouslySetInnerHTML={{ __html: highlight(file.text, LANG[ext]) }} /></pre>
 }
 
-export default function ProjectReader({ project }) {
+export default function ProjectReader({ project, allowDownload = false }) {
   const [path, setPath] = useState('README.md')
   const groups = useMemo(() => group([...project.files].sort((a, b) => a.path.localeCompare(b.path))), [project])
   const file = useMemo(() => project.files.find((f) => f.path === path), [project, path])
@@ -41,7 +42,7 @@ export default function ProjectReader({ project }) {
     <div className="owner-reader">
       <nav className="card card-pad owner-tree" aria-label="Files">
         <div className="small muted" style={{ marginBottom: 6 }}>{project.files.length} files · tap a folder to open it</div>
-        <button className="btn btn-ghost btn-sm" style={{ marginBottom: 8 }} onClick={download}>Download all files (.tar)</button>
+        {allowDownload && <button className="btn btn-ghost btn-sm" style={{ marginBottom: 8 }} onClick={download}>Download all files (.tar)</button>}
         {groups.map((g, i) => (
           <details key={g.name} open={i === 0 || g.files.some((f) => f.path === path)}>
             <summary><b>{g.name}</b> <span className="chip">{g.files.length}</span></summary>
@@ -53,7 +54,7 @@ export default function ProjectReader({ project }) {
       </nav>
       <article className="card card-pad owner-file">
         <div className="small muted" style={{ marginBottom: 8 }}>{project.name} / {path}</div>
-        <FileView file={file} />
+        <Protected><FileView file={file} /></Protected>
       </article>
     </div>
   )

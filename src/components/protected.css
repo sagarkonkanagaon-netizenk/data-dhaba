@@ -1,0 +1,7 @@
+.protected { position: relative; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.protected input, .protected textarea, .protected select, .protected [contenteditable="true"], .protected .cm-editor { -webkit-user-select: text; user-select: text; -webkit-touch-callout: default; }
+.protected-mark { position: absolute; inset: 0; pointer-events: none; background-repeat: repeat; z-index: 2; }
+@media print {
+  .protected > *:not(.protected-mark) { display: none !important; }
+  .protected::before { content: 'This page is Data Dhaba course content. Read it on datadhaba.in.'; display: block; padding: 24px; font: 16px Arial, sans-serif; }
+}
