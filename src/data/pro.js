@@ -13,7 +13,7 @@ export const PRO_PILLARS = [
   { k: '20', ready: true, to: '/interview/design', t: 'Data system design case studies', d: 'Whiteboard-style walk-throughs: requirements, numbers, architecture, trade-offs and the questions to ask, for the round that decides senior offers.' },
   { k: 'AI', t: 'Mock interviewer', d: 'Speaks like a real panel: asks, listens, pushes back, then scores you with notes on what to fix before the real thing.' },
   { k: '15', ready: true, to: '/pro/templates', t: 'Production templates', d: 'Starter repos with tests and CI already wired: a Docker Compose data stack, Airflow, dbt, Databricks Asset Bundles, Terraform, data contracts and more.' },
-  { k: '4', t: 'Certification prep tracks', d: 'Practice exams and study plans for Databricks Data Engineer Associate and Professional, Microsoft Fabric Data Engineer (DP-700) and AWS Data Engineer Associate.' },
+  { k: '4', ready: true, to: '/pro/certs', t: 'Certification prep tracks', d: 'Original practice questions, timed mocks and study plans for Databricks Data Engineer Associate and Professional, Microsoft Fabric Data Engineer (DP-700) and AWS Data Engineer Associate.' },
   { k: '1', ready: true, t: 'Resume and LinkedIn kit', d: 'ATS-friendly templates, a bank of measurable project bullets, and a LinkedIn headline and About section that recruiters actually search for.' },
 ]
 
@@ -101,6 +101,7 @@ export const PRO_TODAY = [
   'Every SQL Lab and Python Lab problem, with official answers',
   'The Spark course (56 lessons) and the Python course (50 lessons), plus 100 extra Pro Python problems with auto-checks',
   '65 one-page cheat sheets (60 only in Pro), from Spark internals to Terraform, with every SQL and Python example checked',
+  '4 certification prep tracks (Databricks Associate and Professional, Fabric DP-700, AWS Data Engineer) with study plans, 172 original practice questions and timed mocks',
   '15 production templates (PySpark, Delta, dbt, Airflow, Databricks bundles, Terraform, Kafka, CDC and more), each with tests and CI that were run before release',
   '20 data system design cases, each with the numbers worked out, an architecture, trade-offs, failure modes and a 90-second answer',
   'The full 24-week path, every Spark scene, every incident drill and every Atlas tool page',
