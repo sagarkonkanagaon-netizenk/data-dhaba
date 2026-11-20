@@ -12,6 +12,7 @@ import Markdown from '../components/Markdown.jsx'
 import { EngineStatus } from './SqlLab.jsx'
 import { runIsolated, compareResults } from '../lib/duck.js'
 import { useProgress, setIn } from '../lib/progress.js'
+import { useProContent } from '../lib/proContent.js'
 
 export default function Drills() {
   const p = useProgress()
@@ -39,18 +40,21 @@ export default function Drills() {
 }
 
 function ProLibrary() {
+  const { pro, err } = useProContent('drills.json')
+  const p = useProgress()
   const [t, setT] = useState('All')
   const list = t === 'All' ? PRO_DRILLS : PRO_DRILLS.filter((d) => d.t === t)
   return (
     <section className="dl-pro" aria-labelledby="dl-pro-h">
       <div className="dl-pro-head">
         <div>
-          <div className="eyebrow">Pro on-call library</div>
+          <div className="eyebrow">{pro ? 'Your Pro on-call library' : 'Pro on-call library'}</div>
           <h2 id="dl-pro-h">{PRO_DRILLS.length} more incidents, each tested on real data</h2>
           <p className="muted">Doubled loads, UTC days, SCD2 overlaps, CDC deletes, Kafka lag, small files, cost spikes. Every drill has the broken query, the data, the fix and the prevention a senior engineer would put in place.</p>
         </div>
-        <Link to="/pro" className="btn btn-primary">Unlock all {PRO_DRILLS.length}</Link>
+        {!pro && <Link to="/pro" className="btn btn-primary">Unlock all {PRO_DRILLS.length}</Link>}
       </div>
+      {pro && err && <p className="err" role="alert">{err}</p>}
       <div className="dl-tabs" role="tablist" aria-label="Incident themes">
         {['All', ...PRO_THEMES].map((x) => (
           <button key={x} type="button" role="tab" aria-selected={t === x} className={'dl-tab' + (t === x ? ' on' : '')} onClick={() => setT(x)}>
@@ -60,8 +64,8 @@ function ProLibrary() {
       </div>
       <div className="dl-grid">
         {list.map((d) => (
-          <Link key={d.id} to="/pro" className="dl-card card card-link" aria-label={`${d.title}, Pro drill`}>
-            <div className="spread small"><span className="chip">{d.t}</span><span className="chip chip-primary">🔒 Pro</span></div>
+          <Link key={d.id} to={pro ? `/drills/${d.id}` : '/pro'} className="dl-card card card-link" aria-label={`${d.title}, Pro drill`}>
+            <div className="spread small"><span className="chip">{d.t}</span>{!pro ? <span className="chip chip-primary">🔒 Pro</span> : p.drills[d.id] ? <span className="chip chip-ok">Resolved</span> : <span className="chip chip-danger">Open</span>}</div>
             <b>{d.title}</b>
             <div className="pager">{d.pager}</div>
             <span className="small muted">{d.level}</span>
@@ -74,11 +78,27 @@ function ProLibrary() {
 
 export function Drill() {
   const { id } = useParams()
-  return <DrillView key={id} id={id} />
+  const free = DRILLS.find((x) => x.id === id)
+  const inPro = !free && PRO_DRILLS.some((x) => x.id === id)
+  const { pro, data, err } = useProContent(inPro ? 'drills.json' : null)
+  if (free) return <DrillView key={id} id={id} d={free} list={DRILLS} />
+  if (!inPro) return <div className="page container">Drill not found. <Link to="/drills">All drills</Link></div>
+  const meta = PRO_DRILLS.find((x) => x.id === id)
+  if (!pro || err) return (
+    <div className="page"><div className="container narrow">
+      <Link to="/drills" className="small">← All drills</Link>
+      <div className="page-head" style={{ marginTop: 10 }}><div className="eyebrow" style={{ color: 'var(--danger)' }}>Pro incident drill · {meta.level}</div><h1>{meta.title}</h1></div>
+      <div className="pager" style={{ marginBottom: 16 }}><b>🔔 PagerDuty</b> · {meta.pager}</div>
+      {err ? <p className="err" role="alert">{err}</p> : <ProGate what="every incident drill" />}
+    </div></div>
+  )
+  if (!data) return <div className="page container"><span className="loading"><span className="spinner" /> Loading drill…</span></div>
+  const d = data.find((x) => x.id === id)
+  if (!d) return <div className="page container">This drill is still uploading. <Link to="/drills">All drills</Link></div>
+  return <DrillView key={id} id={id} d={d} list={data} pro />
 }
 
-function DrillView({ id }) {
-  const d = DRILLS.find((x) => x.id === id)
+function DrillView({ id, d, list, pro = false }) {
   const p = useProgress()
   const [code, setCode] = useState(() => { try { return localStorage.getItem('z2h:code:drill:' + id) || d?.starter } catch (e) { return d?.starter } })
   const [res, setRes] = useState(null)
@@ -88,9 +108,8 @@ function DrillView({ id }) {
   const [peek, setPeek] = useState(null)
   const first = useRef(true)
   useEffect(() => { if (d) try { localStorage.setItem('z2h:code:drill:' + id, code) } catch (e) { /* ignore */ } }, [code, id])
-  if (!d) return <div className="page container">Drill not found. <Link to="/drills">All drills</Link></div>
-  const idx = DRILLS.indexOf(d)
-  const next = DRILLS[idx + 1]
+  const idx = list.indexOf(d)
+  const next = list[idx + 1]
   const table = /CREATE TABLE (\w+)/.exec(d.setup)[1]
 
   async function go(fn) { setBusy(true); if (first.current) setEngine('loading'); try { return await fn() } finally { first.current = false; setEngine(null); setBusy(false) } }
@@ -110,13 +129,13 @@ function DrillView({ id }) {
       <div className="container narrow">
         <Link to="/drills" className="small">← All drills</Link>
         <div className="page-head" style={{ marginTop: 10 }}>
-          <div className="eyebrow" style={{ color: 'var(--danger)' }}>Incident drill {idx + 1} · {d.level}</div>
+          <div className="eyebrow" style={{ color: 'var(--danger)' }}>{pro ? 'Pro incident drill' : 'Incident drill'} {idx + 1} · {d.level}</div>
           <h1>{d.title}</h1>
         </div>
         <Protected>
         <div className="pager" style={{ marginBottom: 16 }}><b>🔔 PagerDuty</b> · {d.pager}</div>
         <Markdown md={d.story} />
-        {isLocked('drill', d.id) ? <ProGate what="every incident drill" /> : <>
+        {!pro && isLocked('drill', d.id) ? <ProGate what="every incident drill" /> : <>
         <div className="card card-pad" style={{ margin: '18px 0' }}>
           <b>Your task</b>
           <p style={{ margin: '6px 0 0' }}>{d.task}</p>

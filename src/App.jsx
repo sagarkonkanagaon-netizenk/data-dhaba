@@ -55,6 +55,7 @@ const Contact = page(() => import('./pages/Contact.jsx'))
 const ProProject = page(() => import('./pages/ProProject.jsx'))
 const ProOwner = page(() => import('./pages/ProOwner.jsx'))
 const ProLadder = page(() => import('./pages/ProLadder.jsx'))
+const ProLessons = page(() => import('./pages/ProLessons.jsx'))
 const SheetIndex = page(() => import('./pages/ProSheets.jsx'), 'SheetIndex')
 const Sheet = page(() => import('./pages/ProSheets.jsx'), 'Sheet')
 const SqlReview = page(() => import('./pages/SqlReview.jsx'))
@@ -119,6 +120,8 @@ export default function App() {
             <Route path="pro/owner" element={<ProOwner />} />
             <Route path="pro/ladder" element={<ProLadder />} />
             <Route path="pro/ladder/:n" element={<ProLadder />} />
+            <Route path="pro/lessons" element={<ProLessons />} />
+            <Route path="pro/lessons/:slug" element={<ProLessons />} />
             <Route path="pro/cheatsheets" element={<SheetIndex />} />
             <Route path="pro/cheatsheets/:slug" element={<Sheet />} />
             <Route path="about" element={<About />} />

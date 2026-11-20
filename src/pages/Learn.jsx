@@ -1,6 +1,6 @@
 import Protected from '../components/Protected.jsx'
 import ProGate from '../components/ProGate.jsx'
-import { isLocked, PAYMENTS_LIVE } from '../lib/tier.js'
+import { isLocked, hasPro, PAYMENTS_LIVE } from '../lib/tier.js'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import booksIndex from '../content/books-index.json'
@@ -12,6 +12,7 @@ import { headings } from '../lib/md.js'
 import { useProgress, toggleIn } from '../lib/progress.js'
 import { PHASES } from '../data/path.js'
 import Waitlist from '../components/Waitlist.jsx'
+import { useProContent } from '../lib/proContent.js'
 
 // The seven study guides came before the 24-week path; each one belongs to the stop that teaches its topic.
 const GUIDE_STOP = { 1: 1, 2: 3, 3: 5, 4: 4, 5: 6, 6: 7, 7: 8 }
@@ -152,7 +153,7 @@ export function Book() {
             <div className="card">
               {b.deep.map((d) => (
                 <Link key={d.slug} to={`/learn/${b.slug}/${d.slug}`} className="linkrow" style={{ border: 0, borderBottom: '1px solid var(--line)', borderRadius: 0 }}>
-                  <span className="k" style={{ minWidth: 30 }} aria-hidden="true">🔒</span>
+                  <span className="k" style={{ minWidth: 30 }} aria-hidden="true">{hasPro() ? '★' : '🔒'}</span>
                   <span style={{ flex: 1 }}>{d.title}</span>
                   <span className="small muted">{d.sections} sections</span>
                   <span className="chip chip-pro">Pro</span>
@@ -218,6 +219,7 @@ export function Chapter() {
   const [pct, setPct] = useState(0)
   const navigate = useNavigate()
   const p = useProgress()
+  const deep = useProContent(book === 'python' && /^pro-/.test(chapter || '') ? 'python-deep.json' : null)
   useEffect(() => { try { localStorage.setItem('z2h:focus', focus ? '1' : '0') } catch (e) { /* ignore */ } }, [focus])
   useEffect(() => {
     const on = () => { const h = document.documentElement; const max = h.scrollHeight - h.clientHeight; setPct(max > 0 ? Math.min(100, (100 * h.scrollTop) / max) : 0) }
@@ -225,7 +227,10 @@ export function Chapter() {
   }, [chapter, chs])
   useEffect(() => { setChs(null); loadBook(book).then(setChs) }, [book])
   const idx = chs ? chs.findIndex((c) => c.slug === chapter) : -1
-  const c = chs && idx >= 0 ? chs[idx] : null
+  const c0 = chs && idx >= 0 ? chs[idx] : null
+  // A Pro member reads the full deep dive (from Pro storage) in place of the preview.
+  const full = c0?.pro && deep.data && deep.data[c0.num]
+  const c = full ? { ...c0, md: full.replace(/^# .*\n+/, ''), unlocked: true } : c0
   const hs = useMemo(() => (c ? headings(c.md).filter((h) => h.depth <= 4) : []), [c])
   const active = useActiveHeading(hs.map((h) => h.id))
   useEffect(() => { setSide(false) }, [chapter])
@@ -246,7 +251,7 @@ export function Chapter() {
           <h4><Link to={`/learn/${book}`}>{b.title}</Link></h4>
           {chs.map((x) => (
             <Link key={x.slug} to={`/learn/${book}/${x.slug}`} className={x.slug === chapter ? 'active' : ''}>
-              <span className="n">{x.pro || isLocked('chapter', x.num) ? '🔒' : x.num}</span><span>{x.title}</span>{x.pro ? <span className="tick pro-tick">Pro</span> : p.chapters[`${book}/${x.num}`] && <span className="tick">✓</span>}
+              <span className="n">{(x.pro && !deep.pro) || isLocked('chapter', x.num) ? '🔒' : x.pro ? '★' : x.num}</span><span>{x.title}</span>{x.pro ? <span className="tick pro-tick">Pro</span> : p.chapters[`${book}/${x.num}`] && <span className="tick">✓</span>}
             </Link>
           ))}
         </aside>
@@ -265,7 +270,7 @@ export function Chapter() {
             return <><Markdown md={head} /><ProGate what={`chapter ${c.num} and the rest of ${b.title}`} preview={<Markdown md={rest} />} /></>
           })() : <Markdown md={c.md} />}
           </Protected>
-          {c.pro ? <ProLock items={c.locked} /> : isLocked('chapter', c.num) ? null : <div className="done-bar">
+          {c.unlocked ? null : c.pro && deep.pro ? <div className="card card-pad" role="status">{deep.err ? <span className="err">{deep.err}</span> : <span className="loading"><span className="spinner" /> Loading the full deep dive…</span>}</div> : c.pro ? <ProLock items={c.locked} /> : isLocked('chapter', c.num) ? null : <div className="done-bar">
             <div><b>{done ? 'Nice. Chapter marked as read.' : 'Finished this chapter?'}</b><div className="small muted">Your path and progress update automatically.</div></div>
             <button className={'btn ' + (done ? 'btn-ghost' : 'btn-primary')} onClick={() => toggleIn('chapters', key)}>{done ? '✓ Read' : 'Mark as read'}</button>
           </div>}
