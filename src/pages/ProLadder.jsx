@@ -68,7 +68,7 @@ export default function ProLadder() {
             <Link className="btn btn-ghost btn-sm" to="/spark-visual">Spark issue library · 156</Link>
             <Link className="btn btn-ghost btn-sm" to="/learn/python">Python deep dives · 4</Link>
             <Link className="btn btn-ghost btn-sm" to="/practice">SQL and Python labs</Link>
-            <Link className="btn btn-ghost btn-sm" to="/interview/kit">Interview kit · 300 questions</Link>
+            <Link className="btn btn-ghost btn-sm" to="/interview/kit">Interview kit · 500 questions</Link>
             <Link className="btn btn-ghost btn-sm" to="/interview/job-kit">Job kit</Link>
           </div>
         )}
