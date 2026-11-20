@@ -8,7 +8,10 @@ import Celebrate from './Celebrate.jsx'
 import { useProgress } from '../lib/progress.js'
 import { tally, levelOf } from '../lib/xp.js'
 import { SECTIONS, sectionOf, itemOf, HOME_OF } from '../data/sections.js'
-import { TIER_EVENT, hasPro } from '../lib/tier.js'
+import { TIER_EVENT } from '../lib/tier.js'
+import ProBadge from './ProBadge.jsx'
+import '../pro-royal.css'
+import { usePro } from '../lib/proContent.js'
 
 const Search = lazy(() => import('./Search.jsx'))
 const DEFAULT_TITLE = 'Data Dhaba · On your highway to get hired'
@@ -26,6 +29,9 @@ export default function Layout() {
   // When Pro turns on or off (payment, sign-in, expiry), redraw the page so its locks update.
   const [tierVer, setTierVer] = useState(0)
   useEffect(() => { const on = () => setTierVer((v) => v + 1); window.addEventListener(TIER_EVENT, on); return () => window.removeEventListener(TIER_EVENT, on) }, [])
+  // Pro members get the royal theme (src/pro-royal.css).
+  const isPro = usePro()
+  useEffect(() => { document.documentElement.toggleAttribute('data-pro', false); if (isPro) document.documentElement.setAttribute('data-pro', '1') }, [isPro, tierVer])
   const loc = useLocation()
   // Each page's tab title is its main heading, e.g. "Joins · Data Dhaba". Pages render their h1
   // after data loads, so watch the page and set the title once the heading appears or changes.
@@ -89,11 +95,11 @@ export default function Layout() {
             </button>
             <Link to="/profile" className="xp-pill" title={`${lv.name} · ${xp} XP`}><span>{lv.icon}</span><b>{xp}</b><small>XP</small></Link>
             {AUTH_ENABLED && (
-              <Link to="/account" className="icon-btn" aria-label="Account" title="Account">
+              <Link to="/account" className={isPro ? "icon-btn hide-sm" : "icon-btn"} aria-label="Account" title="Account">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="4" /><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" /></svg>
               </Link>
             )}
-            {hasPro() ? <Link to="/pro/ladder" className="btn btn-ghost btn-sm hide-sm">My Pro</Link> : <Link to="/pro" className="btn btn-primary btn-sm hide-sm">Go Pro</Link>}
+            {isPro ? <Link to="/pro/ladder" className="pro-seal-link" aria-label="My Pro" title="My Pro"><ProBadge size={26} /><span className="pro-badge-txt hide-sm">My Pro</span></Link> : <Link to="/pro" className="btn btn-primary btn-sm hide-sm">Go Pro</Link>}
             <button className="icon-btn menu-btn" onClick={() => setMenu((m) => !m)} aria-label="Menu" aria-expanded={menu}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
             </button>
