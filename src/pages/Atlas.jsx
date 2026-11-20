@@ -141,7 +141,7 @@ function Syllabus({ t }) {
             </button>
             {open === i && (
               <ul className="at-topics">
-                {m.topics.map((x) => <li key={x}><span>{x}</span><span className="at-pro" title="Explanation in Pro">🔒 Pro</span></li>)}
+                {m.topics.map((x) => <li key={x}><span>{x}</span>{pro && lessons ? <Link className="at-pro" to="/pro/lessons">Open</Link> : pro ? <span className="at-pro" title="Being written">Coming</span> : <span className="at-pro" title="Explanation in Pro">🔒 Pro</span>}</li>)}
               </ul>
             )}
           </li>
