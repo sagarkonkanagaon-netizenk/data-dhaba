@@ -9,6 +9,8 @@ import { setIn, getProgress } from '../lib/progress.js'
 import { PATTERN_OF } from '../data/sqlPatterns.js'
 import { recordResult } from '../lib/review.js'
 import './mockround.css'
+import ProGate from '../components/ProGate.jsx'
+import { isLocked } from '../lib/tier.js'
 
 // Timed mock interview rounds: a few problems, one clock, no hints, then a scorecard
 // that reads like interviewer feedback. Problems are checked by DuckDB in the browser.
@@ -255,9 +257,12 @@ export default function MockRound() {
   return (
     <div className="page mock">
       <div className="container">
+        {/* Mock rounds draw from the full problem bank, so they are Pro once the labs are. */}
+        {isLocked('sql', 6) ? <><div className="page-head"><div className="eyebrow">Mock round</div><h1>Timed SQL interview rounds</h1><p className="muted">Three to five problems against the clock, graded like a real interview, from the full problem bank.</p></div><ProGate what="timed mock rounds from the full SQL problem bank" /></> : <>
         {state.stage === 'setup' && <Setup onStart={start} history={history} />}
         {state.stage === 'live' && <Live key={state.key} round={state.round} qs={qs} onFinish={finish} />}
         {state.stage === 'score' && <Scorecard round={state.round} qs={qs} items={state.items} secs={state.secs} onAgain={() => setState({ stage: 'setup' })} />}
+        </>}
       </div>
     </div>
   )

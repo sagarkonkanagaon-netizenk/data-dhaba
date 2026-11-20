@@ -5,6 +5,7 @@ import './atlas.css'
 import ProGate from '../components/ProGate.jsx'
 import { isLocked } from '../lib/tier.js'
 import { SYLLABUS, topicCount, TOTAL_TOPICS } from '../data/syllabus.js'
+import { usePro } from '../lib/proContent.js'
 
 // The Tech Stack Atlas: one map of every tool by the job it does and where it runs,
 // and a page per tool that always follows the same eight blocks.
@@ -111,6 +112,8 @@ function Block({ n, title, children, tone }) {
 }
 // The full syllabus: every topic title is public, every explanation is Pro.
 function Syllabus({ t }) {
+  const pro = usePro()
+  const lessons = t.id === 'spark'
   const mods = SYLLABUS[t.id] || []
   const [open, setOpen] = useState(0)
   if (!mods.length) return null
@@ -123,7 +126,9 @@ function Syllabus({ t }) {
           <h2 id="at-syl-h">{t.name}, end to end</h2>
           <p className="muted small">{mods.length} modules · {n} topics, from first steps to production and interview level. Every topic is explained in Pro with diagrams, runnable code, real failure stories and interview answers.</p>
         </div>
-        <Link to="/pro" className="btn btn-primary btn-sm">Unlock all {n} lessons</Link>
+        {pro && lessons ? <Link to="/pro/lessons" className="btn btn-primary btn-sm">Open the 56 Spark lessons</Link>
+          : pro ? <span className="small muted">Your Pro includes these lessons as each one is finished.</span>
+          : <Link to="/pro" className="btn btn-primary btn-sm">Unlock all {n} lessons</Link>}
       </div>
       <ol className="at-mods">
         {mods.map((m, i) => (

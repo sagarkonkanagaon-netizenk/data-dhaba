@@ -6,6 +6,7 @@ import './sparkviz.css'
 import SparkCase from '../components/SparkCase.jsx'
 import { ISSUES, FAMILIES } from '../data/sparkIssues.js'
 import { FREE_CASES } from '../data/sparkCasesFree.js'
+import { useProContent } from '../lib/proContent.js'
 
 // Spark, made visible: partitions, shuffles, skew and broadcast joins as moving rows.
 // Every scene opens with a prediction, because guessing first is what makes the answer stick.
@@ -256,17 +257,24 @@ function JoinScene() {
 
 /* ───────── 5. The issue library ───────── */
 function IssueLibrary() {
+  const { pro, data: proCases, err } = useProContent('spark-cases.json')
+  const caseFor = (id) => FREE_CASES[id] || (proCases && proCases[id])
   const [fam, setFam] = useState('all')
   const [open, setOpen] = useState(null)
   const list = ISSUES.filter((x) => fam === 'all' || x.fam === fam)
   const issue = open && ISSUES.find((x) => x.id === open)
   if (issue) {
-    const d = FREE_CASES[issue.id]
+    const d = caseFor(issue.id)
     return (
       <>
         <button type="button" className="btn btn-ghost btn-sm" onClick={() => setOpen(null)}>← All {ISSUES.length} issues</button>
         <h3 className="sl-title">{issue.title}</h3>
-        {d ? <SparkCase issue={issue} d={d} /> : (
+        {d ? <SparkCase issue={issue} d={d} /> : pro ? (
+          <div className="sl-locked">
+            <div className="sc-pager"><span>🚨 On call</span>{issue.sym}</div>
+            {err ? <p className="err" role="alert">{err}</p> : proCases ? <p>This case is still uploading. Try again in a minute.</p> : <p><span className="spinner" /> Loading the case…</p>}
+          </div>
+        ) : (
           <div className="sl-locked">
             <div className="sc-pager"><span>🚨 On call</span>{issue.sym}</div>
             <p>This case is in <b>Pro</b>: the simulated Spark UI before and after, a diagnose-first question, the root cause, the exact fix and the code.</p>
@@ -278,7 +286,7 @@ function IssueLibrary() {
   }
   return (
     <>
-      <p className="sv-note" style={{ marginTop: 0 }}>{ISSUES.length} real production problems, each one a simulated Spark UI you diagnose before you see the fix. {Object.keys(FREE_CASES).length} are free to try. The rest are in Pro.</p>
+      <p className="sv-note" style={{ marginTop: 0 }}>{ISSUES.length} real production problems, each one a simulated Spark UI you diagnose before you see the fix. {pro ? 'Every case is open with your Pro.' : `${Object.keys(FREE_CASES).length} are free to try. The rest are in Pro.`}</p>
       <div className="sl-fams" role="group" aria-label="Filter by family">
         <button type="button" className={fam === 'all' ? 'on' : ''} onClick={() => setFam('all')}>All <span>{ISSUES.length}</span></button>
         {FAMILIES.map((f) => <button key={f.id} type="button" className={fam === f.id ? 'on' : ''} onClick={() => setFam(f.id)}>{f.icon} {f.name} <span>{ISSUES.filter((x) => x.fam === f.id).length}</span></button>)}
@@ -289,7 +297,7 @@ function IssueLibrary() {
             <button type="button" onClick={() => { setOpen(x.id); window.scrollTo?.(0, 0) }}>
               <span className="sl-k">{FAMILIES.find((f) => f.id === x.fam).icon}</span>
               <span className="sl-txt"><b>{x.title}</b><small>{x.sym}</small></span>
-              <span className={'sl-tag' + (FREE_CASES[x.id] ? ' free' : '')}>{FREE_CASES[x.id] ? 'Try free' : '🔒 Pro'}</span>
+              <span className={'sl-tag' + (FREE_CASES[x.id] || pro ? ' free' : '')}>{FREE_CASES[x.id] ? 'Try free' : pro ? 'Pro' : '🔒 Pro'}</span>
             </button>
           </li>
         ))}

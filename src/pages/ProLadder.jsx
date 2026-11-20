@@ -57,6 +57,15 @@ export default function ProLadder() {
         <h1>Your Pro projects</h1>
         <p className="muted">One project per role, from intern to head of data engineering. Each has a brief, starter code, the full solution, tests, a walkthrough and a README for your GitHub. New ones appear here as they are finished.</p>
         {pro && <p className="small muted">{tier.owner ? 'Owner access.' : tier.until ? `Pro until ${tier.until}.` : ''}</p>}
+        {pro && (
+          <div className="row" style={{ gap: 8, flexWrap: 'wrap', marginTop: 8 }} aria-label="Everything in your Pro">
+            <Link className="btn btn-ghost btn-sm" to="/pro/lessons">Spark course · 56 lessons</Link>
+            <Link className="btn btn-ghost btn-sm" to="/drills">On-call drills · 108</Link>
+            <Link className="btn btn-ghost btn-sm" to="/spark-visual">Spark issue library · 156</Link>
+            <Link className="btn btn-ghost btn-sm" to="/learn/python">Python deep dives · 4</Link>
+            <Link className="btn btn-ghost btn-sm" to="/practice">SQL and Python labs</Link>
+          </div>
+        )}
       </div>
 
       {!pro ? (
