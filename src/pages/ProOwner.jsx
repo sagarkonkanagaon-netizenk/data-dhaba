@@ -82,7 +82,7 @@ export default function ProOwner() {
         ))}
       </div>
       {project?.loading && <p className="muted">Decrypting…</p>}
-      {project?.files && <ProjectReader key={project.n} project={project} />}
+      {project?.files && <ProjectReader key={project.n} project={project} allowDownload />}
     </div></div>
   )
 }

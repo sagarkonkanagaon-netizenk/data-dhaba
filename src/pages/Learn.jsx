@@ -1,4 +1,4 @@
-import { pdfFor } from '../data/pdfs.jsx'
+import Protected from '../components/Protected.jsx'
 import ProGate from '../components/ProGate.jsx'
 import { isLocked, PAYMENTS_LIVE } from '../lib/tier.js'
 import { useEffect, useMemo, useState } from 'react'
@@ -58,8 +58,8 @@ export default function Library() {
           </Link>
           <Link to="/notes" className="card hub-card card-link">
             <span className="basic-k">Keep it</span>
-            <h3>Notes and PDFs</h3>
-            <p>Download the handbooks and notes as PDFs to read offline.</p>
+            <h3>Today I learned</h3>
+            <p>Short, practical notes from building pipelines: one problem, one fix.</p>
             <span className="hub-go">Open →</span>
           </Link>
         </div>
@@ -128,7 +128,6 @@ export function Book() {
           <p>{b.subtitle}. {b.chapters.length} chapters, {readTime(b.minutes)} of reading.</p>
           <div className="row" style={{ gap: 10, flexWrap: 'wrap' }}>
             <Link className="btn btn-primary" to={`/learn/${b.slug}/${next.slug}`}>{Object.keys(p.chapters).some((k) => k.startsWith(b.slug + '/')) ? 'Continue' : 'Start reading'}: {next.title}</Link>
-            {pdfFor(b.slug) && <a className="btn btn-ghost" href={pdfFor(b.slug).url} download target="_blank" rel="noreferrer">↓ Download PDF ({pdfFor(b.slug).pages} pages)</a>}
           </div>
         </div>
         <div className="card">
@@ -257,6 +256,7 @@ export function Chapter() {
             <button className="btn btn-ghost btn-sm" onClick={() => setFocus((f) => !f)} style={{ marginLeft: 'auto' }} title="Focus mode (F)">{focus ? 'Exit focus' : 'Focus'}</button>
             <button className="btn btn-ghost btn-sm side-toggle" onClick={() => setSide((s) => !s)}>Chapters</button>
           </div>
+          <Protected>
           <div className="prose"><h1>{c.title}</h1></div>
           {!c.pro && isLocked('chapter', c.num) ? (() => {
             const cut = c.md.search(/\n## /)
@@ -264,6 +264,7 @@ export function Chapter() {
             const rest = cut > 0 ? c.md.slice(cut, cut + 1400) : ''
             return <><Markdown md={head} /><ProGate what={`chapter ${c.num} and the rest of ${b.title}`} preview={<Markdown md={rest} />} /></>
           })() : <Markdown md={c.md} />}
+          </Protected>
           {c.pro ? <ProLock items={c.locked} /> : isLocked('chapter', c.num) ? null : <div className="done-bar">
             <div><b>{done ? 'Nice. Chapter marked as read.' : 'Finished this chapter?'}</b><div className="small muted">Your path and progress update automatically.</div></div>
             <button className={'btn ' + (done ? 'btn-ghost' : 'btn-primary')} onClick={() => toggleIn('chapters', key)}>{done ? '✓ Read' : 'Mark as read'}</button>

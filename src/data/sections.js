@@ -19,7 +19,7 @@ export const SECTIONS = [
       { to: '/atlas', icon: '🧭', label: 'Tech Stack Atlas', desc: 'Every DE tool by job and cloud' },
       { to: '/visual', icon: '✨', label: 'Visual SQL', desc: 'Joins and window functions, animated' },
       { to: '/spark-visual', icon: '⚡', label: 'Spark Visualizer', desc: 'Watch partitions, shuffles and skew' },
-      { to: '/notes', icon: '📝', label: 'Notes & PDFs', desc: 'Download the handbooks to keep' },
+      { to: '/notes', icon: '📝', label: 'Notes', desc: 'Short notes from real pipelines' },
       { to: '/resources', icon: '🔗', label: 'Resources', desc: 'Certifications and free platforms' },
     ],
   },
