@@ -48,6 +48,8 @@ export default function Playground() {
   useEffect(() => { try { localStorage.setItem('z2h:code:sql:scratch', code) } catch (e) { /* ignore */ } }, [code])
 
   async function runWith(sql, useBig = big, reset = false) {
+    // Phones start with big data off to save memory, but a query that names a big table needs it: build it on demand.
+    if (!useBig && BIG.some((t) => new RegExp('\\b' + t.name + '\\b', 'i').test(sql))) { useBig = true; setBig(true) }
     setBusy(true)
     const t0 = performance.now()
     try {
@@ -71,7 +73,7 @@ export default function Playground() {
     const sql = explainSql(code)
     if (!sql) { setPlan({ error: 'The plan works on a SELECT query. Put the SELECT last.' }); return }
     setBusy(true)
-    if (big) { await ensureBig(bigSetupSql(), { names: BIG.map((b) => b.name) }); bigReady.current = true }
+    if (big || BIG.some((t) => new RegExp('\\b' + t.name + '\\b', 'i').test(sql))) { await ensureBig(bigSetupSql(), { names: BIG.map((b) => b.name) }); bigReady.current = true }
     const r = await runIsolated({ setup: SAMPLE_SETUP, sql })
     setBusy(false)
     if (r.error) { setPlan({ error: r.error }); return }
