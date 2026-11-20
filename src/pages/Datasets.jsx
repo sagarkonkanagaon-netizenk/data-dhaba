@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import sqlQ from '../content/sql-questions.json'
 import { BIG } from '../data/bigdata.js'
 import { parseSchema, ABOUT, typeLabel } from '../lib/schema.js'
+import { isLocked } from '../lib/tier.js'
+import ProGate from '../components/ProGate.jsx'
 
 const fmt = (n) => (n >= 1e6 ? n / 1e6 + 'M' : n >= 1e3 ? n / 1e3 + 'K' : String(n))
 
@@ -35,6 +37,20 @@ export default function Datasets() {
   const match = (name, cols) => !f || name.toLowerCase().includes(f) || cols.some((c) => c.toLowerCase().includes(f))
   const big = BIG.filter((b) => match(b.name, b.cols.split(', ')))
   const shown = small.filter((t) => match(t.name, t.cols.map((c) => c.name)))
+  if (isLocked('datasets')) {
+    return (
+      <div className="page">
+        <div className="container">
+          <div className="page-head">
+            <div className="eyebrow">Practice</div>
+            <h1>Practice tables</h1>
+            <p>Every dataset behind the SQL and Python labs: {small.length + BIG.length} tables, their columns in plain words, how they connect, and which problems use them.</p>
+          </div>
+          <ProGate what="every practice dataset and all lab problems" />
+        </div>
+      </div>
+    )
+  }
   return (
     <div className="page">
       <div className="container">

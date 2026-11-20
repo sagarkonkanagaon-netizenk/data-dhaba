@@ -15,8 +15,8 @@ export const LOCKS_ON = PAYMENTS_LIVE || import.meta.env.VITE_PRO_LOCKS === 'on'
 
 export const FREE = {
   chapters: 2,            // first 2 chapters of every handbook
-  sql: 15,                // SQL Lab problems 1..15
-  py: 10,                 // Python Lab problems 1..10
+  sql: 5,                 // SQL Lab: sample problems 1..5 free, the rest Pro
+  py: 3,                  // Python Lab: sample problems 1..3 free, the rest Pro
   spark: ['partitions', 'shuffle'],
   drills: ['schema-drift'],
   weeks: 2,               // 24-week path: weeks 1 and 2
@@ -49,6 +49,7 @@ export function isLocked(kind, id) {
     case 'drill': return !FREE.drills.includes(id)
     case 'week': return Number(id) > FREE.weeks
     case 'atlas': return !FREE.atlas.includes(id)
+    case 'datasets': return true   // the practice-tables guide is Pro
     default: return false
   }
 }

@@ -13,7 +13,7 @@ export default function ProGate({ what, preview }) {
         <h3>{what ? `Unlock ${what}` : 'Unlock the full course'}</h3>
         <ul className="pl-list">
           <li>All 120 handbook chapters and every new handbook</li>
-          <li>All 158 lab problems with official answers</li>
+          <li>All 158 SQL and Python lab problems with official answers, plus every practice dataset explained</li>
           <li>{PRO_PROJECT_COUNT} portfolio projects with solutions</li>
           <li>The full 24-week path, every drill and Spark scene, all Atlas pages</li>
         </ul>
