@@ -6,8 +6,8 @@ import { useProContent } from '../lib/proContent.js'
 import { NotFound } from './Misc.jsx'
 
 // Production templates: everyone sees what each one is; Pro opens every file (read-only, like other Pro content).
-// Set TEMPLATE_DOWNLOAD to true to let Pro members download a template as a .tar to start their own repo.
-export const TEMPLATE_DOWNLOAD = false
+// Pro members can download a template as a .tar to start their own repo (Sagar chose this on 2026-11-20).
+export const TEMPLATE_DOWNLOAD = true
 
 export function TemplateIndex() {
   return (
