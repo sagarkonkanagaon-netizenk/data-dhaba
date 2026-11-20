@@ -104,3 +104,9 @@
   .at-mod .small { display: none; }
   .at-topics { padding: 0 12px 12px 14px; }
 }
+.at-topics li.at-topic-open { display: block; padding: 0; }
+.at-topic-btn { width: 100%; display: flex; justify-content: space-between; gap: 12px; align-items: center; padding: 8px 10px; background: none; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; border-radius: 10px; }
+.at-topic-btn:hover { background: color-mix(in srgb, var(--primary) 6%, transparent); }
+.at-lesson { padding: 4px 14px 14px; border-left: 3px solid var(--primary); margin: 4px 10px 12px; }
+.at-lesson li, .at-lesson li:nth-child(odd) { display: list-item; padding: 2px 0; background: none; border-radius: 0; font-size: inherit; }
+.at-lesson ul, .at-lesson ol { padding-left: 1.2em; }
