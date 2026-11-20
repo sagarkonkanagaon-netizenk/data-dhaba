@@ -3,8 +3,10 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import ProGate from '../components/ProGate.jsx'
 import ProjectReader from '../components/ProjectReader.jsx'
 import { client } from '../lib/auth.js'
-import { hasPro, getTier } from '../lib/tier.js'
+import { getTier } from '../lib/tier.js'
+import { usePro } from '../lib/proContent.js'
 import { PRO_LADDER, PRO_LADDER_READY } from '../data/pro.js'
+import ProBadge from '../components/ProBadge.jsx'
 
 // The career-ladder projects for Pro members. The files live in a private Supabase Storage bucket; the database
 // hands them only to accounts with Pro (supabase/payments.sql), so this page cannot be unlocked from the browser.
@@ -26,7 +28,7 @@ const pad = (n) => String(n).padStart(2, '0')
 export default function ProLadder() {
   const { n } = useParams()
   const navigate = useNavigate()
-  const pro = hasPro()
+  const pro = usePro()
   const [index, setIndex] = useState(null)
   const [project, setProject] = useState(null)
   const [err, setErr] = useState('')
@@ -56,7 +58,7 @@ export default function ProLadder() {
         <div className="eyebrow">Pro · Career ladder · {PRO_LADDER_READY} of {PRO_LADDER.length} built</div>
         <h1>Your Pro projects</h1>
         <p className="muted">One project per role, from intern to head of data engineering. Each has a brief, starter code, the full solution, tests, a walkthrough and a README for your GitHub. New ones appear here as they are finished.</p>
-        {pro && <p className="small muted">{tier.owner ? 'Owner access.' : tier.until ? `Pro until ${tier.until}.` : ''}</p>}
+        {pro && <p className="row small muted" style={{ gap: 10 }}><ProBadge size={40} label /><span>{tier.owner ? 'Owner access.' : tier.until ? `Member until ${tier.until}.` : 'Member.'}</span></p>}
         {pro && (
           <div className="row" style={{ gap: 8, flexWrap: 'wrap', marginTop: 8 }} aria-label="Everything in your Pro">
             <Link className="btn btn-ghost btn-sm" to="/pro/lessons">Spark course · 56 lessons</Link>
