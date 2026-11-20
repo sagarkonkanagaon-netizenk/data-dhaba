@@ -20,6 +20,7 @@ export default function Interview() {
     { to: '/practice/sql', ico: '🗄️', title: 'SQL questions', desc: 'From second-highest salary to sessionization and SCD Type 2. Runnable, auto-checked, with the traps explained.', stat: `${count('sql', sqlQ.questions)}/${sqlQ.questions.length} solved` },
     { to: '/practice/python', ico: '🐍', title: 'Python coding', desc: 'Warm-up problems interviewers use for data engineers: hashing, two pointers, generators, big files.', stat: `${count('py', PY)}/${PY.length} solved` },
     { to: '/interview/pyspark', ico: '⚡', title: 'PySpark coding', desc: 'Dedup, SCD, skew, JSON flattening, corrupt records, streaming. Think first, then compare with the answer.', stat: `${count('spark', SPARK, 'known')}/${SPARK.length} known` },
+    { to: '/interview/design', ico: '🏗️', title: 'System design', desc: 'Twenty data platform cases from clickstream to surge pricing: the brief, the numbers, the architecture and the trade-offs.', stat: '20 cases · Pro' },
     { to: '/interview/quiz', ico: '🎯', title: 'Quiz', desc: 'Ten-question rounds on Azure, AWS or GCP. Every wrong option is a real mistake, so guessing does not work.', stat: p.checks['quiz:azure'] != null ? `Best ${p.checks['quiz:azure']}%` : `${QUIZ.length} questions` },
     { to: '/interview/flashcards', ico: '🃏', title: 'Flashcards', desc: 'Spaced repetition across Spark, SQL, ADF, Databricks, Delta Lake and Python. Five minutes a day.', stat: 'Daily review' },
   ]

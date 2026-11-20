@@ -8,13 +8,13 @@ export const PRO_PLANS = [
 
 export const PRO_PILLARS = [
   { k: '34', t: 'End-to-end projects', d: 'Real business problems built start to finish: ingestion, lakehouse, quality, orchestration, Docker, CI/CD and a dashboard. Each ships with messy data, a brief from a made-up lead, a solution walkthrough and a README you can put on your resume.' },
-  { k: '60+', t: 'Cheat sheets', d: 'One-page, print-ready sheets for every tool and pattern a data engineer touches, from window functions to Spark tuning to Kafka offsets.' },
-  { k: '500+', t: 'Interview questions with model answers', d: 'SQL, PySpark, data modelling, cloud and behavioural, each with the follow-up an interviewer asks next and what a strong answer sounds like.' },
-  { k: '20', t: 'Data system design case studies', d: 'Whiteboard-style walk-throughs: requirements, numbers, architecture, trade-offs and the questions to ask, for the round that decides senior offers.' },
+  { k: '60+', ready: true, to: '/pro/cheatsheets', t: 'Cheat sheets', d: 'One-page, print-ready sheets for every tool and pattern a data engineer touches, from window functions to Spark tuning to Kafka offsets.' },
+  { k: '500+', ready: true, t: 'Interview questions with model answers', d: 'SQL, PySpark, data modelling, cloud and behavioural, each with the follow-up an interviewer asks next and what a strong answer sounds like.' },
+  { k: '20', ready: true, to: '/interview/design', t: 'Data system design case studies', d: 'Whiteboard-style walk-throughs: requirements, numbers, architecture, trade-offs and the questions to ask, for the round that decides senior offers.' },
   { k: 'AI', t: 'Mock interviewer', d: 'Speaks like a real panel: asks, listens, pushes back, then scores you with notes on what to fix before the real thing.' },
-  { k: '15', t: 'Production templates', d: 'Copy-paste starter repos with tests and CI already wired: a Docker Compose data stack, Airflow, dbt, Databricks Asset Bundles, Terraform, data contracts and more.' },
+  { k: '15', ready: true, to: '/pro/templates', t: 'Production templates', d: 'Starter repos with tests and CI already wired: a Docker Compose data stack, Airflow, dbt, Databricks Asset Bundles, Terraform, data contracts and more.' },
   { k: '4', t: 'Certification prep tracks', d: 'Practice exams and study plans for Databricks Data Engineer Associate and Professional, Microsoft Fabric Data Engineer (DP-700) and AWS Data Engineer Associate.' },
-  { k: '1', t: 'Resume and LinkedIn kit', d: 'ATS-friendly templates, a bank of measurable project bullets, and a LinkedIn headline and About section that recruiters actually search for.' },
+  { k: '1', ready: true, t: 'Resume and LinkedIn kit', d: 'ATS-friendly templates, a bank of measurable project bullets, and a LinkedIn headline and About section that recruiters actually search for.' },
 ]
 
 export const PRO_PROJECTS = [
@@ -100,6 +100,9 @@ export const PRO_TODAY = [
   'Every handbook chapter, and every new handbook as it is added',
   'Every SQL Lab and Python Lab problem, with official answers',
   'The Spark course (56 lessons) and the Python course (50 lessons), plus 100 extra Pro Python problems with auto-checks',
+  '65 one-page cheat sheets (60 only in Pro), from Spark internals to Terraform, with every SQL and Python example checked',
+  '15 production templates (PySpark, Delta, dbt, Airflow, Databricks bundles, Terraform, Kafka, CDC and more), each with tests and CI that were run before release',
+  '20 data system design cases, each with the numbers worked out, an architecture, trade-offs, failure modes and a 90-second answer',
   'The full 24-week path, every Spark scene, every incident drill and every Atlas tool page',
   `${PRO_LADDER_READY} career-ladder projects (intern to big data engineer): brief, starter code, full solution, tests, walkthrough and README`,
   'New career-ladder projects as each one is finished, at no extra cost during your Pro period',
