@@ -1,0 +1,27 @@
+.jk-grid { gap: 12px; }
+.jk-card { display: flex; gap: 14px; align-items: flex-start; }
+.jk-card p { margin: 4px 0 0; }
+.jk-ic { font-size: 1.6rem; line-height: 1; }
+.jk-maker { display: grid; gap: 16px; }
+.jk-canvas { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line); display: block; }
+.jk-form { display: grid; gap: 12px; max-width: 640px; }
+.jk-form label { display: grid; gap: 6px; font-weight: 600; font-size: .9rem; }
+.jk-form input { font: inherit; font-weight: 400; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+.jk-styles { display: flex; gap: 8px; flex-wrap: wrap; }
+.jk-styles button { border: 2px solid transparent; border-radius: 10px; padding: 10px 14px; font-weight: 700; cursor: pointer; }
+.jk-styles button.on { border-color: var(--primary); box-shadow: 0 0 0 2px var(--bg) inset; }
+.ivk-bar { margin-bottom: 16px; }
+@media (min-width: 900px) { .ivk-bar { position: sticky; top: 64px; z-index: 3; } }
+.ivk-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+.ivk-tabs button { white-space: nowrap; border: 1px solid var(--line); background: transparent; color: inherit; border-radius: 999px; padding: 6px 12px; cursor: pointer; font: inherit; font-size: .85rem; }
+.ivk-tabs button.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+.ivk-tabs button span { opacity: .7; margin-left: 4px; }
+.ivk-search { flex: 1 1 220px; font: inherit; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: inherit; }
+.ivk-bar select { font: inherit; padding: 8px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: inherit; }
+.ivk-list { list-style: none; padding: 0; display: grid; gap: 10px; }
+.ivk-q { display: grid; gap: 8px; }
+.ivk-q.ok { border-left: 4px solid #16a34a; }
+.ivk-q.again { border-left: 4px solid #f59e0b; }
+.ivk-qt { font-size: 1.05rem; }
+.ivk-a { margin: 0; line-height: 1.6; }
+.ivk-f { margin: 0; font-size: .92rem; }

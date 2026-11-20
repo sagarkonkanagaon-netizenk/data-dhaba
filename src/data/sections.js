@@ -47,6 +47,8 @@ export const SECTIONS = [
       { to: '/interview/scenarios', icon: '🔥', label: 'Scenario questions', desc: 'Model answers and push-backs' },
       { to: '/interview/pyspark', icon: '⚡', label: 'PySpark questions', desc: 'Think first, then compare' },
       { to: '/interview/playbook', icon: '🎙️', label: 'Tell me about yourself', desc: 'The six-beat intro' },
+      { to: '/interview/kit', icon: '🎯', label: 'Interview kit', desc: 'Pro: 300 questions with model answers and follow-ups' },
+      { to: '/interview/job-kit', icon: '🧳', label: 'Job kit', desc: 'Pro: Naukri, LinkedIn, resume, referrals, interview kit' },
     ],
   },
 ]
