@@ -1,0 +1,44 @@
+# Checks every pull request before it can be merged:
+#  1. every SQL answer, drill and Playground example runs in DuckDB and matches the checker
+#  2. every page opens without errors at phone and desktop width
+name: Site check
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: site-check-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm ci
+      - name: SQL answers run and match
+        run: |
+          pip install duckdb==1.4.1
+          node scripts/qa/export_sql.mjs > "$RUNNER_TEMP/sql.json"
+          python3 scripts/qa/check_answers.py "$RUNNER_TEMP/sql.json"
+      - name: Build like production (Pro locks on)
+        env:
+          VITE_PRO_LOCKS: 'on'
+        run: npm run build
+      - name: Every page opens
+        run: |
+          npm install --no-save playwright@1.63.0
+          npx playwright install --with-deps chromium
+          node scripts/qa/site-check.mjs
