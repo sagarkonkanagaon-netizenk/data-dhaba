@@ -958,9 +958,14 @@ main .page-head h1 em, main .daily-head h1 em, main .play-head h1 em { color: va
 
 /* Cheat sheets */
 .sheet-card h3 { margin: 10px 0 6px; }
+.sheet-groups { columns: 3 280px; column-gap: 16px; }
+.sheet-group { break-inside: avoid; margin-bottom: 16px; }
+.sheet-group h3 { margin: 0 0 8px; font-size: 1.02rem; }
+.sheet-list { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
 .sheet { margin-top: 16px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 28px 32px; }
-.sheet-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; border-bottom: 2px solid var(--primary); padding-bottom: 12px; margin-bottom: 8px; }
-.sheet-head h1 { margin: 4px 0 0; font-size: clamp(1.6rem, 3vw, 2.2rem); }
+.sheet-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px; border-bottom: 2px solid var(--primary); padding-bottom: 12px; margin-bottom: 8px; }
+.sheet-head > div { min-width: 0; }
+.sheet-head h1 { overflow-wrap: anywhere; margin: 4px 0 0; font-size: clamp(1.6rem, 3vw, 2.2rem); }
 .sheet-brand { font-size: .8rem; color: var(--muted); letter-spacing: .02em; }
 .sheet-brand b { color: var(--primary); }
 .sheet-body { max-width: none; columns: 2 380px; column-gap: 32px; font-size: .95rem; }

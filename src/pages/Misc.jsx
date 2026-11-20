@@ -5,6 +5,7 @@ import { buyPro, inIndia, loadPrices, money, takePaidNote } from '../lib/pay.js'
 import { useSignedIn } from '../components/Gate.jsx'
 import Waitlist from '../components/Waitlist.jsx'
 import { SHEETS } from '../pro/cheatsheets.js'
+import { PRO_SHEETS } from '../pro/cheatsheetsPro.js'
 const SHEET_COUNT = SHEETS.length
 import { PRO_PRICE, PRO_PLANS, PRO_PILLARS, PRO_PROJECTS, PRO_CHEATSHEETS, PRO_PROJECT_COUNT, PRO_FAQ, PRO_FAQ_LIVE, PRO_TODAY, PRO_LADDER, PRO_LADDER_READY } from '../data/pro.js'
 import guide from '../content/guide.json'
@@ -218,7 +219,7 @@ export function Pro() {
           {PRO_PILLARS.map((x) => (
             <div key={x.t} className="card card-pad pro-pillar">
               <b className="pro-k">{x.k}</b>
-              <div><h3>{x.t}</h3><p className="muted">{x.d}</p></div>
+              <div><h3>{x.t} {x.ready && <span className="chip chip-ok">In Pro now</span>}</h3><p className="muted">{x.d}</p></div>
             </div>
           ))}
         </div>
@@ -243,7 +244,7 @@ export function Pro() {
         </div>
 
         <h2 className="ds-h">Cheat sheets <span className="small muted">60+ planned, including</span></h2>
-        <div className="chips pro-chips">{PRO_CHEATSHEETS.map((c) => { const sh = SHEETS.find((x) => x.title.toLowerCase() === c.toLowerCase()); return sh ? <Link key={c} to={`/pro/cheatsheets/${sh.slug}`} className="chip chip-ok">{c} · preview</Link> : <span key={c} className="chip">{c}</span> })}</div>
+        <div className="chips pro-chips">{PRO_CHEATSHEETS.map((c) => { const sh = SHEETS.find((x) => x.title.toLowerCase() === c.toLowerCase()); const ps = PRO_SHEETS.find((x) => x.title.toLowerCase() === c.toLowerCase()); return sh ? <Link key={c} to={`/pro/cheatsheets/${sh.slug}`} className="chip chip-ok">{c} · preview</Link> : ps ? <Link key={c} to={`/pro/cheatsheets/${ps.slug}`} className="chip">{c}</Link> : <span key={c} className="chip">{c}</span> })}</div>
 
         <h2 className="ds-h">What the course includes without Pro</h2>
         <div className="card card-pad">
