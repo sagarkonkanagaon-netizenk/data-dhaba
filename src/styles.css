@@ -1161,3 +1161,15 @@ main .page-head h1 em, main .daily-head h1 em, main .play-head h1 em { color: va
 .receipts h3 { margin: 0 0 6px; font-size: 1rem; }
 .receipts ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
 .receipts code { overflow-wrap: anywhere; }
+
+/* System design cases */
+.design-grid { margin-top: 8px; }
+.design-card h3 { margin: 10px 0 6px; }
+.design-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.design-n { font-family: var(--mono); font-weight: 700; color: var(--primary); font-size: .9rem; }
+.design-brief { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin: 0; }
+.design-page { max-width: 920px; }
+.design-page h1 { overflow-wrap: anywhere; }
+.design-quote { margin: 0 0 18px; padding: 14px 18px; border-left: 3px solid var(--primary); background: var(--bg-2); border-radius: 0 12px 12px 0; font-size: 1.02rem; line-height: 1.6; }
+.design-body .codeblock pre { font-size: .76rem; line-height: 1.45; }
+.design-body table { display: block; overflow-x: auto; }

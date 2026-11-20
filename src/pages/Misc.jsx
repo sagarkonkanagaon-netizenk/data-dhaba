@@ -219,7 +219,7 @@ export function Pro() {
           {PRO_PILLARS.map((x) => (
             <div key={x.t} className="card card-pad pro-pillar">
               <b className="pro-k">{x.k}</b>
-              <div><h3>{x.t} {x.ready && <span className="chip chip-ok">In Pro now</span>}</h3><p className="muted">{x.d}</p></div>
+              <div><h3>{x.t} {x.ready && <span className="chip chip-ok">In Pro now</span>}</h3><p className="muted">{x.d}</p>{x.to && <Link to={x.to} className="how-link small">Open →</Link>}</div>
             </div>
           ))}
         </div>
