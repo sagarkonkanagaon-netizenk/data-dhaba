@@ -112,13 +112,15 @@ self.onmessage = async (e) => {
     // Fetch pandas, sqlite3 and friends on first import. zoneinfo needs the tzdata package.
     try {
       await py.loadPackagesFromImports(code)
-      if (/\bzoneinfo\b/.test(code)) await py.loadPackage('tzdata')
+      if (/\bzoneinfo\b/.test(code + (check?.ref || ''))) await py.loadPackage('tzdata')
     } catch (err) { /* the import itself will report a clear error */ }
     if (check) {
       py.globals.set('__user_code', code)
       py.globals.set('__ref_code', check.ref)
       py.globals.set('__fn', check.fn)
       py.globals.set('__args', check.args)
+      // Pro problems carry several test cases; free ones have one.
+      py.globals.set('__cases', JSON.stringify(check.cases && check.cases.length ? check.cases : [check.args]))
       const verdict = await py.runPythonAsync(`
 import copy, json
 def __run(src, fn, args_src):
@@ -133,9 +135,18 @@ def __run(src, fn, args_src):
     if hasattr(res, '__next__') or hasattr(res, 'send'):
         res = list(res)
     return res, a2
-__u = __run(__user_code, __fn, __args)
-__r = __run(__ref_code, __fn, __args)
-json.dumps({"ok": __u == __r, "got": repr(__u[0]), "want": repr(__r[0])})
+def __verdict():
+    cases = json.loads(__cases)
+    for i, c in enumerate(cases):
+        u = __run(__user_code, __fn, c)
+        r = __run(__ref_code, __fn, c)
+        if u != r:
+            v = {"ok": False, "got": repr(u[0]), "want": repr(r[0])}
+            if len(cases) > 1:
+                v["why"] = f"Test {i + 1} of {len(cases)}: {__fn}({c}) gave {u[0]!r}, expected {r[0]!r}."
+            return v
+    return {"ok": True, "got": repr(u[0]), "want": repr(r[0]), "cases": len(cases)}
+json.dumps(__verdict())
 `)
       self.postMessage({ id, out, verdict: JSON.parse(verdict) })
     } else if (show) {

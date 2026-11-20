@@ -367,6 +367,8 @@ main:focus { outline: none; }
 .qhead h2, .qhead .q-title { margin-bottom: 6px; }
 .qhead .q-title { font-size: clamp(1.55rem, 2.8vw, 2.2rem); font-weight: 750; letter-spacing: -.03em; line-height: 1.15; }
 .given { font-family: var(--mono); font-size: .84rem; background: var(--bg-2); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; color: var(--text-2); overflow-x: auto; }
+.q-prompt { margin: 4px 0 10px; color: var(--text); line-height: 1.6; }
+.q-prompt p { margin: 0 0 6px; }
 .editor-wrap { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--code-bg); }
 .editor-wrap .cm-editor { font-size: 14px; min-height: 160px; }
 .editor-wrap .cm-editor.cm-focused { outline: none; }
