@@ -29,7 +29,7 @@ export default function InterviewKit() {
   const head = (
     <div className="page-head">
       <div className="eyebrow">Pro · Interview kit</div>
-      <h1>{data ? data.total : '300'} interview questions, with the answer and the next question</h1>
+      <h1>{data ? data.total : '500'} interview questions, with the answer and the next question</h1>
       <p className="muted">The questions data engineering rounds in India keep asking, by topic and level. Say your answer out loud first, then reveal the model answer and the follow-up the interviewer usually asks next. Mark each one, and come back to the ones you missed.</p>
       <div className="row" style={{ gap: 8, flexWrap: 'wrap' }}>
         <Link className="btn btn-ghost btn-sm" to="/interview/job-kit/interview-kit">How each round works</Link>

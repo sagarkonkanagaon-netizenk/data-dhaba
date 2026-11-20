@@ -127,6 +127,8 @@ export default function App() {
             <Route path="pro/ladder/:n" element={<ProLadder />} />
             <Route path="pro/lessons" element={<ProLessons />} />
             <Route path="pro/lessons/:slug" element={<ProLessons />} />
+            <Route path="pro/python" element={<ProLessons course="python" />} />
+            <Route path="pro/python/:slug" element={<ProLessons course="python" />} />
             <Route path="pro/cheatsheets" element={<SheetIndex />} />
             <Route path="pro/cheatsheets/:slug" element={<Sheet />} />
             <Route path="about" element={<About />} />

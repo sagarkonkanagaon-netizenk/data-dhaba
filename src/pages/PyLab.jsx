@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import ProGate from '../components/ProGate.jsx'
 import { isLocked } from '../lib/tier.js'
+import { useProContent } from '../lib/proContent.js'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import data from '../content/py-questions.json'
 import CodeEditor from '../components/CodeEditor.jsx'
@@ -26,33 +27,60 @@ export default function PyLab() {
   const { n } = useParams()
   const navigate = useNavigate()
   const p = useProgress()
-  const q = QS.find((x) => String(x.n) === String(n)) || QS[0]
-  const solved = QS.filter((x) => p.py[x.n] === 'solved').length
+  // 100 more problems (101-200) live in Pro storage, so only Pro members download them.
+  const { pro, data: proQs, err: proErr } = useProContent('python-problems.json')
+  const ALL = proQs ? [...QS, ...proQs] : QS
+  const wantsPro = Number(n) > 100
+  const q = ALL.find((x) => String(x.n) === String(n)) || (wantsPro ? null : QS[0])
+  const solved = ALL.filter((x) => p.py[x.n] === 'solved').length
   const [listOpen, setListOpen] = useState(false)
+  let main
+  if (q && q.n <= 100 && isLocked('py', q.n)) {
+    main = <section><div className="qhead"><div className="row small muted"><span>{q.section}</span><span>·</span><span>Question {q.n} of {QS.length}</span></div><h1 className="q-title">{q.title}</h1></div><ProGate what={`all ${QS.length} Python and PySpark problems with answers`} /></section>
+  } else if (q) {
+    main = <PyQuestion key={q.n} q={q} list={ALL} />
+  } else if (!pro) {
+    main = <section><div className="qhead"><div className="row small muted"><span className="chip chip-pro">Pro</span><span>Problems 101 to 200</span></div><h1 className="q-title">100 Pro Python problems</h1></div><p className="muted">Parsing, dates and money, CDC and SCD2, streaming windows, joins, rate limiters and more. Each one has auto-checks on several test cases and a full answer.</p><ProGate what="100 more Python problems for data engineers" /></section>
+  } else if (proErr) {
+    main = <section><p className="err" role="alert">{proErr}</p></section>
+  } else {
+    main = <section><span className="loading"><span className="spinner" /> Loading Pro problems…</span></section>
+  }
+  const proList = proQs || []
   return (
     <div className="container">
       <div className="lab">
         <aside className={'qlist card' + (listOpen ? ' open' : '')} style={{ padding: 8 }}>
-          <div className="spread" style={{ padding: '6px 8px' }}><b>Python lab</b><span className="chip chip-primary">{solved}/{QS.length}</span></div>
+          <div className="spread" style={{ padding: '6px 8px' }}><b>Python lab</b><span className="chip chip-primary">{solved}/{ALL.length}</span></div>
           <div className="small muted" style={{ padding: '0 8px 6px' }}>PySpark questions are in <Link to="/interview/pyspark">Interview → PySpark</Link>.</div>
           <button className="qlist-toggle" aria-expanded={listOpen} onClick={() => setListOpen(!listOpen)}>
-            <span>Problem {q.n} of {QS.length}</span><b>{listOpen ? 'Hide list ▴' : 'All problems ▾'}</b>
+            <span>{q ? `Problem ${q.n}` : 'Pro problems'}</span><b>{listOpen ? 'Hide list ▴' : 'All problems ▾'}</b>
           </button>
           <div className="qlist-body" onClick={() => setListOpen(false)}>
           {QS.map((x) => (
-            <button key={x.n} className={x.n === q.n ? 'on' : ''} onClick={() => navigate(`/practice/python/${x.n}`)}>
+            <button key={x.n} className={q && x.n === q.n ? 'on' : ''} onClick={() => navigate(`/practice/python/${x.n}`)}>
               <span className="n">{x.n}</span><span>{x.title}</span><span className="st">{isLocked('py', x.n) ? '🔒' : p.py[x.n] === 'solved' ? '✅' : p.py[x.n] === 'tried' ? '•' : ''}</span>
             </button>
           ))}
+          <div className="small muted" style={{ padding: '10px 8px 4px' }}><span className="chip chip-pro">Pro</span> Problems 101 to 200</div>
+          {pro ? proList.map((x) => (
+            <button key={x.n} className={q && x.n === q.n ? 'on' : ''} onClick={() => navigate(`/practice/python/${x.n}`)}>
+              <span className="n">{x.n}</span><span>{x.title}</span><span className="st">{p.py[x.n] === 'solved' ? '✅' : p.py[x.n] === 'tried' ? '•' : ''}</span>
+            </button>
+          )) : (
+            <button className={wantsPro ? 'on' : ''} onClick={() => navigate('/practice/python/101')}>
+              <span className="n">+100</span><span>Pro problems for data engineers</span><span className="st">🔒</span>
+            </button>
+          )}
           </div>
         </aside>
-        {isLocked('py', q.n) ? <section><div className="qhead"><div className="row small muted"><span>{q.section}</span><span>·</span><span>Question {q.n} of {QS.length}</span></div><h1 className="q-title">{q.title}</h1></div><ProGate what={`all ${QS.length} Python and PySpark problems with answers`} /></section> : <PyQuestion key={q.n} q={q} />}
+        {main}
       </div>
     </div>
   )
 }
 
-function PyQuestion({ q }) {
+function PyQuestion({ q, list }) {
   const navigate = useNavigate()
   const p = useProgress()
   const [code, setCode] = useState(() => { try { return localStorage.getItem(key(q.n)) || starter(q) } catch (e) { return starter(q) } })
@@ -60,9 +88,9 @@ function PyQuestion({ q }) {
   const [out, setOut] = useState(null)
   const [verdict, setVerdict] = useState(null)
   useEffect(() => { try { localStorage.setItem(key(q.n), code) } catch (e) { /* ignore */ } }, [code, q.n])
-  const idx = QS.findIndex((x) => x.n === q.n)
-  const prev = QS[idx - 1]
-  const next = QS[idx + 1]
+  const idx = list.findIndex((x) => x.n === q.n)
+  const prev = list[idx - 1]
+  const next = list[idx + 1]
 
   async function run() {
     setBusy('run'); setVerdict(null)
@@ -81,10 +109,11 @@ function PyQuestion({ q }) {
   return (
     <section>
       <div className="qhead">
-        <div className="row small muted"><span>Python</span><span>·</span><span>Question {q.n}</span>{p.py[q.n] === 'solved' && <span className="chip chip-ok">Solved</span>}</div>
+        <div className="row small muted">{q.n > 100 && <span className="chip chip-pro">Pro</span>}<span>{q.topic || 'Python'}</span><span>·</span><span>Question {q.n}</span>{p.py[q.n] === 'solved' && <span className="chip chip-ok">Solved</span>}</div>
         <h1 className="q-title">{q.title}</h1>
       </div>
-      {q.given && <div className="given">{q.given}</div>}
+      {q.prompt && <div className="q-prompt"><Markdown md={q.prompt} /></div>}
+      {q.given && <div className="given">{q.prompt ? <><b>Example: </b>{q.given}</> : q.given}</div>}
       <div style={{ marginTop: 12 }}><CodeEditor value={code} onChange={setCode} onRun={run} lang="python" minHeight={200} /></div>
       <div className="toolbar">
         <button className="btn btn-ghost" onClick={run} disabled={!!busy}>{busy === 'run' ? 'Running…' : '▶ Run'}</button>
@@ -97,8 +126,8 @@ function PyQuestion({ q }) {
       {verdict && (
         <div className={'verdict ' + (verdict.ok ? 'ok' : 'bad')} style={{ margin: '10px 0' }}>
           <span>{verdict.ok ? '✅' : '❌'}</span>
-          <div>{verdict.ok ? 'Correct on the example.' : 'Not yet.'}
-            <small>{verdict.ok ? 'Now think about edge cases: empty input, duplicates, very large input.' : verdict.why || `Got ${verdict.got}, expected ${verdict.want}.`}</small>
+          <div>{verdict.ok ? (q.check?.cases?.length > 1 ? `Correct on all ${q.check.cases.length} test cases.` : 'Correct on the example.') : 'Not yet.'}
+            <small>{verdict.ok ? (q.check?.cases?.length > 1 ? 'Open the answer below and compare your approach and its complexity.' : 'Now think about edge cases: empty input, duplicates, very large input.') : verdict.why || `Got ${verdict.got}, expected ${verdict.want}.`}</small>
           </div>
         </div>
       )}

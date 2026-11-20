@@ -62,11 +62,13 @@ export default function ProLadder() {
         {pro && (
           <div className="row" style={{ gap: 8, flexWrap: 'wrap', marginTop: 8 }} aria-label="Everything in your Pro">
             <Link className="btn btn-ghost btn-sm" to="/pro/lessons">Spark course · 56 lessons</Link>
+            <Link className="btn btn-ghost btn-sm" to="/pro/python">Python course · 50 lessons</Link>
+            <Link className="btn btn-ghost btn-sm" to="/practice/python/101">Pro Python problems · 100</Link>
             <Link className="btn btn-ghost btn-sm" to="/drills">On-call drills · 108</Link>
             <Link className="btn btn-ghost btn-sm" to="/spark-visual">Spark issue library · 156</Link>
             <Link className="btn btn-ghost btn-sm" to="/learn/python">Python deep dives · 4</Link>
             <Link className="btn btn-ghost btn-sm" to="/practice">SQL and Python labs</Link>
-            <Link className="btn btn-ghost btn-sm" to="/interview/kit">Interview kit · 300 questions</Link>
+            <Link className="btn btn-ghost btn-sm" to="/interview/kit">Interview kit · 500 questions</Link>
             <Link className="btn btn-ghost btn-sm" to="/interview/job-kit">Job kit</Link>
           </div>
         )}

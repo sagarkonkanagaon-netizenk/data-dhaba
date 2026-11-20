@@ -99,6 +99,7 @@ export const PRO_PROJECT_COUNT = PRO_PROJECTS.reduce((a, g) => a + g.items.lengt
 export const PRO_TODAY = [
   'Every handbook chapter, and every new handbook as it is added',
   'Every SQL Lab and Python Lab problem, with official answers',
+  'The Spark course (56 lessons) and the Python course (50 lessons), plus 100 extra Pro Python problems with auto-checks',
   'The full 24-week path, every Spark scene, every incident drill and every Atlas tool page',
   `${PRO_LADDER_READY} career-ladder projects (intern to big data engineer): brief, starter code, full solution, tests, walkthrough and README`,
   'New career-ladder projects as each one is finished, at no extra cost during your Pro period',
