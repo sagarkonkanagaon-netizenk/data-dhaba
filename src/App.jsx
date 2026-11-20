@@ -56,6 +56,8 @@ const ProProject = page(() => import('./pages/ProProject.jsx'))
 const ProOwner = page(() => import('./pages/ProOwner.jsx'))
 const ProLadder = page(() => import('./pages/ProLadder.jsx'))
 const ProLessons = page(() => import('./pages/ProLessons.jsx'))
+const JobKit = page(() => import('./pages/JobKit.jsx'))
+const InterviewKit = page(() => import('./pages/InterviewKit.jsx'))
 const SheetIndex = page(() => import('./pages/ProSheets.jsx'), 'SheetIndex')
 const Sheet = page(() => import('./pages/ProSheets.jsx'), 'Sheet')
 const SqlReview = page(() => import('./pages/SqlReview.jsx'))
@@ -95,6 +97,9 @@ export default function App() {
             <Route path="interview/scenarios" element={<Scenarios />} />
             <Route path="interview/pyspark" element={<PySparkQs />} />
             <Route path="interview/playbook" element={<Playbook />} />
+            <Route path="interview/kit" element={<InterviewKit />} />
+            <Route path="interview/job-kit" element={<JobKit />} />
+            <Route path="interview/job-kit/:slug" element={<JobKit />} />
             <Route path="interview/flashcards" element={<Flashcards />} />
             <Route path="interview/quiz" element={<Quiz />} />
             <Route path="quiz" element={<Quiz />} />
